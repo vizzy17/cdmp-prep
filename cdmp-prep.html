@@ -1,0 +1,846 @@
+### Updated CDMP Exam Master Prep Code
+
+The full application code now features:
+
+* **Bold, Monospace Timer & 10-Minute Idle Timeout:** Fully integrated to pause sessions automatically after 10 minutes of inactivity.
+* **Dynamic Exam Progress Bar:** Real-time visual tracking of answered, unanswered, and current question status.
+* **Interactive Question Navigator Drawer / Grid:** Jump straight to any specific question, easily identifying which questions are answered or skipped at a glance.
+* **Exam Review & Control Bar:** Dedicated controls to flag questions for review, skip ahead, or finish the exam early.
+
+---
+
+### Code
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDMP Exam Master Prep</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .card-inner { transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; cursor: pointer; }
+        .card-inner.is-flipped { transform: rotateY(180deg); }
+        .card-face { backface-visibility: hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .card-back { transform: rotateY(180deg); }
+        .perspective-1000 { perspective: 1000px; }
+        .gradient-bg { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
+        
+        .option-btn {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15), 0 8px 10px -6px rgba(59, 130, 246, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 via-slate-100 to-blue-50 min-h-screen font-sans">
+    <div id="app" class="max-w-4xl mx-auto px-4 py-8">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-blue-900 mb-2 tracking-tight">CDMP Exam Master Prep</h1>
+            <p class="text-gray-600 font-medium">Complete Study Engine: Core & Specialized Chapters Loaded</p>
+        </header>
+
+        <div class="flex flex-wrap justify-center gap-4 mb-8">
+            <select id="chapter-filter" class="px-4 py-3 border border-gray-300 rounded-xl bg-white shadow-sm outline-none font-medium text-gray-700 hover:border-blue-400 focus:ring-2 focus:ring-blue-500 transition">
+                <option value="all">All Chapters</option>
+                <optgroup label="Foundational & Strategy">
+                    <option value="2">Chapter 2: Data Governance</option>
+                    <option value="3">Chapter 3: Data Architecture</option>
+                </optgroup>
+                <optgroup label="Core Data Management">
+                    <option value="4">Chapter 4: Data Integration</option>
+                    <option value="5">Chapter 5: Data Modeling</option>
+                    <option value="6">Chapter 6: Data Storage and Operations</option>
+                </optgroup>
+                <optgroup label="Security & Master Data">
+                    <option value="7">Chapter 7: Data Security</option>
+                    <option value="10">Chapter 10: Reference & Master Data</option>
+                </optgroup>
+                <optgroup label="Analytics & Quality">
+                    <option value="8">Chapter 8: Data Warehousing & BI</option>
+                    <option value="12">Chapter 12: Metadata Management</option>
+                    <option value="13">Chapter 13: Data Quality</option>
+                </optgroup>
+                <optgroup label="Specialized Topics (Lower Exam Weight)">
+                    <option value="9">Chapter 9: Document & Content Management</option>
+                    <option value="11">Chapter 11: Data Warehousing & Big Data (Alt)</option>
+                    <option value="14">Chapter 14: Data Integration & Big Data</option>
+                    <option value="15">Chapter 15: Data Ethics</option>
+                </optgroup>
+            </select>
+            <button id="study-mode-btn" class="gradient-bg text-white px-6 py-3 rounded-xl shadow-md hover:opacity-95 font-semibold transition">Study Mode</button>
+            <button id="quiz-mode-btn" class="bg-emerald-600 text-white px-6 py-3 rounded-xl shadow-md hover:bg-emerald-700 font-semibold transition">Chapter Quiz</button>
+            <button id="exam-mode-btn" class="bg-purple-600 text-white px-6 py-3 rounded-xl shadow-md hover:bg-purple-700 transition font-bold">🎯 Generate 100-Q Exam Mock</button>
+        </div>
+
+        <div id="flashcard-container" class="hidden">
+            <div class="relative w-full max-w-lg mx-auto h-80 perspective-1000 mb-8">
+                <div id="main-card" class="card-inner w-full h-full relative">
+                    <div id="card-front-face" class="card-face card-front bg-white rounded-2xl shadow-xl border-t-4 border-blue-600 flex flex-col items-center justify-center p-8 text-center">
+                        <span id="card-chapter-label" class="absolute top-4 left-4 text-xs font-bold uppercase"></span>
+                        <div id="front-text" class="text-xl font-bold text-gray-800"></div>
+                    </div>
+                    <div id="card-back-face" class="card-face card-back rounded-2xl shadow-xl border-t-4 flex items-center justify-center p-8 text-center">
+                        <div id="back-text" class="text-lg leading-relaxed"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-between max-w-lg mx-auto">
+                <button id="prev-btn" class="bg-white px-5 py-2.5 rounded-xl border border-gray-200 shadow-sm font-medium hover:bg-gray-100 transition">← Prev</button>
+                <button id="next-btn" class="bg-white px-5 py-2.5 rounded-xl border border-gray-200 shadow-sm font-medium hover:bg-gray-100 transition">Next →</button>
+            </div>
+            <p id="counter" class="text-center text-gray-500 mt-4 font-medium"></p>
+        </div>
+
+        <!-- Redesigned Quiz & Exam Container with Progress Bars and Question Navigator -->
+        <div id="quiz-container" class="hidden bg-white p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100 max-w-3xl mx-auto">
+            <!-- Header Bar -->
+            <div class="mb-6 flex justify-between items-center border-b border-gray-100 pb-4">
+                <h3 id="quiz-title" class="text-xl font-extrabold text-blue-900 tracking-tight">Quiz Mode</h3>
+                <div class="flex items-center gap-3">
+                    <div id="timer-badge" class="flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-100 text-slate-800 rounded-full font-mono text-base font-black shadow-sm tracking-wider">
+                        <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span id="timer-display">00:00</span>
+                    </div>
+                    <span id="quiz-progress" class="text-xs font-bold px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full"></span>
+                </div>
+            </div>
+            
+            <!-- Progress Completion Bar -->
+            <div class="mb-6 bg-slate-100 rounded-full h-3 overflow-hidden shadow-inner">
+                <div id="completion-progress-bar" class="bg-blue-600 h-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+
+            <!-- Question Navigator Drawer Bar (Grid to jump directly to any question) -->
+            <div class="mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-bold text-gray-600 uppercase tracking-wider">Question Navigator (Click any box to jump)</span>
+                    <div class="flex items-center gap-3 text-xs font-medium text-gray-500">
+                        <span class="flex items-center gap-1"><span class="w-3 h-3 bg-blue-600 rounded-sm inline-block"></span> Current</span>
+                        <span class="flex items-center gap-1"><span class="w-3 h-3 bg-emerald-500 rounded-sm inline-block"></span> Answered</span>
+                        <span class="flex items-center gap-1"><span class="w-3 h-3 bg-amber-400 rounded-sm inline-block"></span> Flagged</span>
+                        <span class="flex items-center gap-1"><span class="w-3 h-3 bg-white border border-gray-300 rounded-sm inline-block"></span> Unanswered</span>
+                    </div>
+                </div>
+                <div id="question-navigator-grid" class="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto p-1"></div>
+            </div>
+            
+            <div class="mb-8 bg-slate-50 p-6 rounded-2xl border border-slate-100 relative">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Question</span>
+                    <button id="flag-btn" class="text-xs font-semibold px-3 py-1 bg-amber-100 text-amber-800 rounded-lg hover:bg-amber-200 transition flex items-center gap-1">
+                        <span>🚩 Flag for Review</span>
+                    </button>
+                </div>
+                <div id="quiz-question" class="text-xl font-semibold text-gray-800 leading-snug"></div>
+            </div>
+
+            <div id="quiz-options" class="space-y-3.5"></div>
+            
+            <div id="quiz-feedback" class="hidden"></div>
+            
+            <!-- Bottom Control Action Bar -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mt-8 pt-4 border-t border-gray-100">
+                <button id="quiz-prev-btn" class="px-5 py-3 rounded-xl border border-gray-300 text-gray-700 font-bold hover:bg-gray-100 transition shadow-sm">← Previous</button>
+                
+                <div class="flex gap-3">
+                    <button id="quiz-skip-btn" class="px-5 py-3 rounded-xl bg-slate-200 text-slate-700 font-bold hover:bg-slate-300 transition">Skip Question →</button>
+                    <button id="quiz-next-btn" class="px-6 py-3 rounded-xl gradient-bg text-white font-bold shadow-lg hover:opacity-95 transition tracking-wide">Next Question →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const allData = [
+            // Chapter 2
+            {chapter: 2, front: "Definition of Data Governance", back: "Exercise of authority and control over data assets."},
+            {chapter: 2, front: "Data Governance Steering Committee", back: "Highest decision-making body for the program."},
+            {chapter: 2, front: "Data Governance Office", back: "Operational team that runs the program."},
+            {chapter: 2, front: "Business Data Steward", back: "Subject matter expert accountable for data definitions."},
+            {chapter: 2, front: "Federated Operating Model", back: "Centralized standards, decentralized execution."},
+            {chapter: 2, front: "Centralized Model", back: "Single governance entity for the whole organization."},
+            {chapter: 2, front: "Decentralized Model", back: "Individual units manage governance independently."},
+            {chapter: 2, front: "Executive Sponsor", back: "Leader providing funding and political clout."},
+            {chapter: 2, front: "Governance Policy", back: "Mandatory high-level rules for data usage."},
+            {chapter: 2, front: "Data Standards", back: "Detailed rules for data representation format."},
+            {chapter: 2, front: "CDO", back: "Senior executive responsible for data strategy."},
+            {chapter: 2, front: "Escalation Path", back: "Steward to Steering Committee to Executive Sponsor."},
+            {chapter: 2, front: "Strategy Input", back: "Business strategy and goals."},
+            {chapter: 2, front: "Sustainability", back: "Focus on culture change over one-time projects."},
+            {chapter: 2, front: "Adoption Metrics", back: "Measuring business unit compliance and usage."},
+            {chapter: 2, front: "Governance Roadmap", back: "Multi-year plan to reach maturity."},
+            {chapter: 2, front: "Technical Steward", back: "IT partner for implementation of rules."},
+            {chapter: 2, front: "DG vs IT Governance", back: "Data assets vs hardware/infrastructure."},
+            {chapter: 2, front: "P O M E S E", back: "Planning, Organizing, Monitoring, Enforcing, Supporting, Evaluating."},
+            {chapter: 2, front: "Data Domain Accountability", back: "Resides with the business data owner."},
+            {chapter: 2, front: "Change Management", back: "Managing the human/cultural side of new processes."},
+            {chapter: 2, front: "Data Issue Resolution Time", back: "Metric for efficiency of DG process."},
+            {chapter: 2, front: "Data Governance Maturity", back: "Level of program sophistication."},
+            {chapter: 2, front: "Data Ethics", back: "Governance of moral data usage."},
+            {chapter: 2, front: "Data Value", back: "Governing data to realize business benefits."},
+
+            // Chapter 3
+            {chapter: 3, front: "Enterprise Data Architecture", back: "Integrated blueprint for data collection and usage."},
+            {chapter: 3, front: "Data Flow Diagram", back: "Visual representation of data movement."},
+            {chapter: 3, front: "Enterprise Data Model", back: "Bird's-eye view of all critical entities."},
+            {chapter: 3, front: "Architecture Alignment", back: "Data strategy must follow business strategy."},
+            {chapter: 3, front: "Ivory Tower Architecture", back: "Theoretical model lacking operational reality."},
+            {chapter: 3, front: "Data Architect", back: "Designer of data management frameworks."},
+            {chapter: 3, front: "Data Value Chain", back: "Raw data to information transformation process."},
+            {chapter: 3, front: "Zachman Framework", back: "6x6 matrix of architectural perspectives."},
+            {chapter: 3, front: "Conceptual Model", back: "High-level business scope model."},
+            {chapter: 3, front: "Logical Model", back: "Detailed, tech-agnostic data structure."},
+            {chapter: 3, front: "Physical Model", back: "Tech-specific database schema implementation."},
+            {chapter: 3, front: "Data Lineage", back: "History and path of data movement."},
+            {chapter: 3, front: "Data as an Asset", back: "Foundational principle of data value."},
+            {chapter: 3, front: "Master Data Architecture", back: "Management of authoritative 'Golden Records'."},
+            {chapter: 3, front: "Data Roadmap", back: "Timeline for architectural maturity."},
+            {chapter: 3, front: "Current State", back: "Documentation of existing environment."},
+            {chapter: 3, front: "Target State", back: "Designed future data environment."},
+            {chapter: 3, front: "CRUD Matrix", back: "Mapping usage rights (Create, Read, Update, Delete)."},
+            {chapter: 3, front: "Cardinality Notation", back: "Relationships like 1:1, 1:N, M:N."},
+            {chapter: 3, front: "Business Value Metric", back: "Alignment of data components to business processes."},
+            {chapter: 3, front: "Scalability", back: "Handling increased volume and processing."},
+            {chapter: 3, front: "Gap Analysis", back: "Current state versus target state difference."},
+            {chapter: 3, front: "Integration Architecture", back: "Communication design between systems."},
+            {chapter: 3, front: "Subject Area", back: "Grouping of related business data entities."},
+            {chapter: 3, front: "SOA", back: "Architecture where data is provided as services."},
+
+            // Chapter 4
+            {chapter: 4, front: "Data Integration", back: "The process of combining data from disparate sources to provide a unified view and consistent meaning."},
+            {chapter: 4, front: "Data Interoperability", back: "The ability of different systems or applications to communicate, exchange, and use data collaboratively."},
+            {chapter: 4, front: "ETL vs. ELT", back: "ETL transforms data before loading; ELT loads raw data first and transforms it within the target warehouse."},
+            {chapter: 4, front: "Enterprise Service Bus (ESB)", back: "A software architecture model for communication between interacting apps in an SOA."},
+            {chapter: 4, front: "Application Programming Interface (API)", back: "Protocols and tools enabling synchronous data exchange between systems."},
+            {chapter: 4, front: "Data Virtualization", back: "An integration approach creating a real-time virtual view without physically moving data."},
+            {chapter: 4, front: "Master Data Management (MDM) in Integration", back: "Focuses on creating a single, authoritative version of core business data shared across systems."},
+            {chapter: 4, front: "Change Data Capture (CDC)", back: "A pattern used to identify and track database changes (inserts, updates, deletes) for replication."},
+            {chapter: 4, front: "Enterprise Application Integration (EAI)", back: "Architecture to integrate enterprise apps and data sources across an organization."},
+            {chapter: 4, front: "Data Federation", back: "A form of virtualization making heterogeneous data on autonomous systems look like a single database."},
+            {chapter: 4, front: "Hub-and-Spoke Architecture", back: "An integration pattern where data flows from a central hub out to multiple individual spokes."},
+            {chapter: 4, front: "Point-to-Point Integration", back: "A pattern where each system connects directly to every other system, becoming unmaintainable."},
+            {chapter: 4, front: "Publish-Subscribe (Pub/Sub)", back: "A messaging pattern where senders categorize messages into classes without knowing subscribers."},
+            {chapter: 4, front: "Data Replication", back: "Copying data from one database to another so users share the same view."},
+            {chapter: 4, front: "Integration Broker", back: "Middleware that translates messages between different protocols and formats."},
+            {chapter: 4, front: "Batch Integration", back: "Processing data integration jobs at scheduled intervals rather than in real-time."},
+            {chapter: 4, front: "Real-Time Integration", back: "Integration that occurs instantaneously as events happen in the source system."},
+            {chapter: 4, front: "Data Pipeline", back: "A set of actions and tools used to move data from a source system to a destination."},
+            {chapter: 4, front: "Semantic Interoperability", back: "The highest level of interoperability ensuring precise meaning of data is mutually understood."},
+            {chapter: 4, front: "Technical Interoperability", back: "Interoperability dealing with hardware, networking protocols, and transmission mechanisms."},
+            {chapter: 4, front: "Service-Oriented Architecture (SOA)", back: "A software design style where services are provided to components over a network."},
+            {chapter: 4, front: "Event-Driven Architecture (EDA)", back: "An architectural pattern promoting the production, detection, and reaction to events."},
+            {chapter: 4, front: "Data Lineage in Integration", back: "The lifecycle of data highlighting its origins and movement over time."},
+            {chapter: 4, front: "Message Queueing", back: "Asynchronous service-to-service communication storing messages in a queue until processed."},
+            {chapter: 4, front: "Master Data Governance vs. Integration", back: "Governance defines policies and rules; integration implements movement and synchronization."},
+
+            // Chapter 5
+            {chapter: 5, front: "Conceptual Modeling", back: "Business-driven requirements and scope."},
+            {chapter: 5, front: "Logical Modeling", back: "Technology-agnostic relational detail."},
+            {chapter: 5, front: "Physical Modeling", back: "Database implementation specific."},
+            {chapter: 5, front: "Normalization", back: "Reduction of redundancy and integrity improvement."},
+            {chapter: 5, front: "Design as Prevention", back: "Enforcing constraints early to prevent errors."},
+            {chapter: 5, front: "Cardinality", back: "Numeric mapping of relationships."},
+            {chapter: 5, front: "Dimensional Modeling", back: "Optimized for analytical query performance."},
+            {chapter: 5, front: "Relational Modeling", back: "Optimized for data integrity."},
+            {chapter: 5, front: "Data Entity", back: "Object of business importance."},
+            {chapter: 5, front: "Data Attribute", back: "Property of an entity."},
+            {chapter: 5, front: "Relationship", back: "Association between two entities."},
+            {chapter: 5, front: "Optionality", back: "Existence requirement for a relationship."},
+            {chapter: 5, front: "Star Schema", back: "Fact tables and dimension tables."},
+            {chapter: 5, front: "Snowflake Schema", back: "Normalized version of a star schema."},
+            {chapter: 5, front: "Fact Table", back: "Contains quantitative metrics or measurements."},
+            {chapter: 5, front: "Dimension Table", back: "Contains descriptive context for facts."},
+            {chapter: 5, front: "Third Normal Form (3NF)", back: "No partial or transitive dependencies."},
+            {chapter: 5, front: "Primary Key", back: "Unique identifier for a record."},
+            {chapter: 5, front: "Foreign Key", back: "Links records between tables."},
+            {chapter: 5, front: "Constraint", back: "Rules applied to data columns."},
+            {chapter: 5, front: "Metadata", back: "Data about the data structure."},
+            {chapter: 5, front: "Business Rules", back: "Constraints governing data behavior."},
+            {chapter: 5, front: "ERD", back: "Entity-Relationship Diagram."},
+            {chapter: 5, front: "Data Modeler", back: "Bridge between business and technical."},
+            {chapter: 5, front: "Data Quality Role", back: "Design enforces structural quality."},
+
+            // Chapter 6
+            {chapter: 6, front: "Data Storage and Operations", back: "The discipline of designing, implementing, and supporting stored data to maximize its value throughout its lifecycle."},
+            {chapter: 6, front: "OLTP (Online Transaction Processing)", back: "Database systems optimized for fast, transactional, day-to-day operational data entry and updates."},
+            {chapter: 6, front: "OLAP (Online Analytical Processing)", back: "Database systems optimized for complex queries, data warehousing, and business intelligence reporting."},
+            {chapter: 6, front: "ACID Properties", back: "Atomicity, Consistency, Isolation, and Durability - the standard guarantees for reliable database transactions."},
+            {chapter: 6, front: "Database Administration (DBA)", back: "The function responsible for the performance, integrity, security, and recovery of databases."},
+            {chapter: 6, front: "Database Indexing", back: "A data structure technique used to quickly locate and access data in a database table without scanning every row."},
+            {chapter: 6, front: "Database Partitioning", back: "Dividing a large database table into smaller, more manageable pieces while keeping them accessible as a single object."},
+            {chapter: 6, front: "Database Transaction Log", back: "A file recording all changes made to the database, essential for crash recovery and rollbacks."},
+            {chapter: 6, front: "Concurrency Control", back: "Management mechanisms that ensure simultaneous database transactions do not conflict or corrupt data."},
+            {chapter: 6, front: "Data Archiving", back: "Moving inactive or historical data to low-cost, long-term storage for compliance and rare retrieval."},
+            {chapter: 6, front: "Database Backup and Recovery", back: "Creating copies of data to restore system availability and prevent data loss after a failure."},
+            {chapter: 6, front: "Point-in-Time Recovery (PITR)", back: "Restoring a database to a specific second or minute prior to an accidental error or corruption."},
+            {chapter: 6, front: "Capacity Planning", back: "Forecasting future storage, memory, and processing requirements to prevent system bottlenecks."},
+            {chapter: 6, front: "Database Tuning and Optimization", back: "Adjusting queries, indexes, and parameters to improve query execution speed and system performance."},
+            {chapter: 6, front: "Database Schema Management", back: "Controlling and tracking modifications to database structures (tables, views, stored procedures) over time."},
+            {chapter: 6, front: "Data Purging", back: "Permanently deleting obsolete data in accordance with data retention and governance policies."},
+            {chapter: 6, front: "Relational DBMS (RDBMS)", back: "A DBMS that stores data in tables with rows and columns, enforcing relational integrity rules."},
+            {chapter: 6, front: "NoSQL Database", back: "Non-relational databases designed for unstructured data, high scalability, and flexible schemas (e.g., key-value, document)."},
+            {chapter: 6, front: "Data Persistence", back: "The characteristic of data that outlives the process that created it by being written to non-volatile storage."},
+            {chapter: 6, front: "Database Maintenance Window", back: "Scheduled downtime used for patching, index rebuilding, and database maintenance tasks."},
+            {chapter: 6, front: "High Availability (HA)", back: "System design ensuring a high level of operational performance and uptime, minimizing planned and unplanned outages."},
+            {chapter: 6, front: "Disaster Recovery (DR)", back: "Procedures and secondary infrastructure designed to recover IT systems after a catastrophic event."},
+            {chapter: 6, front: "Database Monitoring", back: "Continuous tracking of resource utilization, query performance, error rates, and storage thresholds."},
+            {chapter: 6, front: "Staging Area", back: "Temporary storage used during data integration and ETL processes before loading into target tables."},
+            {chapter: 6, front: "Data Storage Lifecycle Management", back: "Managing data from creation through active use, archiving, and eventual destruction based on business value."},
+
+            // Chapter 7
+            {chapter: 7, front: "Data Security Management", back: "Planning, developing, and executing policies and procedures to provide proper authentication, authorization, access, and auditing of data and information."},
+            {chapter: 7, front: "Confidentiality, Integrity, Availability (CIA Triad)", back: "The foundational security framework ensuring data is kept private, accurate/unaltered, and accessible when needed."},
+            {chapter: 7, front: "Data Privacy", back: "The discipline of ensuring personal identifiable information (PII) is handled in compliance with regulations and individual consent."},
+            {chapter: 7, front: "Role-Based Access Control (RBAC)", back: "Restricting system access to authorized users based on their specific organizational roles or job functions."},
+            {chapter: 7, front: "Attribute-Based Access Control (ABAC)", back: "An access control model evaluating attributes (user characteristics, resource properties, environment) to grant permissions."},
+            {chapter: 7, front: "Data Masking", back: "Obscuring specific data within a database (such as credit card numbers or SSNs) to protect sensitive information from unauthorized viewing."},
+            {chapter: 7, front: "Data Encryption", back: "Converting plaintext data into ciphertext using cryptographic algorithms to prevent unauthorized access during storage or transit."},
+            {chapter: 7, front: "Pseudonymization", back: "A data de-identification procedure replacing personal identifiers with artificial identifiers or pseudonyms."},
+            {chapter: 7, front: "Anonymization", back: "Irreversibly stripping identifying details from data so that individuals can no longer be identified."},
+            {chapter: 7, front: "Personally Identifiable Information (PII)", back: "Any data that can be used to identify a specific individual, directly or indirectly."},
+            {chapter: 7, front: "General Data Protection Regulation (GDPR)", back: "A comprehensive European Union regulation governing data privacy and protection for EU citizens."},
+            {chapter: 7, front: "Data Breach", back: "A security incident where sensitive, protected, or confidential data is copied, transmitted, viewed, stolen, or used by an unauthorized entity."},
+            {chapter: 7, front: "Audit Logging", back: "Recording chronological records of system activities, user access, and data modifications for security tracking and compliance."},
+            {chapter: 7, front: "Data Classification", back: "Categorizing data based on sensitivity, risk, and business value to determine appropriate security controls."},
+            {chapter: 7, front: "Need-to-Know Principle", back: "A security policy restricting data access strictly to individuals who require it to perform their official duties."},
+            {chapter: 7, front: "Least Privilege Principle", back: "Giving users only the minimum levels of access necessary to complete their job functions."},
+            {chapter: 7, front: "Data Security Policy", back: "High-level organizational rules defining how data assets must be protected against threats."},
+            {chapter: 7, front: "Encryption at Rest", back: "Protecting stored data (on disks, databases, or cloud buckets) using cryptographic techniques."},
+            {chapter: 7, front: "Encryption in Transit", back: "Protecting data while it is moving across networks (e.g., via TLS/HTTPS) from interception."},
+            {chapter: 7, front: "Tokenization", back: "Replacing sensitive data elements with non-sensitive placeholder tokens while keeping the mapping secure elsewhere."},
+            {chapter: 7, front: "Data Loss Prevention (DLP)", back: "Tools and processes designed to detect and prevent unauthorized transmission or exfiltration of sensitive data."},
+            {chapter: 7, front: "Threat Modeling", back: "A security approach used to identify potential vulnerabilities, threats, and mitigation strategies in data systems."},
+            {chapter: 7, front: "Information Security (InfoSec) vs Data Security", back: "InfoSec protects all information assets in any format; data security specifically focuses on protecting digital data repositories."},
+            {chapter: 7, front: "Digital Rights Management (DRM)", back: "Technologies that restrict the use, modification, and distribution of proprietary data or media files."},
+            {chapter: 7, front: "Data Governance and Security Alignment", back: "Governance establishes policies and data classification tiers; security implements the technical controls to enforce them."},
+
+            // Chapter 8: Data Warehousing and Business Intelligence
+            {chapter: 8, front: "Data Warehousing and BI", back: "Managing the architectures, tools, and processes for delivering integrated data to support business decision-making."},
+            {chapter: 8, front: "Data Warehouse", back: "A subject-oriented, integrated, time-variant, and non-volatile collection of data supporting management decisions."},
+            {chapter: 8, front: "Data Mart", back: "A subset of a data warehouse focused on a specific business line or department."},
+            {chapter: 8, front: "Operational Data Store (ODS)", back: "A centralized database providing integrated operational data for tactical reporting and near real-time queries."},
+            {chapter: 8, front: "Dimensional Data Warehouse (Kimball Approach)", back: "A bottom-up approach building data marts first using dimensional star schemas."},
+            {chapter: 8, front: "Corporate Information Factory (Inmon Approach)", back: "A top-down approach building a centralized normalized 3NF data warehouse first, then feeding data marts."},
+            {chapter: 8, front: "Business Intelligence (BI)", back: "Technologies, applications, and practices for collecting, integrating, analyzing, and presenting business data."},
+            {chapter: 8, front: "OLAP Cube", back: "A multi-dimensional array of data allowing fast aggregation, slicing, and dicing for analytical reporting."},
+            {chapter: 8, front: "Slowly Changing Dimensions (SCD)", back: "Techniques for managing how to handle changes to dimensional attribute data over time (e.g., SCD Type 1, 2, 3)."},
+            {chapter: 8, front: "SCD Type 1", back: "Overwriting old attribute values with new ones, losing historical context."},
+            {chapter: 8, front: "SCD Type 2", back: "Creating a new record row with versioning and effective dates to track historical changes."},
+            {chapter: 8, front: "ETL Process in DW", back: "Extracting data from operational source systems, transforming formats/quality, and loading into the warehouse."},
+            {chapter: 8, front: "Data Lake", back: "A centralized repository storing vast amounts of raw, unformatted data in its native format."},
+            {chapter: 8, front: "Data Lakehouse", back: "An architecture combining the flexibility of data lakes with the ACID transactions and governance of data warehouses."},
+            {chapter: 8, front: "Metadata Repository in DW", back: "Stores technical, business, and operational information describing data warehouse structures and lineage."},
+            {chapter: 8, front: "Data Mart Consolidation", back: "The challenge of bringing disparate data marts back together into a single enterprise view."},
+            {chapter: 8, front: "Self-Service BI", back: "Tools and environments enabling business users to create their own reports and analyze data without IT assistance."},
+            {chapter: 8, front: "Aggregates and Summaries", back: "Pre-calculated summary tables designed to accelerate query performance in analytical databases."},
+            {chapter: 8, front: "Data Warehouse Load Window", back: "The designated offline timeframe during which nightly batch ETL jobs and data refreshes occur."},
+            {chapter: 8, front: "Reporting Layer", back: "The front-end user interface providing dashboards, scorecards, and ad-hoc query capabilities."},
+            {chapter: 8, front: "Data Lineage in DW", back: "Tracing data from original operational source systems through transformations to final warehouse reports."},
+            {chapter: 8, front: "Enterprise Bus Architecture", back: "A Kimball framework linking distinct data marts using conformance dimensions."},
+            {chapter: 8, front: "Non-volatile Property", back: "The warehouse characteristic where data is loaded and read, but not routinely updated or deleted."},
+            {chapter: 8, front: "Time-variant Property", back: "Data in a warehouse is tracked over a long historical time horizon for trend analysis."},
+            {chapter: 8, front: "Warehouse Performance Tuning", back: "Optimizing storage layout, indexing, and partitioning to ensure rapid query execution for analytics."},
+
+            // Chapter 9: Document and Content Management
+            {chapter: 9, front: "Document and Content Management (DCM)", back: "The capturing, storing, accessing, and managing of unstructured documents, files, and enterprise content."},
+            {chapter: 9, front: "Unstructured Data", back: "Information that does not have a pre-defined data model or structure, such as text documents, emails, and PDFs."},
+            {chapter: 9, front: "Enterprise Content Management (ECM)", back: "Strategies, methods, and tools used to capture, manage, store, preserve, and deliver content related to organizational processes."},
+            {chapter: 9, front: "Document Lifecycle Management", back: "Managing electronic documents from creation and active collaboration through archiving and final disposition."},
+            {chapter: 9, front: "Electronic Document Management System (EDMS)", back: "Software used to track, store, and manage electronic documents and reduce paper usage."},
+            {chapter: 9, front: "Records Management", back: "The systematic control of official organizational records from creation to legal disposal or permanent preservation."},
+            {chapter: 9, front: "Retention Schedule", back: "A policy defining how long specific types of documents or records must be legally retained before destruction."},
+            {chapter: 9, front: "Digital Asset Management (DAM)", back: "Systems designed to store, organize, and retrieve rich media content such as photos, videos, and audio files."},
+            {chapter: 9, front: "Version Control", back: "Managing incremental changes and revisions to documents to prevent accidental overwrites and track authorship."},
+            {chapter: 9, front: "Check-in / Check-out", back: "A mechanism that locks a document when it is being edited by a user to prevent simultaneous conflicting changes."},
+            {chapter: 9, front: "Content Metadata", back: "Descriptive tags (author, creation date, keywords) assigned to documents to enable fast searching and categorization."},
+            {chapter: 9, front: "Optical Character Recognition (OCR)", back: "Technology that converts images of typed or handwritten text into machine-readable character text data."},
+            {chapter: 9, front: "Taxonomy in Content Management", back: "Hierarchical classification structures used to organize documents into logical folders and categories."},
+            {chapter: 9, front: "Legal Hold", back: "A directive suspending normal document destruction schedules due to pending litigation or investigations."},
+            {chapter: 9, front: "Web Content Management (WCM)", back: "Software managing the creation and publication of content specifically for web and mobile interfaces."},
+            {chapter: 9, front: "Enterprise Taxonomy vs. Metadata Schema", back: "Taxonomy represents hierarchical classification of content, whereas a metadata schema defines structural descriptive tags."},
+            {chapter: 9, front: "Content Federation", back: "The capability to search, discover, and access content across multiple disparate repositories from a single unified interface."},
+
+            // Chapter 10
+            {chapter: 10, front: "Master Data", back: "Data about the core business entities (such as customers, products, suppliers, and locations) that are shared across systems."},
+            {chapter: 10, front: "Reference Data", back: "Any data used to categorize or classify other data, or values used for descriptive purposes (e.g., currency codes, state lists)."},
+            {chapter: 10, front: "Golden Record", back: "A single, authoritative, consolidated, and accurate version of a master data entity created from multiple sources."},
+            {chapter: 10, front: "Master Data Management (MDM)", back: "A discipline and set of tools ensuring an organization's master data is consistent, accurate, and shared enterprise-wide."},
+            {chapter: 10, front: "Reference Data Management (RDM)", back: "The process of maintaining, governing, and distributing reference data to maintain enterprise-wide semantic consistency."},
+            {chapter: 10, front: "Data Stewardship in MDM", back: "Assigned business experts accountable for reviewing merge matches, resolving data conflicts, and approving definitions."},
+            {chapter: 10, front: "Survivorship Rules", back: "Algorithmic rules that determine which source system's attribute value wins when merging records into a golden record."},
+            {chapter: 10, front: "Entity Resolution (Data Matching)", back: "The process of identifying distinct records from various sources that refer to the same real-world entity."},
+            {chapter: 10, front: "Registry Style MDM", back: "An MDM architectural pattern that creates a central index of matches without altering data inside source systems."},
+            {chapter: 10, front: "Repository Style MDM", back: "An MDM pattern storing a central master repository that acts as the single source of truth and feeds source systems."},
+            {chapter: 10, front: "Transactional Hub Style MDM", back: "An architecture where the MDM hub actively participates in transactional processing and coordinates updates across systems."},
+            {chapter: 10, front: "Consolidated Style MDM", back: "An architecture focused on gathering data into a read-only reporting warehouse to provide a single view without operational sync."},
+            {chapter: 10, front: "Data Matching Rules", back: "Deterministic or probabilistic criteria used to evaluate whether two records represent the same entity."},
+            {chapter: 10, front: "Deterministic Matching", back: "Matching records based on exact matches of unique identifiers (e.g., Social Security Number, Email)."},
+            {chapter: 10, front: "Probabilistic Matching", back: "Matching records using statistical weights and algorithms to calculate a percentage likelihood that records match (handling typos)."},
+            {chapter: 10, front: "Hierarchy Management", back: "Handling complex relationships within master data, such as organizational charts, product categories, or corporate structures."},
+            {chapter: 10, front: "Source System of Record (SOR)", back: "The designated operational system where a particular data element is originally captured or primarily managed."},
+            {chapter: 10, front: "Data Enrichment", back: "Enhancing master data records by appending external third-party data (e.g., geospatial coordinates, demographic info)."},
+            {chapter: 10, front: "Data Quality and MDM", back: "High-quality master data is essential because errors in core master entities propagate downstream across all dependent systems."},
+            {chapter: 10, front: "Taxonomy vs. Ontology", back: "Taxonomy categorizes hierarchical reference values; ontology defines complex relationships and logical rules among concepts."},
+            {chapter: 10, front: "Cross-Reference Table", back: "A mapping table linking source system primary keys to the master golden record identifier."},
+            {chapter: 10, front: "COTS MDM Solutions", back: "Commercial Off-The-Shelf software packages dedicated to automating master data workflows, matching, and governance."},
+            {chapter: 10, front: "Metadata in MDM", back: "Describes data lineage, transformation rules, and mapping definitions for how golden records are constructed."},
+            {chapter: 10, front: "Data Governance and MDM Relationship", back: "Governance provides the sponsorship, policies, and accountability; MDM provides the operational platform and execution."},
+            {chapter: 10, front: "Data Sprawl", back: "The uncontrolled proliferation of duplicate master data across isolated silos, which MDM aims to resolve."},
+
+            // Chapter 11: Big Data and Data Science
+            {chapter: 11, front: "Big Data Characteristics (The Vs)", back: "Volume (scale), Velocity (speed), Variety (formats), Veracity (truthfulness), and Value."},
+            {chapter: 11, front: "Data Science", back: "An interdisciplinary field using scientific methods, algorithms, and systems to extract knowledge from structured and unstructured data."},
+            {chapter: 11, front: "Hadoop Distributed File System (HDFS)", back: "A distributed file system designed to run on commodity hardware and store large datasets across clusters."},
+            {chapter: 11, front: "MapReduce", back: "A programming model and processing technique for distributed computing across massive datasets."},
+            {chapter: 11, front: "Apache Spark", back: "An open-source, distributed cluster-computing framework designed for fast in-memory data processing."},
+            {chapter: 11, front: "Machine Learning (ML)", back: "A branch of AI focused on building applications that learn from data and improve accuracy without explicit programming."},
+            {chapter: 11, front: "Feature Store", back: "A centralized repository for storing, managing, and serving machine learning features for model training and inference."},
+            {chapter: 11, front: "Data Lake in Big Data", back: "Flexible storage architecture that accepts raw data without pre-structuring, supporting data science workloads."},
+            {chapter: 11, front: "Unstructured Big Data", back: "Audio, video streams, clickstream logs, and social media posts requiring specialized processing frameworks."},
+            {chapter: 11, front: "Data Governance in Big Data", back: "Applying provenance, cataloging, and access controls to data lakes to prevent them from becoming unmanaged data swamps."},
+            {chapter: 11, front: "Lambda Architecture", back: "An architecture combining batch and real-time streaming layers to process massive data volumes with low latency."},
+            {chapter: 11, front: "Kappa Architecture", back: "A software architecture pattern focused on processing all data through a single real-time stream processing engine."},
+            {chapter: 11, front: "Data Fabric", back: "An architecture providing integrated, reusable data services across heterogeneous environments and storage platforms."},
+            {chapter: 11, front: "Model Drift", back: "The decay in predictive machine learning model performance over time due to changing production environments and data distributions."},
+
+            // Chapter 12: Metadata Management
+            {chapter: 12, front: "Metadata Management", back: "Planning, implementing, and enforcing policies and processes to ensure easy access to high-quality, integrated metadata."},
+            {chapter: 12, front: "Business Metadata", back: "Metadata focusing on the business meaning, context, definitions, and usage rules of data assets."},
+            {chapter: 12, front: "Technical Metadata", back: "Metadata describing the technical characteristics of data systems, formats, structures, columns, and database schemas."},
+            {chapter: 12, front: "Operational Metadata", back: "Metadata capturing details about the execution history, processing logs, job status, and frequency of data pipelines."},
+            {chapter: 12, front: "Metadata Repository", back: "A centralized database or tool used to store, manage, and query enterprise metadata."},
+            {chapter: 12, front: "Active Metadata", back: "Metadata that is continuously ingested, analyzed, and acted upon in real-time by intelligent automation tools."},
+            {chapter: 12, front: "Passive Metadata", back: "Static metadata harvested periodically and stored for reference and manual browsing."},
+            {chapter: 12, front: "Data Dictionary", back: "A repository of information about database tables, columns, data types, and structural definitions."},
+            {chapter: 12, front: "Data Glossary", back: "A business-focused catalog defining corporate terms, acronyms, and business concepts."},
+            {chapter: 12, front: "Metadata Harvesting", back: "Automated extraction and loading of metadata from disparate source systems into a central repository."},
+            {chapter: 12, front: "Metadata Integration", back: "Harmonizing technical, business, and operational metadata so it can be queried as a unified view."},
+            {chapter: 12, front: "Data Lineage and Metadata", back: "Tracing the origin, transformation history, and downstream destination of data elements using metadata."},
+            {chapter: 12, front: "Impact Analysis via Metadata", back: "Using metadata relationships to determine what systems, reports, or tables will break if a data structure is modified."},
+            {chapter: 12, front: "Semantic Layer", back: "An abstraction layer built on metadata that translates complex database schemas into business-friendly terms."},
+            {chapter: 12, front: "Metadata Quality", back: "Ensuring metadata itself is accurate, complete, current, and consistent across the enterprise."},
+            {chapter: 12, front: "Metadata Governance", back: "Defining policies and ownership for who is responsible for creating, approving, and updating metadata entries."},
+            {chapter: 12, front: "Data Catalog", back: "A modern tool leveraging metadata, search, and machine learning to help users discover and trust data assets."},
+            {chapter: 12, front: "ISO/IEC 11179", back: "The international standard for formulating and administering data element definitions and metadata registries."},
+            {chapter: 12, front: "XML / JSON Schemas as Metadata", back: "Machine-readable metadata standards describing structure and validation rules for structured data interchange."},
+            {chapter: 12, front: "ETL Metadata", back: "Metadata generated during data integration capturing source-to-target mapping rules and transformation logic."},
+            {chapter: 12, front: "Business-IT Alignment via Metadata", back: "Metadata bridges the gap by linking technical schemas directly to business glossaries and policies."},
+            {chapter: 12, front: "Metadata Retention Policy", back: "Rules governing how long historical metadata logs must be kept for auditing and compliance."},
+            {chapter: 12, front: "Implicit vs. Explicit Metadata", back: "Explicit metadata is intentionally documented; implicit metadata is automatically derived from system behavior."},
+            {chapter: 12, front: "Repository Federation", back: "Connecting multiple decentralized metadata repositories to share information without full physical consolidation."},
+            {chapter: 12, front: "Data Provenance", back: "The documented history and chronological custody trail of a data asset's origin and lifecycle."},
+
+            // Chapter 13
+            {chapter: 13, front: "Definition of Data Quality", back: "The degree to which data is accurate, complete, consistent, timely, valid, and unique for its intended use."},
+            {chapter: 13, front: "Data Quality Dimensions", back: "Key metrics: Accuracy, Completeness, Consistency, Timeliness, Validity, and Uniqueness."},
+            {chapter: 13, front: "Accuracy", back: "The extent to which data correctly describes the 'real-world' object or event it represents."},
+            {chapter: 13, front: "Completeness", back: "The proportion of stored data against the potential for 100% of the data to be stored."},
+            {chapter: 13, front: "Consistency", back: "The absence of difference when comparing two or more representations of the same entity."},
+            {chapter: 13, front: "Timeliness", back: "The degree to which data represents reality from the required point in time."},
+            {chapter: 13, front: "Validity", back: "The degree to which data conforms to the syntax (format, type, range) of its definition."},
+            {chapter: 13, front: "Uniqueness", back: "The condition where a real-world object is represented only once in the dataset."},
+            {chapter: 13, front: "Data Profiling", back: "The process of examining data from an existing source and collecting statistics or summaries about it."},
+            {chapter: 13, front: "Data Quality Assessment", back: "The activity of measuring data against defined business rules and data quality dimensions."},
+            {chapter: 13, front: "Data Quality Issue Management", back: "The process of identifying, tracking, escalating, and resolving data quality problems."},
+            {chapter: 13, front: "Root Cause Analysis (RCA)", back: "The methodical process of identifying the underlying causes of a data quality issue to prevent recurrence."},
+            {chapter: 13, front: "Data Quality Business Rules", back: "Formalized definitions, constraints, and requirements that data must satisfy to be considered 'quality' for business usage."},
+            {chapter: 13, front: "Cost of Poor Data Quality", back: "The negative financial impact resulting from rework, operational inefficiency, compliance failures, and poor decision-making."},
+            {chapter: 13, front: "Data Quality Scorecard", back: "A reporting mechanism that provides a visual overview of data quality performance against targets."},
+            {chapter: 13, front: "Data Cleansing", back: "The process of fixing, removing, or updating data that is incorrect, incomplete, or incorrectly formatted."},
+            {chapter: 13, front: "Proactive vs. Reactive DQ", back: "Proactive: Designing systems to prevent errors. Reactive: Fixing errors after they have occurred."},
+            {chapter: 13, front: "Data Stewardship Role in DQ", back: "Stewards define quality rules, identify issues, and advocate for data improvement within their domains."},
+            {chapter: 13, front: "Metadata in DQ", back: "Provides the context (definitions, constraints, lineage) necessary to assess data quality."},
+            {chapter: 13, front: "Data Quality Lifecycle", back: "Plan, Profile, Define Rules, Assess/Measure, Report, Remediate, and Improve."},
+            {chapter: 13, front: "Master Data in DQ", back: "Since it is shared across systems, it requires the highest priority for quality measurement and remediation."},
+            {chapter: 13, front: "Relationship: 1:N and DQ", back: "Complexity in cardinality (1:N) increases the risk of consistency and integrity errors during data movement."},
+            {chapter: 13, front: "Operational Data Stores (ODS) and DQ", back: "Often the first line of defense for data quality by integrating data from multiple operational systems."},
+            {chapter: 13, front: "Data Quality Maturity", back: "The evolution of the organization's ability to measure, manage, and prevent data quality issues."},
+            {chapter: 13, front: "Total Data Quality Management (TDQM)", back: "A holistic approach that manages data as a product, focusing on the needs of data consumers."},
+
+            // Chapter 14: Data Integration and Interoperability (Alt / Special Topic)
+            {chapter: 14, front: "Enterprise Data Integration Strategy", back: "Planning how disparate systems interact across enterprise boundaries securely and efficiently."},
+            {chapter: 14, front: "Middleware Technologies", back: "Software infrastructure facilitating communication and data translation between distributed applications."},
+            {chapter: 14, front: "Message-Oriented Middleware (MOM)", back: "Infrastructure supporting asynchronous message passing and queueing between distributed systems."},
+            {chapter: 14, front: "Data Integration Security", back: "Ensuring encrypted data transit and authenticated access credentials during ETL and API execution."},
+            {chapter: 14, front: "Legacy Integration Challenges", back: "Overcoming rigid, outdated data structures and proprietary protocols when connecting modern apps."},
+            {chapter: 14, front: "Enterprise Service Bus (ESB) Patterns", back: "A software architecture model used for routing, transforming, and orchestrating messages between mutually interacting services."},
+            {chapter: 14, front: "API-Led Connectivity", back: "A methodical way to connect data to applications through a layered API approach: System, Process, and Experience APIs."},
+
+            // Chapter 15: Data Ethics
+            {chapter: 15, front: "Data Ethics", back: "A branch of applied ethics addressing the moral obligations regarding data generation, collection, analysis, and dissemination."},
+            {chapter: 15, front: "Algorithmic Bias", back: "Systematic and repeatable errors in computer systems that create unfair outcomes or discriminate against groups."},
+            {chapter: 15, front: "Informed Consent", back: "The ethical requirement that individuals clearly understand and agree to how their personal data will be used."},
+            {chapter: 15, front: "Data Surveillance", back: "Continuous monitoring of behavior or data transactions, raising significant privacy and ethical concerns."},
+            {chapter: 15, front: "Digital Ownership", back: "The ethical debate surrounding who owns and profits from personal data versus corporate aggregation."},
+            {chapter: 15, front: "Transparency in AI and Analytics", back: "The moral responsibility to ensure data models and algorithmic decisions can be explained to affected users."},
+            {chapter: 15, front: "Fairness and Non-Discrimination", back: "Ensuring data-driven decisions do not unfairly target, marginalize, or harm protected demographic classes."},
+            {chapter: 15, front: "Data Minimization Principle", back: "Collecting only the personal data strictly necessary to achieve a specific business purpose, reducing ethical exposure."},
+            {chapter: 15, front: "Moral Responsibility of Data Stewards", back: "Accountability for ensuring data governance frameworks uphold human dignity, privacy, and social welfare."}
+        ];
+
+        let currentViewData = [];
+        let quizHistory = [];
+        let userAnswers = {}; // Stores user selected answer text per question index
+        let flaggedQuestions = new Set(); // Stores indices of flagged questions
+        let currentIndex = 0;
+        let timerInterval = null;
+        let idleInterval = null;
+        let secondsElapsed = 0;
+        let idleTime = 0;
+        const IDLE_LIMIT = 600; // 10 minutes in seconds
+
+        const el = {
+            filter: document.getElementById('chapter-filter'),
+            flashView: document.getElementById('flashcard-container'),
+            quizView: document.getElementById('quiz-container'),
+            card: document.getElementById('main-card'),
+            frontFace: document.getElementById('card-front-face'),
+            backFace: document.getElementById('card-back-face'),
+            front: document.getElementById('front-text'),
+            back: document.getElementById('back-text'),
+            chLabel: document.getElementById('card-chapter-label'),
+            counter: document.getElementById('counter'),
+            studyBtn: document.getElementById('study-mode-btn'),
+            quizBtn: document.getElementById('quiz-mode-btn'),
+            examBtn: document.getElementById('exam-mode-btn'),
+            quizProgress: document.getElementById('quiz-progress'),
+            completionBar: document.getElementById('completion-progress-bar'),
+            navigatorGrid: document.getElementById('question-navigator-grid'),
+            quizQuestion: document.getElementById('quiz-question'),
+            quizOptions: document.getElementById('quiz-options'),
+            quizFeedback: document.getElementById('quiz-feedback'),
+            quizPrev: document.getElementById('quiz-prev-btn'),
+            quizSkip: document.getElementById('quiz-skip-btn'),
+            quizNext: document.getElementById('quiz-next-btn'),
+            flagBtn: document.getElementById('flag-btn'),
+            timerDisplay: document.getElementById('timer-display'),
+            timerBadge: document.getElementById('timer-badge')
+        };
+
+        function isSpecialChapter(chNum) {
+            return [9, 11, 14, 15].includes(parseInt(chNum));
+        }
+
+        function updateView() {
+            const f = el.filter.value;
+            currentViewData = f === 'all' ? [...allData] : allData.filter(d => d.chapter == parseInt(f));
+            currentIndex = 0;
+        }
+
+        function renderCard() {
+            if(currentViewData.length === 0) return;
+            const d = currentViewData[currentIndex];
+            el.card.classList.remove('is-flipped');
+            el.front.innerText = d.front;
+            el.back.innerText = d.back;
+            
+            if (isSpecialChapter(d.chapter)) {
+                el.chLabel.innerText = `Ch ${d.chapter} (Specialized)`;
+                el.chLabel.className = "absolute top-4 left-4 text-xs font-bold text-amber-600 uppercase";
+                el.frontFace.className = "card-face card-front bg-amber-50/50 rounded-2xl shadow-xl border-t-4 border-amber-500 flex flex-col items-center justify-center p-8 text-center";
+                el.backFace.className = "card-face card-back bg-amber-50 rounded-2xl shadow-xl border-t-4 border-amber-600 flex items-center justify-center p-8 text-center";
+            } else {
+                el.chLabel.innerText = `Ch ${d.chapter}`;
+                el.chLabel.className = "absolute top-4 left-4 text-xs font-bold text-blue-500 uppercase";
+                el.frontFace.className = "card-face card-front bg-white rounded-2xl shadow-xl border-t-4 border-blue-600 flex flex-col items-center justify-center p-8 text-center";
+                el.backFace.className = "card-face card-back bg-blue-50 rounded-2xl shadow-xl border-t-4 border-emerald-500 flex items-center justify-center p-8 text-center";
+            }
+
+            el.counter.innerText = `${currentIndex + 1} / ${currentViewData.length}`;
+        }
+
+        function startTimer() {
+            if(timerInterval) clearInterval(timerInterval);
+            if(idleInterval) clearInterval(idleInterval);
+
+            secondsElapsed = 0;
+            idleTime = 0;
+            el.timerDisplay.innerText = "00:00";
+            el.timerBadge.className = "flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-100 text-slate-800 rounded-full font-mono text-base font-black shadow-sm tracking-wider";
+
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+                const secs = String(secondsElapsed % 60).padStart(2, '0');
+                el.timerDisplay.innerText = `${mins}:${secs}`;
+            }, 1000);
+
+            idleInterval = setInterval(() => {
+                idleTime++;
+                if (idleTime >= IDLE_LIMIT) {
+                    stopTimer();
+                    triggerIdleTimeout();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if(timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+            if(idleInterval) { clearInterval(idleInterval); idleInterval = null; }
+        }
+
+        function resetIdleTimer() {
+            if (timerInterval) idleTime = 0;
+        }
+
+        function triggerIdleTimeout() {
+            el.quizQuestion.innerText = `Session Paused: 10 Minutes of Inactivity`;
+            el.timerBadge.className = "flex items-center gap-1.5 px-3.5 py-1.5 bg-red-100 text-red-700 rounded-full font-mono text-base font-black shadow-sm tracking-wider";
+            el.quizOptions.innerHTML = `
+                <div class="text-center py-8 bg-red-50 rounded-2xl border border-red-100 space-y-3">
+                    <div class="text-xl font-bold text-red-900">Timeout Detected</div>
+                    <p class="text-gray-600 font-medium">Your session was paused due to no interaction for over 10 minutes.</p>
+                </div>
+            `;
+            el.quizFeedback.classList.add('hidden');
+            el.quizPrev.classList.add('hidden');
+            el.quizSkip.classList.add('hidden');
+            el.quizNext.classList.add('hidden');
+            el.flagBtn.classList.add('hidden');
+        }
+
+        function startQuiz() {
+            el.flashView.classList.add('hidden');
+            el.quizView.classList.remove('hidden');
+            updateView();
+            quizHistory = [...currentViewData].sort(() => Math.random() - 0.5);
+            userAnswers = {};
+            flaggedQuestions.clear();
+            currentIndex = 0;
+            startTimer();
+            showQuestion();
+        }
+
+        function startExamMode() {
+            el.flashView.classList.add('hidden');
+            el.quizView.classList.remove('hidden');
+            
+            let weightedPool = [];
+            allData.forEach(item => {
+                let weight = isSpecialChapter(item.chapter) ? 1 : 3;
+                for(let i = 0; i < weight; i++) weightedPool.push(item);
+            });
+
+            weightedPool.sort(() => Math.random() - 0.5);
+            let uniqueMap = new Map();
+            for(let item of weightedPool) {
+                if(!uniqueMap.has(item.front)) uniqueMap.set(item.front, item);
+                if(uniqueMap.size >= 100) break;
+            }
+
+            quizHistory = Array.from(uniqueMap.values()).sort(() => Math.random() - 0.5);
+            userAnswers = {};
+            flaggedQuestions.clear();
+            currentIndex = 0;
+            startTimer();
+            showQuestion();
+        }
+
+        function updateProgressBars() {
+            const total = quizHistory.length;
+            const answeredCount = Object.keys(userAnswers).length;
+            const percent = Math.round((answeredCount / total) * 100);
+            
+            // Completion bar width update
+            el.completionBar.style.width = `${percent}%`;
+            el.quizProgress.innerText = `Answered: ${answeredCount}/${total} (${percent}%)`;
+
+            // Render Navigator Grid Bar
+            el.navigatorGrid.innerHTML = '';
+            quizHistory.forEach((_, idx) => {
+                const box = document.createElement('button');
+                let bgClass = "bg-white border-gray-300 text-gray-700";
+                
+                if (idx === currentIndex) {
+                    bgClass = "bg-blue-600 border-blue-600 text-white font-bold ring-2 ring-blue-300";
+                } else if (flaggedQuestions.has(idx)) {
+                    bgClass = "bg-amber-400 border-amber-500 text-amber-950 font-bold";
+                } else if (userAnswers[idx] !== undefined) {
+                    bgClass = "bg-emerald-500 border-emerald-600 text-white font-semibold";
+                }
+
+                box.className = `w-7 h-7 rounded-md border text-xs font-semibold flex items-center justify-center transition hover:scale-105 ${bgClass}`;
+                box.innerText = idx + 1;
+                box.onclick = () => {
+                    resetIdleTimer();
+                    currentIndex = idx;
+                    showQuestion();
+                };
+                el.navigatorGrid.appendChild(box);
+            });
+        }
+
+        function showQuestion() {
+            const d = quizHistory[currentIndex];
+            const headerTitle = quizHistory.length === 100 ? `100-Question Exam Simulation` : `Chapter Quiz`;
+            document.getElementById('quiz-title').innerText = headerTitle;
+            
+            el.quizQuestion.innerText = `What is the definition of "${d.front}"?`;
+            el.quizFeedback.classList.add('hidden');
+            
+            // Flag Button State
+            if (flaggedQuestions.has(currentIndex)) {
+                el.flagBtn.innerHTML = `<span>🚩 Flagged</span>`;
+                el.flagBtn.className = "text-xs font-semibold px-3 py-1 bg-amber-500 text-white rounded-lg shadow-sm transition flex items-center gap-1";
+            } else {
+                el.flagBtn.innerHTML = `<span>🚩 Flag for Review</span>`;
+                el.flagBtn.className = "text-xs font-semibold px-3 py-1 bg-amber-100 text-amber-800 rounded-lg hover:bg-amber-200 transition flex items-center gap-1";
+            }
+
+            // Navigation button states
+            el.quizPrev.style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
+            
+            if (currentIndex === quizHistory.length - 1) {
+                el.quizNext.innerText = "Submit Exam / Quiz 🎯";
+            } else {
+                el.quizNext.innerText = "Next Question →";
+            }
+
+            // Generate Options
+            let options = [d.back];
+            while(options.length < 4) {
+                let randomBack = allData[Math.floor(Math.random()*allData.length)].back;
+                if(!options.includes(randomBack)) options.push(randomBack);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            el.quizOptions.innerHTML = '';
+            options.forEach((opt, idx) => {
+                const letters = ['A', 'B', 'C', 'D'];
+                const btn = document.createElement('button');
+                
+                let isSelected = userAnswers[currentIndex] === opt;
+                let btnStyle = "border-gray-200 bg-white hover:border-blue-400 hover:bg-blue-50/50 text-gray-700";
+                let badgeStyle = "bg-gray-100 border-gray-200 text-gray-500";
+
+                if (isSelected) {
+                    btnStyle = "border-blue-600 bg-blue-50/80 text-blue-900 font-semibold shadow-md";
+                    badgeStyle = "bg-blue-600 text-white";
+                }
+
+                btn.className = `option-btn w-full text-left p-4 rounded-2xl border-2 ${btnStyle} flex items-center gap-4 font-medium shadow-sm`;
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-xl ${badgeStyle} border flex items-center justify-center font-bold text-sm shrink-0">${letters[idx]}</span>
+                    <span class="flex-1">${opt}</span>
+                `;
+
+                btn.onclick = () => {
+                    resetIdleTimer();
+                    userAnswers[currentIndex] = opt;
+                    updateProgressBars();
+                    showQuestion(); // Re-render to show selected styling immediately
+                };
+                el.quizOptions.appendChild(btn);
+            });
+
+            updateProgressBars();
+        }
+
+        // Action controls
+        el.flagBtn.onclick = () => {
+            resetIdleTimer();
+            if (flaggedQuestions.has(currentIndex)) {
+                flaggedQuestions.delete(currentIndex);
+            } else {
+                flaggedQuestions.add(currentIndex);
+            }
+            showQuestion();
+        };
+
+        el.quizPrev.onclick = () => {
+            resetIdleTimer();
+            if (currentIndex > 0) {
+                currentIndex--;
+                showQuestion();
+            }
+        };
+
+        el.quizSkip.onclick = () => {
+            resetIdleTimer();
+            if (currentIndex < quizHistory.length - 1) {
+                currentIndex++;
+                showQuestion();
+            } else {
+                alert("You are on the last question. Use 'Submit Exam / Quiz' to finish.");
+            }
+        };
+
+        el.card.onclick = () => el.card.classList.toggle('is-flipped');
+        document.getElementById('next-btn').onclick = () => { currentIndex = (currentIndex + 1) % currentViewData.length; renderCard(); };
+        document.getElementById('prev-btn').onclick = () => { currentIndex = (currentIndex - 1 + currentViewData.length) % currentViewData.length; renderCard(); };
+        
+        el.studyBtn.onclick = () => { 
+            stopTimer();
+            el.quizView.classList.add('hidden'); 
+            el.flashView.classList.remove('hidden'); 
+            updateView(); 
+            renderCard(); 
+        };
+        
+        el.quizBtn.onclick = startQuiz;
+        el.examBtn.onclick = startExamMode;
+        
+        el.quizNext.onclick = () => {
+            resetIdleTimer();
+            if (currentIndex < quizHistory.length - 1) {
+                currentIndex++;
+                showQuestion();
+            } else {
+                // Submit screen calculation
+                stopTimer();
+                let correctCount = 0;
+                quizHistory.forEach((item, idx) => {
+                    if (userAnswers[idx] === item.back) correctCount++;
+                });
+
+                const finalScore = Math.round((correctCount / quizHistory.length) * 100);
+                const finalTimeStr = el.timerDisplay.innerText;
+                
+                el.quizView.querySelector('.mb-6').classList.add('hidden'); // Hide top header elements
+                el.completionBar.parentElement.classList.add('hidden');
+                el.navigatorGrid.parentElement.classList.add('hidden');
+                el.flagBtn.classList.add('hidden');
+                el.quizPrev.classList.add('hidden');
+                el.quizSkip.classList.add('hidden');
+                el.quizNext.classList.add('hidden');
+
+                el.quizQuestion.innerText = `Exam Simulation Results Summary`;
+                el.quizOptions.innerHTML = `
+                    <div class="text-center py-8 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
+                        <div class="text-6xl font-black text-blue-900">${finalScore}%</div>
+                        <p class="text-gray-700 font-semibold text-lg">You answered ${correctCount} out of ${quizHistory.length} questions correctly.</p>
+                        <div class="flex justify-center gap-4">
+                            <div class="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-bold shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                Total Time: ${finalTimeStr}
+                            </div>
+                            <div class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-100 text-emerald-800 rounded-full text-sm font-bold shadow-sm">
+                                <span>Answered: ${Object.keys(userAnswers).length}/${quizHistory.length}</span>
+                            </div>
+                        </div>
+                        <button onclick="location.reload()" class="mt-4 px-6 py-3 bg-blue-600 text-white font-bold rounded-xl shadow-md hover:bg-blue-700 transition">Retake Exam</button>
+                    </div>
+                `;
+                el.quizFeedback.classList.add('hidden');
+            }
+        };
+
+        // Listen for user activity events to reset idle counter
+        window.addEventListener('mousemove', resetIdleTimer);
+        window.addEventListener('keypress', resetIdleTimer);
+        window.addEventListener('click', resetIdleTimer);
+        window.addEventListener('scroll', resetIdleTimer);
+
+        updateView();
+        renderCard();
+    </script>
+</body>
+</html>
+
+```
