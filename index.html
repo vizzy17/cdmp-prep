@@ -144,7 +144,8 @@
 
     <script>
         const allData = [
-            // Chapter 2: Data Governance
+
+// Chapter 2: Data Governance
             {chapter: 2, front: "Core Definition", back: "Data governance is the exercise of authority and control over the management of data assets."},
             {chapter: 2, front: "Steering Committee", back: "A data governance steering committee is a cross-functional body responsible for making enterprise-wide decisions and resolving data disputes."},
             {chapter: 2, front: "Core Objective", back: "The primary goal of data governance is to enable an organization to manage data as an enterprise asset that drives business value."},
@@ -591,11 +592,14 @@
             {chapter: 15, front: "Scenario - Opaque Black Box", back: "Scenario: A government agency deploys a 'black box' AI model to allocate social welfare benefits without any mechanism for citizens to appeal or understand why their application was rejected, failing accountability and transparency standards."},
             {chapter: 15, front: "Scenario - Ethical Risk Assessment", back: "Scenario: Prior to launching a new facial recognition initiative in public transit stations, the compliance board mandates a comprehensive ethical risk and societal impact assessment."},
             {chapter: 15, front: "Scenario - Consent Bypass", back: "Scenario: A software vendor bundles complex legal opt-in terms into a 50-page EULA written in legalese, effectively bypassing genuine informed consent from users."},
+        
+
         ];
 
         let currentViewData = [];
         let quizHistory = [];
         let userAnswers = {}; // Stores user selected answer text per question index
+        let quizOptionsCache = {}; // Stores randomized option layouts per question index
         let flaggedQuestions = new Set(); // Stores indices of flagged questions
         let currentIndex = 0;
         let timerInterval = null;
@@ -720,6 +724,7 @@
             updateView();
             quizHistory = [...currentViewData].sort(() => Math.random() - 0.5);
             userAnswers = {};
+            quizOptionsCache = {};
             flaggedQuestions.clear();
             currentIndex = 0;
             startTimer();
@@ -745,6 +750,7 @@
 
             quizHistory = Array.from(uniqueMap.values()).sort(() => Math.random() - 0.5);
             userAnswers = {};
+            quizOptionsCache = {};
             flaggedQuestions.clear();
             currentIndex = 0;
             startTimer();
@@ -756,11 +762,9 @@
             const answeredCount = Object.keys(userAnswers).length;
             const percent = Math.round((answeredCount / total) * 100);
             
-            // Completion bar width update
             el.completionBar.style.width = `${percent}%`;
             el.quizProgress.innerText = `Answered: ${answeredCount}/${total} (${percent}%)`;
 
-            // Render Navigator Grid Bar
             el.navigatorGrid.innerHTML = '';
             quizHistory.forEach((_, idx) => {
                 const box = document.createElement('button');
@@ -793,7 +797,6 @@
             el.quizQuestion.innerText = `What is the definition of "${d.front}"?`;
             el.quizFeedback.classList.add('hidden');
             
-            // Flag Button State
             if (flaggedQuestions.has(currentIndex)) {
                 el.flagBtn.innerHTML = `<span>🚩 Flagged</span>`;
                 el.flagBtn.className = "text-xs font-semibold px-3 py-1 bg-amber-500 text-white rounded-lg shadow-sm transition flex items-center gap-1";
@@ -802,7 +805,6 @@
                 el.flagBtn.className = "text-xs font-semibold px-3 py-1 bg-amber-100 text-amber-800 rounded-lg hover:bg-amber-200 transition flex items-center gap-1";
             }
 
-            // Navigation button states
             el.quizPrev.style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
             
             if (currentIndex === quizHistory.length - 1) {
@@ -811,13 +813,19 @@
                 el.quizNext.innerText = "Next Question →";
             }
 
-            // Generate Options
-            let options = [d.back];
-            while(options.length < 4) {
-                let randomBack = allData[Math.floor(Math.random()*allData.length)].back;
-                if(!options.includes(randomBack)) options.push(randomBack);
+            // Retrieve or generate cached options to prevent reshuffling on click
+            let options;
+            if (quizOptionsCache[currentIndex]) {
+                options = quizOptionsCache[currentIndex];
+            } else {
+                options = [d.back];
+                while(options.length < 4) {
+                    let randomBack = allData[Math.floor(Math.random()*allData.length)].back;
+                    if(!options.includes(randomBack)) options.push(randomBack);
+                }
+                options.sort(() => Math.random() - 0.5);
+                quizOptionsCache[currentIndex] = options;
             }
-            options.sort(() => Math.random() - 0.5);
 
             el.quizOptions.innerHTML = '';
             options.forEach((opt, idx) => {
@@ -843,7 +851,7 @@
                     resetIdleTimer();
                     userAnswers[currentIndex] = opt;
                     updateProgressBars();
-                    showQuestion(); // Re-render to show selected styling immediately
+                    showQuestion(); 
                 };
                 el.quizOptions.appendChild(btn);
             });
@@ -851,7 +859,6 @@
             updateProgressBars();
         }
 
-        // Action controls
         el.flagBtn.onclick = () => {
             resetIdleTimer();
             if (flaggedQuestions.has(currentIndex)) {
@@ -901,7 +908,6 @@
                 currentIndex++;
                 showQuestion();
             } else {
-                // Submit screen calculation
                 stopTimer();
                 let correctCount = 0;
                 quizHistory.forEach((item, idx) => {
@@ -911,7 +917,7 @@
                 const finalScore = Math.round((correctCount / quizHistory.length) * 100);
                 const finalTimeStr = el.timerDisplay.innerText;
                 
-                el.quizView.querySelector('.mb-6').classList.add('hidden'); // Hide top header elements
+                el.quizView.querySelector('.mb-6').classList.add('hidden');
                 el.completionBar.parentElement.classList.add('hidden');
                 el.navigatorGrid.parentElement.classList.add('hidden');
                 el.flagBtn.classList.add('hidden');
@@ -940,7 +946,6 @@
             }
         };
 
-        // Listen for user activity events to reset idle counter
         window.addEventListener('mousemove', resetIdleTimer);
         window.addEventListener('keypress', resetIdleTimer);
         window.addEventListener('click', resetIdleTimer);
