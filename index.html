@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CDMP Exam Master Prep</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
     <style>
         .card-inner { transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; cursor: pointer; }
         .card-inner.is-flipped { transform: rotateY(180deg); }
@@ -12,27 +17,29 @@
         .card-back { transform: rotateY(180deg); }
         .perspective-1000 { perspective: 1000px; }
         .gradient-bg { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
-        
-        .option-btn {
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        .option-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15), 0 8px 10px -6px rgba(59, 130, 246, 0.15);
-        }
+        .option-btn { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
+        .option-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15); }
     </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 via-slate-100 to-blue-50 min-h-screen font-sans">
+<body class="bg-gradient-to-br from-gray-50 via-slate-100 to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950 min-h-screen font-sans text-gray-800 dark:text-gray-100 transition-colors duration-300">
     <div id="app" class="max-w-4xl mx-auto px-4 py-8">
-        <header class="text-center mb-10">
-            <h1 class="text-4xl font-extrabold text-blue-900 mb-2 tracking-tight">CDMP Exam Master Prep</h1>
-            <p class="text-gray-600 font-medium">Complete Study Engine: Core & Specialized Chapters Loaded</p>
+        <header class="flex justify-between items-center mb-8 border-b border-gray-200 dark:border-slate-800 pb-4">
+            <div>
+                <h1 class="text-3xl font-extrabold text-blue-900 dark:text-blue-400 tracking-tight">CDMP Exam Master Prep</h1>
+                <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Smart Spaced Repetition & Analytics Engine</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button id="dark-mode-toggle" class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm hover:bg-gray-50 dark:hover:bg-slate-700 transition" title="Toggle Dark Mode">
+                    🌙
+                </button>
+                <button id="analytics-modal-btn" class="px-4 py-2 bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-xl font-bold text-sm hover:bg-slate-300 dark:hover:bg-slate-700 transition shadow-sm">
+                    📊 Analytics
+                </button>
+            </div>
         </header>
 
-        <div class="flex flex-wrap justify-center gap-4 mb-8">
-            <select id="chapter-filter" class="px-4 py-3 border border-gray-300 rounded-xl bg-white shadow-sm outline-none font-medium text-gray-700 hover:border-blue-400 focus:ring-2 focus:ring-blue-500 transition">
+        <div class="flex flex-wrap justify-center gap-3 mb-8">
+            <select id="chapter-filter" class="px-4 py-3 border border-gray-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-900 shadow-sm outline-none font-medium text-gray-700 dark:text-gray-200 hover:border-blue-400 transition">
                 <option value="all">All Chapters</option>
                 <optgroup label="Foundational & Strategy">
                     <option value="2">Chapter 2: Data Governance</option>
@@ -52,101 +59,105 @@
                     <option value="12">Chapter 12: Metadata Management</option>
                     <option value="13">Chapter 13: Data Quality</option>
                 </optgroup>
-                <optgroup label="Specialized Topics (Lower Exam Weight)">
-                    <option value="9">Chapter 9: Document & Content Management</option>
-                    <option value="11">Chapter 11: Data Warehousing & Big Data (Alt)</option>
-                    <option value="14">Chapter 14: Data Integration & Big Data</option>
+                <optgroup label="Specialized Topics">
+                    <option value="9">Chapter 9: Document Management</option>
+                    <option value="11">Chapter 11: Big Data (Alt)</option>
+                    <option value="14">Chapter 14: Integration & Big Data</option>
                     <option value="15">Chapter 15: Data Ethics</option>
                 </optgroup>
             </select>
-            <button id="study-mode-btn" class="gradient-bg text-white px-6 py-3 rounded-xl shadow-md hover:opacity-95 font-semibold transition">Study Mode</button>
-            <button id="quiz-mode-btn" class="bg-emerald-600 text-white px-6 py-3 rounded-xl shadow-md hover:bg-emerald-700 font-semibold transition">Chapter Quiz</button>
-            <button id="exam-mode-btn" class="bg-purple-600 text-white px-6 py-3 rounded-xl shadow-md hover:bg-purple-700 transition font-bold">🎯 Generate 100-Q Exam Mock</button>
+            <button id="study-mode-btn" class="gradient-bg text-white px-5 py-3 rounded-xl shadow-md hover:opacity-95 font-semibold transition">Study Mode</button>
+            <button id="quiz-mode-btn" class="bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-md hover:bg-emerald-700 font-semibold transition">Chapter Quiz</button>
+            <button id="exam-mode-btn" class="bg-purple-600 text-white px-5 py-3 rounded-xl shadow-md hover:bg-purple-700 transition font-bold">🎯 Exam Mock</button>
+            <button id="bookmarks-mode-btn" class="bg-amber-600 text-white px-5 py-3 rounded-xl shadow-md hover:bg-amber-700 transition font-bold">⭐ Bookmarked</button>
         </div>
 
+        <!-- Flashcard View -->
         <div id="flashcard-container" class="hidden">
-            <div class="relative w-full max-w-lg mx-auto h-80 perspective-1000 mb-8">
+            <div class="flex justify-between items-center mb-4 max-w-lg mx-auto">
+                <span id="study-tag-indicator" class="text-xs font-bold px-3 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 rounded-full">New / Unseen Queue</span>
+                <button id="bookmark-card-btn" class="text-xs font-semibold px-3 py-1.5 bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300 rounded-xl hover:bg-amber-200 transition flex items-center gap-1 shadow-sm">
+                    ⭐ <span id="bookmark-btn-text">Bookmark Card</span>
+                </button>
+            </div>
+            <div class="relative w-full max-w-lg mx-auto h-80 perspective-1000 mb-6">
                 <div id="main-card" class="card-inner w-full h-full relative">
-                    <div id="card-front-face" class="card-face card-front bg-white rounded-2xl shadow-xl border-t-4 border-blue-600 flex flex-col items-center justify-center p-8 text-center">
+                    <div id="card-front-face" class="card-face card-front bg-white dark:bg-slate-900 rounded-2xl shadow-xl border-t-4 border-blue-600 flex flex-col items-center justify-center p-8 text-center">
                         <span id="card-chapter-label" class="absolute top-4 left-4 text-xs font-bold uppercase"></span>
-                        <div id="front-text" class="text-xl font-bold text-gray-800"></div>
+                        <div id="front-text" class="text-xl font-bold text-gray-800 dark:text-gray-100"></div>
                     </div>
-                    <div id="card-back-face" class="card-face card-back rounded-2xl shadow-xl border-t-4 flex items-center justify-center p-8 text-center">
-                        <div id="back-text" class="text-lg leading-relaxed"></div>
+                    <div id="card-back-face" class="card-face card-back bg-blue-50 dark:bg-slate-800 rounded-2xl shadow-xl border-t-4 border-emerald-500 flex items-center justify-center p-8 text-center">
+                        <div id="back-text" class="text-lg leading-relaxed dark:text-gray-200"></div>
                     </div>
                 </div>
             </div>
             <div class="flex justify-between max-w-lg mx-auto">
-                <button id="prev-btn" class="bg-white px-5 py-2.5 rounded-xl border border-gray-200 shadow-sm font-medium hover:bg-gray-100 transition">← Prev</button>
-                <button id="next-btn" class="bg-white px-5 py-2.5 rounded-xl border border-gray-200 shadow-sm font-medium hover:bg-gray-100 transition">Next →</button>
+                <button id="prev-btn" class="bg-white dark:bg-slate-900 px-5 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm font-medium hover:bg-gray-100 dark:hover:bg-slate-800 transition">← Prev</button>
+                <button id="next-btn" class="bg-white dark:bg-slate-900 px-5 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm font-medium hover:bg-gray-100 dark:hover:bg-slate-800 transition">Next →</button>
             </div>
-            <p id="counter" class="text-center text-gray-500 mt-4 font-medium"></p>
+            <p id="counter" class="text-center text-gray-500 dark:text-gray-400 mt-4 font-medium"></p>
         </div>
 
-        <!-- Redesigned Quiz & Exam Container with Progress Bars and Question Navigator -->
-        <div id="quiz-container" class="hidden bg-white p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100 max-w-3xl mx-auto">
-            <!-- Header Bar -->
-            <div id="quiz-header-bar" class="mb-6 flex justify-between items-center border-b border-gray-100 pb-4">
-                <h3 id="quiz-title" class="text-xl font-extrabold text-blue-900 tracking-tight">Quiz Mode</h3>
+        <!-- Quiz & Exam Container -->
+        <div id="quiz-container" class="hidden bg-white dark:bg-slate-900 p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100 dark:border-slate-800 max-w-3xl mx-auto">
+            <div id="quiz-header-bar" class="mb-6 flex justify-between items-center border-b border-gray-100 dark:border-slate-800 pb-4">
+                <h3 id="quiz-title" class="text-xl font-extrabold text-blue-900 dark:text-blue-400 tracking-tight">Quiz Mode</h3>
                 <div class="flex items-center gap-3">
-                    <div id="timer-badge" class="flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-100 text-slate-800 rounded-full font-mono text-base font-black shadow-sm tracking-wider">
-                        <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <div id="timer-badge" class="flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-full font-mono text-base font-black shadow-sm tracking-wider">
                         <span id="timer-display">00:00</span>
                     </div>
-                    <span id="quiz-progress" class="text-xs font-bold px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full"></span>
+                    <span id="quiz-progress" class="text-xs font-bold px-3 py-1.5 bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-full"></span>
                 </div>
             </div>
             
-            <!-- Progress Completion Bar -->
-            <div id="completion-bar-container" class="mb-6 bg-slate-100 rounded-full h-3 overflow-hidden shadow-inner">
+            <div id="completion-bar-container" class="mb-6 bg-slate-100 dark:bg-slate-800 rounded-full h-3 overflow-hidden shadow-inner">
                 <div id="completion-progress-bar" class="bg-blue-600 h-full transition-all duration-300" style="width: 0%"></div>
             </div>
 
-            <!-- Question Navigator Drawer Bar (Grid to jump directly to any question) -->
-            <div id="navigator-container" class="mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-200">
+            <div id="navigator-container" class="mb-6 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
                 <div class="flex justify-between items-center mb-2">
-                    <span class="text-xs font-bold text-gray-600 uppercase tracking-wider">Question Navigator (Click any box to jump)</span>
-                    <div class="flex items-center gap-3 text-xs font-medium text-gray-500">
-                        <span class="flex items-center gap-1"><span class="w-3 h-3 bg-blue-600 rounded-sm inline-block"></span> Current</span>
-                        <span class="flex items-center gap-1"><span class="w-3 h-3 bg-emerald-500 rounded-sm inline-block"></span> Answered</span>
-                        <span class="flex items-center gap-1"><span class="w-3 h-3 bg-amber-400 rounded-sm inline-block"></span> Flagged</span>
-                        <span class="flex items-center gap-1"><span class="w-3 h-3 bg-white border border-gray-300 rounded-sm inline-block"></span> Unanswered</span>
-                    </div>
+                    <span class="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Question Navigator</span>
                 </div>
                 <div id="question-navigator-grid" class="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto p-1"></div>
             </div>
             
-            <div id="question-card-wrapper" class="mb-8 bg-slate-50 p-6 rounded-2xl border border-slate-100 relative">
+            <div id="question-card-wrapper" class="mb-8 bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 relative">
                 <div class="flex justify-between items-start mb-2">
-                    <span id="question-badge-label" class="text-xs font-bold text-blue-600 uppercase tracking-wider">Question</span>
-                    <button id="flag-btn" class="text-xs font-semibold px-3 py-1 bg-amber-100 text-amber-800 rounded-lg hover:bg-amber-200 transition flex items-center gap-1">
-                        <span>🚩 Flag for Review</span>
+                    <span id="question-badge-label" class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Question</span>
+                    <button id="flag-btn" class="text-xs font-semibold px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 rounded-lg hover:bg-amber-200 transition flex items-center gap-1">
+                        <span>🚩 Flag</span>
                     </button>
                 </div>
-                <div id="quiz-question" class="text-xl font-semibold text-gray-800 leading-snug"></div>
+                <div id="quiz-question" class="text-xl font-semibold text-gray-800 dark:text-gray-100 leading-snug"></div>
             </div>
 
             <div id="quiz-options" class="space-y-3.5"></div>
-            
             <div id="quiz-feedback" class="hidden"></div>
             
-            <!-- Bottom Control Action Bar -->
-            <div id="quiz-action-bar" class="flex flex-wrap items-center justify-between gap-4 mt-8 pt-4 border-t border-gray-100">
-                <button id="quiz-prev-btn" class="px-5 py-3 rounded-xl border border-gray-300 text-gray-700 font-bold hover:bg-gray-100 transition shadow-sm">← Previous</button>
-                
+            <div id="quiz-action-bar" class="flex flex-wrap items-center justify-between gap-4 mt-8 pt-4 border-t border-gray-100 dark:border-slate-800">
+                <button id="quiz-prev-btn" class="px-5 py-3 rounded-xl border border-gray-300 dark:border-slate-700 text-gray-700 dark:text-gray-300 font-bold hover:bg-gray-100 dark:hover:bg-slate-800 transition shadow-sm">← Previous</button>
                 <div class="flex gap-3">
-                    <button id="quiz-early-submit-btn" class="px-5 py-3 rounded-xl bg-purple-100 text-purple-700 font-bold hover:bg-purple-200 transition border border-purple-200">Submit Early 🎯</button>
-                    <button id="quiz-skip-btn" class="px-5 py-3 rounded-xl bg-slate-200 text-slate-700 font-bold hover:bg-slate-300 transition">Skip Question →</button>
-                    <button id="quiz-next-btn" class="px-6 py-3 rounded-xl gradient-bg text-white font-bold shadow-lg hover:opacity-95 transition tracking-wide">Next Question →</button>
+                    <button id="quiz-early-submit-btn" class="px-5 py-3 rounded-xl bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-bold hover:bg-purple-200 transition border border-purple-200 dark:border-purple-800">Submit Early 🎯</button>
+                    <button id="quiz-skip-btn" class="px-5 py-3 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-300 dark:hover:bg-slate-700 transition">Skip →</button>
+                    <button id="quiz-next-btn" class="px-6 py-3 rounded-xl gradient-bg text-white font-bold shadow-lg hover:opacity-95 transition tracking-wide">Next →</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Analytics Modal -->
+        <div id="analytics-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-2xl border border-gray-200 dark:border-slate-800 max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center mb-6 border-b border-gray-100 dark:border-slate-800 pb-4">
+                    <h3 class="text-xl font-black text-blue-900 dark:text-blue-400">📊 Mastery & Chapter Analytics</h3>
+                    <button id="close-analytics" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 font-bold text-xl">✕</button>
+                </div>
+                <div id="analytics-content" class="space-y-4"></div>
             </div>
         </div>
     </div>
 
     <script>
-        const allData = [
-
-		// Chapter 2: Data Governance
+        const allData = [// Chapter 2: Data Governance
             {chapter: 2, front: "Core Definition", back: "Data governance is the exercise of authority and control over the management of data assets."},
             {chapter: 2, front: "Steering Committee", back: "A data governance steering committee is a cross-functional body responsible for making enterprise-wide decisions and resolving data disputes."},
             {chapter: 2, front: "Core Objective", back: "The primary goal of data governance is to enable an organization to manage data as an enterprise asset that drives business value."},
@@ -593,8 +604,24 @@
             {chapter: 15, front: "Scenario - Opaque Black Box", back: "Scenario: A government agency deploys a 'black box' AI model to allocate social welfare benefits without any mechanism for citizens to appeal or understand why their application was rejected, failing accountability and transparency standards."},
             {chapter: 15, front: "Scenario - Ethical Risk Assessment", back: "Scenario: Prior to launching a new facial recognition initiative in public transit stations, the compliance board mandates a comprehensive ethical risk and societal impact assessment."},
             {chapter: 15, front: "Scenario - Consent Bypass", back: "Scenario: A software vendor bundles complex legal opt-in terms into a 50-page EULA written in legalese, effectively bypassing genuine informed consent from users."},
-        
-];
+        ]; // Populated with dataset items
+
+        // LocalStorage State Management helpers
+        const STORAGE_KEY_MASTERY = 'cdmp_mastery_data_v1';
+        const STORAGE_KEY_BOOKMARKS = 'cdmp_bookmarks_v1';
+
+        function getMasteryStore() {
+            try { return JSON.parse(localStorage.getItem(STORAGE_KEY_MASTERY)) || {}; } catch(e) { return {}; }
+        }
+        function saveMasteryStore(store) {
+            localStorage.setItem(STORAGE_KEY_MASTERY, JSON.stringify(store));
+        }
+        function getBookmarksStore() {
+            try { return JSON.parse(localStorage.getItem(STORAGE_KEY_BOOKMARKS)) || []; } catch(e) { return []; }
+        }
+        function saveBookmarksStore(store) {
+            localStorage.setItem(STORAGE_KEY_BOOKMARKS, JSON.stringify(store));
+        }
 
         let currentViewData = [];
         let quizHistory = [];
@@ -602,14 +629,12 @@
         let quizOptionsCache = {}; 
         let flaggedQuestions = new Set(); 
         let currentIndex = 0;
-        let timerInterval = null;
-        let idleInterval = null;
-        let secondsElapsed = 0;
-        let idleTime = 0;
+        let timerInterval = null, idleInterval = null, secondsElapsed = 0, idleTime = 0;
         const IDLE_LIMIT = 600; 
 
-        let reviewModeActive = false; // Tracks if user is reviewing a wrong question
-        let reviewHistoryIndex = 0;  // Index within the incorrect list
+        let reviewModeActive = false; 
+        let reviewHistoryIndex = 0;  
+        let latestIncorrectList = [];
 
         const el = {
             filter: document.getElementById('chapter-filter'),
@@ -625,6 +650,10 @@
             studyBtn: document.getElementById('study-mode-btn'),
             quizBtn: document.getElementById('quiz-mode-btn'),
             examBtn: document.getElementById('exam-mode-btn'),
+            bookmarksBtn: document.getElementById('bookmarks-mode-btn'),
+            studyTagIndicator: document.getElementById('study-tag-indicator'),
+            bookmarkCardBtn: document.getElementById('bookmark-card-btn'),
+            bookmarkBtnText: document.getElementById('bookmark-btn-text'),
             quizProgress: document.getElementById('quiz-progress'),
             completionBar: document.getElementById('completion-progress-bar'),
             completionBarContainer: document.getElementById('completion-bar-container'),
@@ -643,22 +672,37 @@
             quizHeaderBar: document.getElementById('quiz-header-bar'),
             questionCardWrapper: document.getElementById('question-card-wrapper'),
             questionBadgeLabel: document.getElementById('question-badge-label'),
-            quizActionBar: document.getElementById('quiz-action-bar')
+            quizActionBar: document.getElementById('quiz-action-bar'),
+            darkModeToggle: document.getElementById('dark-mode-toggle'),
+            analyticsModalBtn: document.getElementById('analytics-modal-btn'),
+            analyticsModal: document.getElementById('analytics-modal'),
+            closeAnalytics: document.getElementById('close-analytics'),
+            analyticsContent: document.getElementById('analytics-content')
+        };
+
+        // Dark Mode Initialization
+        if (localStorage.getItem('cdmp_dark_mode') === 'true') {
+            document.documentElement.classList.add('dark');
+            el.darkModeToggle.innerText = '☀️';
+        }
+        el.darkModeToggle.onclick = () => {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('cdmp_dark_mode', isDark);
+            el.darkModeToggle.innerText = isDark ? '☀️' : '🌙';
         };
 
         function isSpecialChapter(chNum) {
             return [9, 11, 14, 15].includes(parseInt(chNum));
         }
 
-        // Returns CDMP Chapter Exam Weight configuration
         function getChapterWeightLabel(chNum) {
             const num = parseInt(chNum);
-            // High weight chapters in CDMP typically include Data Governance (2), Data Quality (13), Data Modeling (5), Data Integration (4), etc.
             const coreHighWeight = [2, 4, 5, 6, 7, 8, 10, 12, 13];
             if (coreHighWeight.includes(num)) {
-                return { label: "High Exam Weight (Core Area)", badgeClass: "bg-red-100 text-red-700 border-red-200" };
+                return { label: "High Exam Weight (Core)", badgeClass: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300 border-red-200 dark:border-red-800" };
             } else {
-                return { label: "Lower Exam Weight (Specialized Topic)", badgeClass: "bg-amber-100 text-amber-800 border-amber-200" };
+                return { label: "Lower Exam Weight (Specialized)", badgeClass: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border-amber-200 dark:border-amber-800" };
             }
         }
 
@@ -668,36 +712,90 @@
             currentIndex = 0;
         }
 
+        // Spaced Repetition Sorting Strategy for Study Mode
+        function prepareStudyQueue() {
+            updateView();
+            const mastery = getMasteryStore();
+            
+            // Separate into Unseen/Unmastered vs Mastered review items
+            let unseenOrFailed = [];
+            let mastered = [];
+
+            currentViewData.forEach(item => {
+                const stat = mastery[item.front];
+                if (!stat || stat.correctStreak === 0) {
+                    unseenOrFailed.push({ item, isReview: false });
+                } else {
+                    mastered.push({ item, isReview: true });
+                }
+            });
+
+            // Shuffle unseen queue
+            unseenOrFailed.sort(() => Math.random() - 0.5);
+            mastered.sort(() => Math.random() - 0.5);
+
+            // Combine: Unseen/Unmastered first. If all finished, repeat mastered items tagged as Review.
+            currentViewData = [...unseenOrFailed, ...mastered];
+        }
+
         function renderCard() {
             if(currentViewData.length === 0) return;
-            const d = currentViewData[currentIndex];
+            const entry = currentViewData[currentIndex];
+            const d = entry.item;
+            
             el.card.classList.remove('is-flipped');
             el.front.innerText = d.front;
             el.back.innerText = d.back;
             
+            // Tag indicator for Spaced Repetition status
+            if (entry.isReview) {
+                el.studyTagIndicator.innerText = "🔁 Review Queue (Previously Mastered)";
+                el.studyTagIndicator.className = "text-xs font-bold px-3 py-1 bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300 rounded-full";
+            } else {
+                el.studyTagIndicator.innerText = "✨ New / Unseen Queue";
+                el.studyTagIndicator.className = "text-xs font-bold px-3 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 rounded-full";
+            }
+
+            // Check bookmark status
+            const bookmarks = getBookmarksStore();
+            const isBookmarked = bookmarks.some(b => b.front === d.front);
+            el.bookmarkBtnText.innerText = isBookmarked ? "Bookmarked" : "Bookmark Card";
+
             if (isSpecialChapter(d.chapter)) {
                 el.chLabel.innerText = `Ch ${d.chapter} (Specialized)`;
                 el.chLabel.className = "absolute top-4 left-4 text-xs font-bold text-amber-600 uppercase";
-                el.frontFace.className = "card-face card-front bg-amber-50/50 rounded-2xl shadow-xl border-t-4 border-amber-500 flex flex-col items-center justify-center p-8 text-center";
-                el.backFace.className = "card-face card-back bg-amber-50 rounded-2xl shadow-xl border-t-4 border-amber-600 flex items-center justify-center p-8 text-center";
+                el.frontFace.className = "card-face card-front bg-amber-50/50 dark:bg-slate-900 rounded-2xl shadow-xl border-t-4 border-amber-500 flex flex-col items-center justify-center p-8 text-center";
+                el.backFace.className = "card-face card-back bg-amber-50 dark:bg-slate-800 rounded-2xl shadow-xl border-t-4 border-amber-600 flex items-center justify-center p-8 text-center";
             } else {
                 el.chLabel.innerText = `Ch ${d.chapter}`;
                 el.chLabel.className = "absolute top-4 left-4 text-xs font-bold text-blue-500 uppercase";
-                el.frontFace.className = "card-face card-front bg-white rounded-2xl shadow-xl border-t-4 border-blue-600 flex flex-col items-center justify-center p-8 text-center";
-                el.backFace.className = "card-face card-back bg-blue-50 rounded-2xl shadow-xl border-t-4 border-emerald-500 flex items-center justify-center p-8 text-center";
+                el.frontFace.className = "card-face card-front bg-white dark:bg-slate-900 rounded-2xl shadow-xl border-t-4 border-blue-600 flex flex-col items-center justify-center p-8 text-center";
+                el.backFace.className = "card-face card-back bg-blue-50 dark:bg-slate-800 rounded-2xl shadow-xl border-t-4 border-emerald-500 flex items-center justify-center p-8 text-center";
             }
 
             el.counter.innerText = `${currentIndex + 1} / ${currentViewData.length}`;
         }
 
+        el.bookmarkCardBtn.onclick = () => {
+            if(currentViewData.length === 0) return;
+            const currentItem = currentViewData[currentIndex].item;
+            let bookmarks = getBookmarksStore();
+            const idx = bookmarks.findIndex(b => b.front === currentItem.front);
+            if (idx >= 0) {
+                bookmarks.splice(idx, 1);
+                el.bookmarkBtnText.innerText = "Bookmark Card";
+            } else {
+                bookmarks.push(currentItem);
+                el.bookmarkBtnText.innerText = "Bookmarked";
+            }
+            saveBookmarksStore(bookmarks);
+        };
+
         function startTimer() {
             if(timerInterval) clearInterval(timerInterval);
             if(idleInterval) clearInterval(idleInterval);
-
-            secondsElapsed = 0;
-            idleTime = 0;
+            secondsElapsed = 0; idleTime = 0;
             el.timerDisplay.innerText = "00:00";
-            el.timerBadge.className = "flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-100 text-slate-800 rounded-full font-mono text-base font-black shadow-sm tracking-wider";
 
             timerInterval = setInterval(() => {
                 secondsElapsed++;
@@ -708,10 +806,7 @@
 
             idleInterval = setInterval(() => {
                 idleTime++;
-                if (idleTime >= IDLE_LIMIT) {
-                    stopTimer();
-                    triggerIdleTimeout();
-                }
+                if (idleTime >= IDLE_LIMIT) { stopTimer(); }
             }, 1000);
         }
 
@@ -719,27 +814,7 @@
             if(timerInterval) { clearInterval(timerInterval); timerInterval = null; }
             if(idleInterval) { clearInterval(idleInterval); idleInterval = null; }
         }
-
-        function resetIdleTimer() {
-            if (timerInterval) idleTime = 0;
-        }
-
-        function triggerIdleTimeout() {
-            el.quizQuestion.innerText = `Session Paused: 10 Minutes of Inactivity`;
-            el.timerBadge.className = "flex items-center gap-1.5 px-3.5 py-1.5 bg-red-100 text-red-700 rounded-full font-mono text-base font-black shadow-sm tracking-wider";
-            el.quizOptions.innerHTML = `
-                <div class="text-center py-8 bg-red-50 rounded-2xl border border-red-100 space-y-3">
-                    <div class="text-xl font-bold text-red-900">Timeout Detected</div>
-                    <p class="text-gray-600 font-medium">Your session was paused due to no interaction for over 10 minutes.</p>
-                </div>
-            `;
-            el.quizFeedback.classList.add('hidden');
-            el.quizPrev.classList.add('hidden');
-            el.quizSkip.classList.add('hidden');
-            el.quizNext.classList.add('hidden');
-            el.quizEarlySubmit.classList.add('hidden');
-            el.flagBtn.classList.add('hidden');
-        }
+        function resetIdleTimer() { if (timerInterval) idleTime = 0; }
 
         function startQuiz() {
             reviewModeActive = false;
@@ -747,12 +822,8 @@
             el.quizView.classList.remove('hidden');
             updateView();
             quizHistory = [...currentViewData].sort(() => Math.random() - 0.5);
-            userAnswers = {};
-            quizOptionsCache = {};
-            flaggedQuestions.clear();
-            currentIndex = 0;
-            startTimer();
-            showQuestion();
+            userAnswers = {}; quizOptionsCache = {}; flaggedQuestions.clear(); currentIndex = 0;
+            startTimer(); showQuestion();
         }
 
         function startExamMode() {
@@ -760,27 +831,34 @@
             el.flashView.classList.add('hidden');
             el.quizView.classList.remove('hidden');
             
-            // Heavy weighting adjustment: Core chapters get 4x weight, specialized chapters get 1x weight
             let weightedPool = [];
             allData.forEach(item => {
                 let weight = isSpecialChapter(item.chapter) ? 1 : 4;
                 for(let i = 0; i < weight; i++) weightedPool.push(item);
             });
-
             weightedPool.sort(() => Math.random() - 0.5);
             let uniqueMap = new Map();
             for(let item of weightedPool) {
                 if(!uniqueMap.has(item.front)) uniqueMap.set(item.front, item);
                 if(uniqueMap.size >= 100) break;
             }
-
             quizHistory = Array.from(uniqueMap.values()).sort(() => Math.random() - 0.5);
-            userAnswers = {};
-            quizOptionsCache = {};
-            flaggedQuestions.clear();
-            currentIndex = 0;
-            startTimer();
-            showQuestion();
+            userAnswers = {}; quizOptionsCache = {}; flaggedQuestions.clear(); currentIndex = 0;
+            startTimer(); showQuestion();
+        }
+
+        function startBookmarksMode() {
+            const bookmarks = getBookmarksStore();
+            if (bookmarks.length === 0) {
+                alert("You haven't bookmarked any cards yet! Click 'Bookmark Card' while studying to save items here.");
+                return;
+            }
+            reviewModeActive = false;
+            el.flashView.classList.add('hidden');
+            el.quizView.classList.remove('hidden');
+            quizHistory = bookmarks.map(item => item);
+            userAnswers = {}; quizOptionsCache = {}; flaggedQuestions.clear(); currentIndex = 0;
+            startTimer(); showQuestion();
         }
 
         function updateProgressBars() {
@@ -795,8 +873,7 @@
             el.navigatorGrid.innerHTML = '';
             quizHistory.forEach((_, idx) => {
                 const box = document.createElement('button');
-                let bgClass = "bg-white border-gray-300 text-gray-700";
-                
+                let bgClass = "bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-700 text-gray-700 dark:text-gray-300";
                 if (idx === currentIndex) {
                     bgClass = "bg-blue-600 border-blue-600 text-white font-bold ring-2 ring-blue-300";
                 } else if (flaggedQuestions.has(idx)) {
@@ -804,22 +881,15 @@
                 } else if (userAnswers[idx] !== undefined) {
                     bgClass = "bg-emerald-500 border-emerald-600 text-white font-semibold";
                 }
-
                 box.className = `w-7 h-7 rounded-md border text-xs font-semibold flex items-center justify-center transition hover:scale-105 ${bgClass}`;
                 box.innerText = idx + 1;
-                box.onclick = () => {
-                    resetIdleTimer();
-                    currentIndex = idx;
-                    showQuestion();
-                };
+                box.onclick = () => { resetIdleTimer(); currentIndex = idx; showQuestion(); };
                 el.navigatorGrid.appendChild(box);
             });
         }
 
         function showQuestion() {
             reviewModeActive = false;
-            
-            // Restore standard quiz layout elements if coming back from summary
             el.quizHeaderBar.classList.remove('hidden');
             el.completionBarContainer.classList.remove('hidden');
             el.navigatorContainer.classList.remove('hidden');
@@ -841,16 +911,11 @@
                 el.flagBtn.className = "text-xs font-semibold px-3 py-1 bg-amber-500 text-white rounded-lg shadow-sm transition flex items-center gap-1";
             } else {
                 el.flagBtn.innerHTML = `<span>🚩 Flag for Review</span>`;
-                el.flagBtn.className = "text-xs font-semibold px-3 py-1 bg-amber-100 text-amber-800 rounded-lg hover:bg-amber-200 transition flex items-center gap-1";
+                el.flagBtn.className = "text-xs font-semibold px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 rounded-lg hover:bg-amber-200 transition flex items-center gap-1";
             }
 
             el.quizPrev.style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
-            
-            if (currentIndex === quizHistory.length - 1) {
-                el.quizNext.innerText = "Submit Exam / Quiz 🎯";
-            } else {
-                el.quizNext.innerText = "Next Question →";
-            }
+            el.quizNext.innerText = currentIndex === quizHistory.length - 1 ? "Submit Exam / Quiz 🎯" : "Next Question →";
 
             let options;
             if (quizOptionsCache[currentIndex]) {
@@ -869,13 +934,12 @@
             options.forEach((opt, idx) => {
                 const letters = ['A', 'B', 'C', 'D'];
                 const btn = document.createElement('button');
-                
                 let isSelected = userAnswers[currentIndex] === opt;
-                let btnStyle = "border-gray-200 bg-white hover:border-blue-400 hover:bg-blue-50/50 text-gray-700";
-                let badgeStyle = "bg-gray-100 border-gray-200 text-gray-500";
+                let btnStyle = "border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-blue-400 text-gray-700 dark:text-gray-200";
+                let badgeStyle = "bg-gray-100 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-500";
 
                 if (isSelected) {
-                    btnStyle = "border-blue-600 bg-blue-50/80 text-blue-900 font-semibold shadow-md";
+                    btnStyle = "border-blue-600 bg-blue-50/80 dark:bg-blue-950/50 text-blue-900 dark:text-blue-200 font-semibold shadow-md";
                     badgeStyle = "bg-blue-600 text-white";
                 }
 
@@ -884,7 +948,6 @@
                     <span class="w-8 h-8 rounded-xl ${badgeStyle} border flex items-center justify-center font-bold text-sm shrink-0">${letters[idx]}</span>
                     <span class="flex-1">${opt}</span>
                 `;
-
                 btn.onclick = () => {
                     resetIdleTimer();
                     userAnswers[currentIndex] = opt;
@@ -893,17 +956,14 @@
                 };
                 el.quizOptions.appendChild(btn);
             });
-
             updateProgressBars();
         }
 
-        // Dedicated interface to review a specific wrong question
         function showWrongQuestionReview(incorrectList, reviewIdx) {
             reviewModeActive = true;
             reviewHistoryIndex = reviewIdx;
             const itemObj = incorrectList[reviewIdx];
 
-            // Hide normal progress/nav components to prioritize deep review
             el.quizHeaderBar.classList.add('hidden');
             el.completionBarContainer.classList.add('hidden');
             el.navigatorContainer.classList.add('hidden');
@@ -912,25 +972,17 @@
             el.quizEarlySubmit.classList.add('hidden');
 
             document.getElementById('quiz-title').innerText = `Reviewing Incorrect Answer (${reviewIdx + 1} of ${incorrectList.length})`;
-            
             const weightInfo = getChapterWeightLabel(itemObj.item.chapter);
             el.questionBadgeLabel.innerHTML = `Chapter ${itemObj.item.chapter} &bull; <span class="px-2 py-0.5 rounded-full border text-[10px] font-bold ${weightInfo.badgeClass}">${weightInfo.label}</span>`;
             el.quizQuestion.innerText = `What is the definition of "${itemObj.item.front}"?`;
 
             el.quizFeedback.classList.remove('hidden');
-            el.quizFeedback.className = "mt-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-900 text-sm space-y-1";
+            el.quizFeedback.className = "mt-6 p-4 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-900 dark:text-red-200 text-sm space-y-1";
             el.quizFeedback.innerHTML = `
-                <div class="font-bold flex items-center gap-1.5 text-red-700">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                    Your Answer: <span class="font-normal text-red-600">${itemObj.userAns || 'No Answer Provided'}</span>
-                </div>
-                <div class="font-bold flex items-center gap-1.5 text-emerald-700 pt-1">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                    Correct Definition: <span class="font-normal text-emerald-800">${itemObj.item.back}</span>
-                </div>
+                <div class="font-bold flex items-center gap-1.5 text-red-700 dark:text-red-400">Your Answer: <span class="font-normal text-red-600 dark:text-red-300">${itemObj.userAns || 'None'}</span></div>
+                <div class="font-bold flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 pt-1">Correct Definition: <span class="font-normal text-emerald-800 dark:text-emerald-300">${itemObj.item.back}</span></div>
             `;
 
-            // Display options cleanly highlighting correct vs incorrect choice
             el.quizOptions.innerHTML = '';
             let reviewOptions = [itemObj.item.back];
             while(reviewOptions.length < 4) {
@@ -942,16 +994,15 @@
             reviewOptions.forEach((opt, idx) => {
                 const letters = ['A', 'B', 'C', 'D'];
                 const btn = document.createElement('button');
-                btn.disabled = true; // Review mode is read-only inspection
-                
-                let btnStyle = "border-gray-200 bg-white text-gray-500 opacity-70";
-                let badgeStyle = "bg-gray-100 border-gray-200 text-gray-400";
+                btn.disabled = true;
+                let btnStyle = "border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-500 opacity-70";
+                let badgeStyle = "bg-gray-100 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400";
 
                 if (opt === itemObj.item.back) {
-                    btnStyle = "border-emerald-500 bg-emerald-50/80 text-emerald-950 font-semibold shadow-sm";
+                    btnStyle = "border-emerald-500 bg-emerald-50/80 dark:bg-emerald-950/50 text-emerald-950 dark:text-emerald-200 font-semibold shadow-sm";
                     badgeStyle = "bg-emerald-600 text-white";
                 } else if (opt === itemObj.userAns) {
-                    btnStyle = "border-red-400 bg-red-50/80 text-red-950 font-semibold";
+                    btnStyle = "border-red-400 bg-red-50/80 dark:bg-red-950/50 text-red-950 dark:text-red-200 font-semibold";
                     badgeStyle = "bg-red-500 text-white";
                 }
 
@@ -963,18 +1014,14 @@
                 el.quizOptions.appendChild(btn);
             });
 
-            // Configure Review navigation buttons
             el.quizPrev.style.visibility = reviewIdx === 0 ? 'hidden' : 'visible';
-            el.quizPrev.onclick = () => {
-                if (reviewIdx > 0) showWrongQuestionReview(incorrectList, reviewIdx - 1);
-            };
-
+            el.quizPrev.onclick = () => { if (reviewIdx > 0) showWrongQuestionReview(incorrectList, reviewIdx - 1); };
             el.quizNext.innerText = reviewIdx === incorrectList.length - 1 ? "Back to Summary 📊" : "Next Wrong Item →";
             el.quizNext.onclick = () => {
                 if (reviewIdx < incorrectList.length - 1) {
                     showWrongQuestionReview(incorrectList, reviewIdx + 1);
                 } else {
-                    submitQuizOrExam(); // Return back to main summary view
+                    submitQuizOrExam(); 
                 }
             };
         }
@@ -984,12 +1031,22 @@
             reviewModeActive = false;
             let correctCount = 0;
             let incorrectList = [];
+            let masteryStore = getMasteryStore();
 
             quizHistory.forEach((item, idx) => {
                 const userAns = userAnswers[idx];
-                if (userAns === item.back) {
+                const isCorrect = (userAns === item.back);
+                
+                // Update persistent Mastery Data Store
+                if (!masteryStore[item.front]) {
+                    masteryStore[item.front] = { correctStreak: 0, totalAttempts: 0, chapter: item.chapter };
+                }
+                masteryStore[item.front].totalAttempts++;
+                if (isCorrect) {
                     correctCount++;
+                    masteryStore[item.front].correctStreak++;
                 } else {
+                    masteryStore[item.front].correctStreak = 0; // Reset streak on failure
                     incorrectList.push({
                         index: idx,
                         item: item,
@@ -998,6 +1055,8 @@
                     });
                 }
             });
+            saveMasteryStore(masteryStore);
+            latestIncorrectList = incorrectList;
 
             const finalScore = Math.round((correctCount / quizHistory.length) * 100);
             const finalTimeStr = el.timerDisplay.innerText;
@@ -1016,113 +1075,108 @@
             
             let incorrectHtml = '';
             if (incorrectList.length === 0) {
-                incorrectHtml = `<div class="p-4 bg-emerald-50 text-emerald-800 rounded-xl font-bold text-center border border-emerald-200">🎉 Perfect Score! No incorrect answers to review.</div>`;
+                incorrectHtml = `<div class="p-4 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 rounded-xl font-bold text-center border border-emerald-200 dark:border-emerald-800">🎉 Perfect Score! No incorrect answers to review.</div>`;
             } else {
                 incorrectHtml = `
                     <div class="text-left space-y-3 mt-4">
                         <div class="flex justify-between items-center">
-                            <h4 class="font-extrabold text-slate-800 text-base">Incorrect Questions (${incorrectList.length}):</h4>
-                            <span class="text-xs text-gray-500 font-medium">Click any item below to inspect and review</span>
+                            <h4 class="font-extrabold text-slate-800 dark:text-slate-200 text-base">Incorrect Questions (${incorrectList.length}):</h4>
                         </div>
                         <div class="space-y-2 max-h-60 overflow-y-auto pr-1">
                 `;
                 incorrectList.forEach((inc, listIdx) => {
                     incorrectHtml += `
-                        <button onclick='window.triggerWrongReview(${JSON.stringify(incorrectList.map(i => i.index))}, ${listIdx})' class="w-full text-left p-3.5 rounded-xl border border-red-200 bg-red-50/40 hover:bg-red-100/60 transition flex flex-col gap-1.5 shadow-sm group">
+                        <button onclick='window.triggerWrongReview(${listIdx})' class="w-full text-left p-3.5 rounded-xl border border-red-200 dark:border-red-900 bg-red-50/40 dark:bg-red-950/20 hover:bg-red-100/60 transition flex flex-col gap-1.5 shadow-sm group">
                             <div class="flex justify-between items-center w-full">
-                                <span class="text-xs font-bold text-red-700 uppercase tracking-wide">Question #${inc.index + 1} &bull; Chapter ${inc.item.chapter}</span>
+                                <span class="text-xs font-bold text-red-700 dark:text-red-400 uppercase">Question #${inc.index + 1} &bull; Chapter ${inc.item.chapter}</span>
                                 <span class="px-2 py-0.5 rounded-full border text-[10px] font-bold ${inc.weightMeta.badgeClass}">${inc.weightMeta.label}</span>
                             </div>
-                            <div class="text-sm font-semibold text-gray-800 group-hover:text-blue-900 transition">${inc.item.front}</div>
-                            <div class="text-xs text-gray-500 flex gap-4">
-                                <span>Your Answer: <strong class="text-red-600">${inc.userAns || 'None'}</strong></span>
-                                <span>Correct: <strong class="text-emerald-700">${inc.item.back}</strong></span>
-                            </div>
+                            <div class="text-sm font-semibold text-gray-800 dark:text-gray-200 group-hover:text-blue-600 transition">${inc.item.front}</div>
                         </button>
                     `;
                 });
                 incorrectHtml += `</div></div>`;
             }
 
+            let drillMistakesBtn = incorrectList.length > 0 ? `<button id="drill-mistakes-btn" class="px-6 py-3 bg-purple-600 text-white font-bold rounded-xl shadow-md hover:bg-purple-700 transition">Drill Only My Mistakes 🎯</button>` : '';
+
             el.quizOptions.innerHTML = `
-                <div class="text-center py-6 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
-                    <div class="text-5xl font-black text-blue-900">${finalScore}%</div>
-                    <p class="text-gray-700 font-semibold text-base">You answered ${correctCount} out of ${quizHistory.length} questions correctly.</p>
+                <div class="text-center py-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700 space-y-4">
+                    <div class="text-5xl font-black text-blue-900 dark:text-blue-400">${finalScore}%</div>
+                    <p class="text-gray-700 dark:text-gray-300 font-semibold text-base">You answered ${correctCount} out of ${quizHistory.length} questions correctly.</p>
                     <div class="flex justify-center gap-3">
-                        <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-100 text-blue-800 rounded-full text-xs font-bold shadow-sm">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 rounded-full text-xs font-bold shadow-sm">
                             Total Time: ${finalTimeStr}
                         </div>
-                        <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold shadow-sm">
-                            <span>Answered: ${Object.keys(userAnswers).length}/${quizHistory.length}</span>
-                        </div>
                     </div>
-                    
                     ${incorrectHtml}
-
-                    <div class="pt-4 flex justify-center gap-3">
+                    <div class="pt-4 flex flex-wrap justify-center gap-3">
                         <button onclick="location.reload()" class="px-6 py-3 bg-blue-600 text-white font-bold rounded-xl shadow-md hover:bg-blue-700 transition">Retake Exam</button>
+                        ${drillMistakesBtn}
                     </div>
                 </div>
             `;
+
+            if (incorrectList.length > 0) {
+                document.getElementById('drill-mistakes-btn').onclick = () => {
+                    quizHistory = latestIncorrectList.map(i => i.item);
+                    userAnswers = {}; quizOptionsCache = {}; flaggedQuestions.clear(); currentIndex = 0;
+                    startTimer(); showQuestion();
+                };
+            }
         }
 
-        // Global bridge helper for inline review clicks
-        window.triggerWrongReview = function(indicesArr, listIdx) {
-            let incorrectList = indicesArr.map(origIdx => {
-                return {
-                    index: origIdx,
-                    item: quizHistory[origIdx],
-                    userAns: userAnswers[origIdx],
-                    weightMeta: getChapterWeightLabel(quizHistory[origIdx].chapter)
-                };
-            });
-            showWrongQuestionReview(incorrectList, listIdx);
+        window.triggerWrongReview = function(listIdx) {
+            showWrongQuestionReview(latestIncorrectList, listIdx);
         };
+
+        // Analytics Modal Population
+        el.analyticsModalBtn.onclick = () => {
+            const mastery = getMasteryStore();
+            let chapterStats = {};
+            
+            allData.forEach(item => {
+                if(!chapterStats[item.chapter]) {
+                    chapterStats[item.chapter] = { total: 0, mastered: 0 };
+                }
+                chapterStats[item.chapter].total++;
+                if (mastery[item.front] && mastery[item.front].correctStreak > 0) {
+                    chapterStats[item.chapter].mastered++;
+                }
+            });
+
+            let html = `<div class="space-y-3">`;
+            Object.keys(chapterStats).sort((a,b)=>a-b).forEach(ch => {
+                const stat = chapterStats[ch];
+                const pct = stat.total > 0 ? Math.round((stat.mastered / stat.total) * 100) : 0;
+                html += `
+                    <div class="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1">
+                        <div class="flex justify-between text-sm font-bold">
+                            <span>Chapter ${ch}</span>
+                            <span class="text-blue-600 dark:text-blue-400">${pct}% Mastered (${stat.mastered}/${stat.total})</span>
+                        </div>
+                        <div class="w-full bg-gray-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                            <div class="bg-emerald-500 h-full transition-all" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            el.analyticsContent.innerHTML = html;
+            el.analyticsModal.classList.remove('hidden');
+        };
+        el.closeAnalytics.onclick = () => el.analyticsModal.classList.add('hidden');
 
         el.flagBtn.onclick = () => {
             resetIdleTimer();
-            if (flaggedQuestions.has(currentIndex)) {
-                flaggedQuestions.delete(currentIndex);
-            } else {
-                flaggedQuestions.add(currentIndex);
-            }
+            if (flaggedQuestions.has(currentIndex)) flaggedQuestions.delete(currentIndex);
+            else flaggedQuestions.add(currentIndex);
             showQuestion();
         };
 
-        el.quizPrev.onclick = () => {
-            resetIdleTimer();
-            if (currentIndex > 0) {
-                currentIndex--;
-                showQuestion();
-            }
-        };
-
-        el.quizSkip.onclick = () => {
-            resetIdleTimer();
-            if (currentIndex < quizHistory.length - 1) {
-                currentIndex++;
-                showQuestion();
-            } else {
-                alert("You are on the last question. Use 'Submit Exam / Quiz' to finish.");
-            }
-        };
-
-        el.quizEarlySubmit.onclick = () => {
-            resetIdleTimer();
-            const answeredCount = Object.keys(userAnswers).length;
-            const totalCount = quizHistory.length;
-            const unanswered = totalCount - answeredCount;
-
-            let confirmMsg = `Are you sure you want to submit your quiz early?`;
-            if (unanswered > 0) {
-                confirmMsg = `You have ${unanswered} unanswered question(s). Are you sure you want to submit now?`;
-            }
-
-            if (confirm(confirmMsg)) {
-                submitQuizOrExam();
-            }
-        };
+        el.quizPrev.onclick = () => { resetIdleTimer(); if (currentIndex > 0) { currentIndex--; showQuestion(); } };
+        el.quizSkip.onclick = () => { resetIdleTimer(); if (currentIndex < quizHistory.length - 1) { currentIndex++; showQuestion(); } };
+        el.quizEarlySubmit.onclick = () => { resetIdleTimer(); if (confirm("Submit quiz early?")) submitQuizOrExam(); };
 
         el.card.onclick = () => el.card.classList.toggle('is-flipped');
         document.getElementById('next-btn').onclick = () => { currentIndex = (currentIndex + 1) % currentViewData.length; renderCard(); };
@@ -1132,29 +1186,24 @@
             stopTimer();
             el.quizView.classList.add('hidden'); 
             el.flashView.classList.remove('hidden'); 
-            updateView(); 
+            prepareStudyQueue(); 
             renderCard(); 
         };
         
         el.quizBtn.onclick = startQuiz;
         el.examBtn.onclick = startExamMode;
+        el.bookmarksBtn.onclick = startBookmarksMode;
         
         el.quizNext.onclick = () => {
             resetIdleTimer();
-            if (currentIndex < quizHistory.length - 1) {
-                currentIndex++;
-                showQuestion();
-            } else {
-                submitQuizOrExam();
-            }
+            if (currentIndex < quizHistory.length - 1) { currentIndex++; showQuestion(); } else { submitQuizOrExam(); }
         };
 
         window.addEventListener('mousemove', resetIdleTimer);
         window.addEventListener('keypress', resetIdleTimer);
-        window.addEventListener('click', resetIdleTimer);
-        window.addEventListener('scroll', resetIdleTimer);
 
         updateView();
+        prepareStudyQueue();
         renderCard();
     </script>
 </body>
