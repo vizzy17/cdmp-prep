@@ -54,16 +54,16 @@
 
         <!-- Mode Selector Toolbar -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
-            <button id="study-btn" class="p-3 rounded-2xl bg-blue-600 text-white font-extrabold text-xs tracking-wider uppercase shadow-md shadow-blue-600/30 transition flex items-center justify-center gap-2">
+            <button id="study-btn" class="nav-tab p-3 rounded-2xl bg-blue-600 text-white font-extrabold text-xs tracking-wider uppercase shadow-md shadow-blue-600/30 transition flex items-center justify-center gap-2">
                 🗂️ Flashcards
             </button>
-            <button id="quiz-btn" class="p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-extrabold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2">
+            <button id="quiz-btn" class="nav-tab p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-extrabold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2">
                 ⚡ Tier Practice
             </button>
-            <button id="exam-btn" class="p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-extrabold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2">
+            <button id="exam-btn" class="nav-tab p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-extrabold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2">
                 📝 90-Min Exam
             </button>
-            <button id="bookmarks-btn" class="p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-extrabold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2">
+            <button id="bookmarks-btn" class="nav-tab p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-extrabold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2">
                 ⭐ Bookmarks
             </button>
         </div>
@@ -99,23 +99,24 @@
 
         <!-- ================= FLASHCARD VIEW ================= -->
         <div id="flashcard-view" class="flex-1 flex flex-col">
-            <div class="perspective-1000 w-full flex-1 min-h-[320px] cursor-pointer mb-6" id="flashcard-element">
-                <div class="relative w-full h-full duration-500 transform-style-3d rounded-3xl border border-slate-800 bg-slate-900 shadow-2xl p-8 flex flex-col justify-between" id="card-inner">
+            <!-- Expanded min-height container for flashcard to prevent text cutoff -->
+            <div class="perspective-1000 w-full flex-1 min-h-[420px] sm:min-h-[480px] cursor-pointer mb-6" id="flashcard-element">
+                <div class="relative w-full h-full duration-500 transform-style-3d rounded-3xl border border-slate-800 bg-slate-900 shadow-2xl p-6 sm:p-10 flex flex-col justify-between" id="card-inner">
                     
                     <!-- Front Face -->
-                    <div class="absolute inset-0 p-8 flex flex-col justify-between backface-hidden">
+                    <div class="absolute inset-0 p-6 sm:p-10 flex flex-col justify-between backface-hidden">
                         <div class="flex justify-between items-center">
                             <span id="card-chapter-badge" class="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[10px] font-extrabold uppercase">Chapter</span>
                             <button id="bookmark-card-btn" class="text-slate-500 hover:text-amber-400 text-lg transition">⭐</button>
                         </div>
-                        <div class="my-auto text-center py-6">
-                            <h3 id="card-front-text" class="text-xl sm:text-2xl font-bold tracking-tight text-slate-100">Loading dataset from repository...</h3>
+                        <div class="my-auto text-center py-4">
+                            <h3 id="card-front-text" class="text-lg sm:text-2xl font-bold tracking-tight text-slate-100">Loading dataset from repository...</h3>
                         </div>
                         <div class="text-center text-xs font-bold text-slate-500 uppercase tracking-widest">Click card to flip</div>
                     </div>
 
                     <!-- Back Face -->
-                    <div class="absolute inset-0 p-8 flex flex-col justify-between backface-hidden rotate-y-180 bg-slate-900/95 rounded-3xl overflow-y-auto">
+                    <div class="absolute inset-0 p-6 sm:p-10 flex flex-col justify-between backface-hidden rotate-y-180 bg-slate-900/95 rounded-3xl overflow-y-auto">
                         <div class="flex justify-between items-center">
                             <span id="card-tier-badge" class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-extrabold uppercase">Strategic Tier</span>
                         </div>
@@ -271,7 +272,13 @@
             glossaryQuickBtn: document.getElementById('glossary-quick-btn')
         };
 
-        // Fetch questions.json cleanly with mapping fallback
+        function updateActiveTab(activeButton) {
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.className = "nav-tab p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-extrabold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2";
+            });
+            activeButton.className = "nav-tab p-3 rounded-2xl bg-blue-600 text-white font-extrabold text-xs tracking-wider uppercase shadow-md shadow-blue-600/35 transition flex items-center justify-center gap-2";
+        }
+
         fetch('questions.json')
             .then(res => {
                 if (!res.ok) throw new Error('Network response was not ok');
@@ -385,6 +392,7 @@
         }
 
         function startQuiz() {
+            updateActiveTab(el.quizBtn);
             isExamMode = false;
             reviewModeActive = false;
             const val = el.filter.value;
@@ -417,6 +425,7 @@
         }
 
         function startExamMode() {
+            updateActiveTab(el.examBtn);
             isExamMode = true;
             reviewModeActive = false;
             let pool = [...allData];
@@ -443,11 +452,13 @@
         }
 
         function startBookmarksMode() {
+            updateActiveTab(el.bookmarksBtn);
             isExamMode = false;
             reviewModeActive = false;
             const pool = allData.filter(d => bookmarks.has(d.front));
             if (pool.length === 0) {
                 alert("No bookmarked items found! Click the star icon on flashcards to add them.");
+                updateActiveTab(el.studyBtn);
                 return;
             }
             quizHistory = pool;
@@ -665,6 +676,7 @@
 
             el.quizNext.innerText = "Return to Dashboard 🏠";
             el.quizNext.onclick = () => {
+                updateActiveTab(el.studyBtn);
                 el.quizView.classList.add('hidden');
                 el.flashView.classList.remove('hidden');
             };
@@ -675,6 +687,7 @@
                 if (reviewHistoryIndex < latestIncorrectList.length - 1) {
                     showWrongQuestionReview(latestIncorrectList, reviewHistoryIndex + 1);
                 } else {
+                    updateActiveTab(el.studyBtn);
                     el.quizView.classList.add('hidden');
                     el.flashView.classList.remove('hidden');
                 }
@@ -798,8 +811,8 @@
             el.analyticsModal.classList.add('hidden');
         };
 
-        // FIXED: Flashcard tab switcher click handler updates view state & counters properly
         el.studyBtn.onclick = () => {
+            updateActiveTab(el.studyBtn);
             clearInterval(timerInterval);
             el.quizView.classList.add('hidden');
             el.flashView.classList.remove('hidden');
