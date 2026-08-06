@@ -284,7 +284,7 @@
             })
             .catch(err => {
                 console.error('Error loading JSON:', err);
-                el.frontText.innerText = "Error: Could not load questions.json. Ensure it is uploaded alongside this HTML file in your repository[cite: 1].";
+                el.frontText.innerText = "Error: Could not load questions.json. Ensure it is uploaded alongside this HTML file in your repository[cite: 1]. If running locally, make sure to use a local development server (like Live Server) to bypass browser CORS restrictions.";
             });
 
         function getMasteryStore() {
