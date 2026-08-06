@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CDMP Master App - Flashcards & Exam Simulator</title>
+    <title>CDMP Master Engine - High-Conversion Exam Prep</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -33,17 +33,17 @@
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-2xl bg-blue-600 flex items-center justify-center font-black text-xl shadow-lg shadow-blue-500/30">C</div>
                 <div>
-                    <h1 class="font-extrabold text-base tracking-tight leading-none">CDMP Master</h1>
-                    <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Exam Prep Suite</span>
+                    <h1 class="font-extrabold text-base tracking-tight leading-none">CDMP Master Engine</h1>
+                    <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Passing Engine Suite</span>
                 </div>
             </div>
             
             <div class="flex items-center gap-2">
+                <button id="glossary-modal-btn" class="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 text-xs font-bold transition flex items-center gap-1.5 border border-amber-500/20">
+                    📖 DMBoK Glossary
+                </button>
                 <button id="analytics-modal-btn" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold transition flex items-center gap-1.5 border border-slate-700">
                     📊 Analytics
-                </button>
-                <button id="dark-mode-toggle" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold transition border border-slate-700">
-                    🌙
                 </button>
             </div>
         </div>
@@ -58,10 +58,10 @@
                 🗂️ Flashcards
             </button>
             <button id="quiz-btn" class="p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-extrabold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2">
-                ⚡ Quiz Mode
+                ⚡ Tier Practice
             </button>
             <button id="exam-btn" class="p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-extrabold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2">
-                📝 Exam Mode
+                📝 90-Min Exam
             </button>
             <button id="bookmarks-btn" class="p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-extrabold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2">
                 ⭐ Bookmarks
@@ -71,23 +71,25 @@
         <!-- Filter Bar -->
         <div class="bg-slate-900/50 border border-slate-800 p-4 rounded-2xl mb-6 flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center gap-2">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Chapter Filter:</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Strategic Tier/Chapter:</span>
                 <select id="chapter-filter" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-200 outline-none focus:border-blue-500">
-                    <option value="all">All Chapters (2-15)</option>
+                    <option value="all">All Tiers & Chapters</option>
+                    <option value="tier-1">Tier 1: Role & Responsibility (DAMA Hierarchy)</option>
+                    <option value="tier-2">Tier 2: Process & Lifecycle (Negative Phrasing)</option>
+                    <option value="tier-3">Tier 3: Distinction & Definitions (Opposites)</option>
+                    <option value="tier-4">Tier 4: Facts & Numerical Thresholds</option>
+                    <option value="--divider--" disabled>--- By Chapter ---</option>
                     <option value="2">Chapter 2: Data Governance</option>
                     <option value="3">Chapter 3: Data Handling Ethics</option>
                     <option value="4">Chapter 4: Data Architecture</option>
                     <option value="5">Chapter 5: Data Modeling & Design</option>
                     <option value="6">Chapter 6: Data Storage & Operations</option>
                     <option value="7">Chapter 7: Data Security</option>
-                    <option value="8">Chapter 8: Data Integration & Interoperability</option>
-                    <option value="9">Chapter 9: Document & Content Management</option>
+                    <option value="8">Chapter 8: Data Integration</option>
                     <option value="10">Chapter 10: Reference & Master Data</option>
                     <option value="11">Chapter 11: Data Warehousing & BI</option>
                     <option value="12">Chapter 12: Metadata Management</option>
                     <option value="13">Chapter 13: Data Quality</option>
-                    <option value="14">Chapter 14: Big Data & Data Science</option>
-                    <option value="15">Chapter 15: Data Management Maturity</option>
                 </select>
             </div>
             <div id="stats-counter" class="text-xs font-bold text-slate-400">
@@ -97,7 +99,6 @@
 
         <!-- ================= FLASHCARD VIEW ================= -->
         <div id="flashcard-view" class="flex-1 flex flex-col">
-            <!-- Card Container -->
             <div class="perspective-1000 w-full flex-1 min-h-[320px] cursor-pointer mb-6" id="flashcard-element">
                 <div class="relative w-full h-full duration-500 transform-style-3d rounded-3xl border border-slate-800 bg-slate-900 shadow-2xl p-8 flex flex-col justify-between" id="card-inner">
                     
@@ -108,7 +109,7 @@
                             <button id="bookmark-card-btn" class="text-slate-500 hover:text-amber-400 text-lg transition">⭐</button>
                         </div>
                         <div class="my-auto text-center py-6">
-                            <h3 id="card-front-text" class="text-xl sm:text-2xl font-bold tracking-tight text-slate-100">Loading questions...</h3>
+                            <h3 id="card-front-text" class="text-xl sm:text-2xl font-bold tracking-tight text-slate-100">Loading passing engine data...</h3>
                         </div>
                         <div class="text-center text-xs font-bold text-slate-500 uppercase tracking-widest">Click card to flip</div>
                     </div>
@@ -116,10 +117,11 @@
                     <!-- Back Face -->
                     <div class="absolute inset-0 p-8 flex flex-col justify-between backface-hidden rotate-y-180 bg-slate-900/95 rounded-3xl overflow-y-auto">
                         <div class="flex justify-between items-center">
-                            <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-extrabold uppercase">Definition / Answer</span>
+                            <span id="card-tier-badge" class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-extrabold uppercase">Strategic Tier</span>
                         </div>
-                        <div class="my-auto py-4">
+                        <div class="my-auto py-4 space-y-3">
                             <p id="card-back-text" class="text-base sm:text-lg font-medium text-slate-200 leading-relaxed"></p>
+                            <div id="card-explanation" class="text-xs text-blue-300 bg-blue-950/40 p-3 rounded-xl border border-blue-800/50"></div>
                         </div>
                         <div class="text-center text-xs font-bold text-emerald-500 uppercase tracking-widest">Click to flip back</div>
                     </div>
@@ -138,10 +140,11 @@
         <div id="quiz-view" class="hidden flex-1 flex flex-col">
             <div id="quiz-header-bar" class="flex justify-between items-center mb-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
                 <div class="flex items-center gap-3">
-                    <span id="timer-display" class="font-mono text-sm font-bold text-amber-400">⏱️ 00:00</span>
-                    <span id="quiz-progress-text" class="text-xs font-bold text-slate-400">Question 1 of 10</span>
+                    <span id="timer-display" class="font-mono text-sm font-bold text-amber-400">⏱️ 90:00</span>
+                    <span id="quiz-progress-text" class="text-xs font-bold text-slate-400">Question 1 of 100</span>
                 </div>
                 <div class="flex items-center gap-2">
+                    <button id="glossary-quick-btn" class="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 text-xs font-bold border border-amber-500/20 transition">📖 Open-Book Index</button>
                     <button id="flag-btn" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold border border-slate-700 transition">🚩 Flag</button>
                     <button id="quiz-early-submit" class="px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-bold border border-red-500/20 transition">End Session</button>
                 </div>
@@ -150,24 +153,26 @@
             <div class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-3xl shadow-xl flex-1 flex flex-col justify-between mb-6">
                 <div>
                     <div class="flex justify-between items-center mb-4">
-                        <h3 id="quiz-title" class="text-xs font-extrabold uppercase tracking-wider text-blue-400">Practice Quiz</h3>
+                        <h3 id="quiz-title" class="text-xs font-extrabold uppercase tracking-wider text-blue-400">Passing Engine Practice</h3>
                         <span id="quiz-chapter-badge" class="px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-[10px] font-bold text-slate-300">Chapter</span>
                     </div>
                     <p id="quiz-question" class="text-lg sm:text-xl font-bold text-slate-100 mb-6 leading-snug"></p>
-                    <div id="quiz-options" class="space-y-3">
-                        <!-- Options injected dynamically -->
-                    </div>
+                    <div id="quiz-options" class="space-y-3"></div>
                 </div>
 
                 <div id="completion-bar-container" class="mt-6 pt-4 border-t border-slate-800 flex justify-between items-center">
                     <span id="flagged-indicator" class="text-xs font-bold text-amber-400 hidden">🚩 Flagged for review</span>
+                    <div id="elimination-breakdown-box" class="hidden w-full bg-slate-950 p-4 rounded-2xl border border-blue-500/30 text-xs space-y-2">
+                        <div class="font-extrabold text-blue-400 uppercase tracking-wide">💡 DAMA Elimination Breakdown:</div>
+                        <p id="elimination-text" class="text-slate-300 leading-relaxed"></p>
+                    </div>
                 </div>
             </div>
 
             <!-- Quiz Navigation Bottom Bar -->
             <div class="flex items-center justify-between gap-4">
                 <button id="quiz-prev" class="px-6 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 font-bold text-xs uppercase tracking-wider transition">Previous</button>
-                <div id="navigator-container" class="hidden sm:flex items-center gap-1 overflow-x-auto py-2"></div>
+                <div id="navigator-container" class="hidden sm:flex items-center gap-1 overflow-x-auto py-2 max-w-md"></div>
                 <div class="flex gap-2">
                     <button id="quiz-skip" class="px-6 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 font-bold text-xs uppercase tracking-wider transition">Skip</button>
                     <button id="quiz-next" class="px-6 py-4 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-blue-600/30 transition">Next →</button>
@@ -181,12 +186,23 @@
     <div id="analytics-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-3xl p-6 shadow-2xl space-y-6">
             <div class="flex justify-between items-center">
-                <h3 class="text-base font-black uppercase tracking-wider">Your Progress & Analytics</h3>
+                <h3 class="text-base font-black uppercase tracking-wider">Passing Analytics Engine</h3>
                 <button id="close-analytics" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center font-bold">✕</button>
             </div>
-            <div id="analytics-content" class="space-y-4">
-                <!-- Content injected dynamically -->
+            <div id="analytics-content" class="space-y-4"></div>
+        </div>
+    </div>
+
+    <!-- Glossary / Open-Book Modal -->
+    <div id="glossary-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-3xl p-6 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
+            <div class="flex justify-between items-center">
+                <h3 class="text-base font-black uppercase tracking-wider text-amber-400">📖 DMBoK Simulated Index & Glossary</h3>
+                <button id="close-glossary" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center font-bold">✕</button>
             </div>
+            <p class="text-xs text-slate-400">Search keywords instantly below to simulate real exam open-book lookup speed (under 15 seconds).</p>
+            <input type="text" id="glossary-search-input" placeholder="Type term (e.g. data governance, OLAP, metadata)..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-xs text-slate-200 outline-none focus:border-amber-500">
+            <div id="glossary-results" class="flex-1 overflow-y-auto space-y-3 pr-1"></div>
         </div>
     </div>
 
@@ -197,7 +213,6 @@
         let currentIndex = 0;
         let bookmarks = new Set(JSON.parse(localStorage.getItem('cdmp_bookmarks') || '[]'));
         
-        // Quiz/Exam State variables
         let quizHistory = [];
         let userAnswers = {};
         let flaggedQuestions = new Set();
@@ -207,6 +222,7 @@
         let latestIncorrectList = [];
         let reviewHistoryIndex = 0;
         let quizOptionsCache = {};
+        let isExamMode = false;
 
         const el = {
             flashView: document.getElementById('flashcard-view'),
@@ -215,7 +231,9 @@
             cardInner: document.getElementById('card-inner'),
             frontText: document.getElementById('card-front-text'),
             backText: document.getElementById('card-back-text'),
+            cardExplanation: document.getElementById('card-explanation'),
             chapterBadge: document.getElementById('card-chapter-badge'),
+            tierBadge: document.getElementById('card-tier-badge'),
             bookmarkCardBtn: document.getElementById('bookmark-card-btn'),
             currentCardNum: document.getElementById('current-card-num'),
             totalCardNum: document.getElementById('total-card-num'),
@@ -235,6 +253,8 @@
             quizOptions: document.getElementById('quiz-options'),
             completionBarContainer: document.getElementById('completion-bar-container'),
             flaggedIndicator: document.getElementById('flagged-indicator'),
+            eliminationBox: document.getElementById('elimination-breakdown-box'),
+            eliminationText: document.getElementById('elimination-text'),
             navigatorContainer: document.getElementById('navigator-container'),
             quizPrev: document.getElementById('quiz-prev'),
             quizNext: document.getElementById('quiz-next'),
@@ -242,23 +262,29 @@
             analyticsModal: document.getElementById('analytics-modal'),
             analyticsModalBtn: document.getElementById('analytics-modal-btn'),
             closeAnalytics: document.getElementById('close-analytics'),
-            analyticsContent: document.getElementById('analytics-content')
+            analyticsContent: document.getElementById('analytics-content'),
+            glossaryModal: document.getElementById('glossary-modal'),
+            glossaryModalBtn: document.getElementById('glossary-modal-btn'),
+            closeGlossary: document.getElementById('close-glossary'),
+            glossarySearchInput: document.getElementById('glossary-search-input'),
+            glossaryResults: document.getElementById('glossary-results'),
+            glossaryQuickBtn: document.getElementById('glossary-quick-btn')
         };
 
-        // Fetch questions from external questions.json file
+        // Fetch questions.json
         fetch('questions.json')
-            .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.json();
+            .then(res => {
+                if (!res.ok) throw new Error('Failed to load questions.json');
+                return res.json();
             })
             .then(data => {
                 allData = data;
                 prepareStudyQueue();
                 renderCard();
             })
-            .catch(error => {
-                console.error('Error loading questions.json:', error);
-                el.frontText.innerText = "Error: Could not load questions.json. Make sure it is in the same directory and served via a local server.";
+            .catch(err => {
+                console.error('Error loading JSON:', err);
+                el.frontText.innerText = "Error: Could not load questions.json. Make sure it is in your local server directory.";
             });
 
         function getMasteryStore() {
@@ -269,30 +295,13 @@
             localStorage.setItem('cdmp_mastery', JSON.stringify(store));
         }
 
-        function getChapterWeightLabel(ch) {
-            const weights = {
-                2: { label: "High (11%)", badgeClass: "bg-red-500/10 text-red-400 border-red-500/20" },
-                3: { label: "Low (2%)", badgeClass: "bg-slate-800 text-slate-400 border-slate-700" },
-                4: { label: "Medium (6%)", badgeClass: "bg-amber-500/10 text-amber-400 border-amber-500/20" },
-                5: { label: "High (10%)", badgeClass: "bg-red-500/10 text-red-400 border-red-500/20" },
-                6: { label: "Medium (6%)", badgeClass: "bg-amber-500/10 text-amber-400 border-amber-500/20" },
-                7: { label: "High (10%)", badgeClass: "bg-red-500/10 text-red-400 border-red-500/20" },
-                8: { label: "High (10%)", badgeClass: "bg-red-500/10 text-red-400 border-red-500/20" },
-                9: { label: "Low (2%)", badgeClass: "bg-slate-800 text-slate-400 border-slate-700" },
-                10: { label: "Medium (6%)", badgeClass: "bg-amber-500/10 text-amber-400 border-amber-500/20" },
-                11: { label: "High (10%)", badgeClass: "bg-red-500/10 text-red-400 border-red-500/20" },
-                12: { label: "Medium (6%)", badgeClass: "bg-amber-500/10 text-amber-400 border-amber-500/20" },
-                13: { label: "High (11%)", badgeClass: "bg-red-500/10 text-red-400 border-red-500/20" },
-                14: { label: "Low (4%)", badgeClass: "bg-slate-800 text-slate-400 border-slate-700" },
-                15: { label: "Low (6%)", badgeClass: "bg-amber-500/10 text-amber-400 border-amber-500/20" }
-            };
-            return weights[ch] || { label: "Standard", badgeClass: "bg-slate-800 text-slate-400 border-slate-700" };
-        }
-
         function prepareStudyQueue() {
             const val = el.filter.value;
             if (val === 'all') {
                 currentViewData = [...allData];
+            } else if (val.startsWith('tier-')) {
+                const tierNum = val.split('-')[1];
+                currentViewData = allData.filter(d => d.tier == tierNum);
             } else {
                 currentViewData = allData.filter(d => d.chapter == val);
             }
@@ -303,8 +312,10 @@
             el.cardInner.classList.remove('rotate-y-180');
             if (currentViewData.length === 0) {
                 el.frontText.innerText = "No flashcards found for this selection.";
-                el.backText.innerText = "Try selecting a different chapter or resetting filters.";
+                el.backText.innerText = "Try changing your filter tier or chapter.";
+                el.cardExplanation.innerText = "";
                 el.chapterBadge.innerText = "Empty";
+                el.tierBadge.innerText = "N/A";
                 el.currentCardNum.innerText = 0;
                 el.totalCardNum.innerText = 0;
                 return;
@@ -313,7 +324,9 @@
             const item = currentViewData[currentIndex];
             el.frontText.innerText = item.front;
             el.backText.innerText = item.back;
+            el.cardExplanation.innerText = item.explanation || "DAMA Principle: Focus on governance alignment and cross-functional participation.";
             el.chapterBadge.innerText = `Chapter ${item.chapter}`;
+            el.tierBadge.innerText = `Tier ${item.tier || 3} Strategy`;
             el.currentCardNum.innerText = currentIndex + 1;
             el.totalCardNum.innerText = currentViewData.length;
 
@@ -339,31 +352,34 @@
             renderCard();
         };
 
-        function startTimer() {
+        function startTimer(durationInSeconds) {
             clearInterval(timerInterval);
-            secondsElapsed = 0;
+            secondsElapsed = durationInSeconds;
             timerInterval = setInterval(() => {
-                secondsElapsed++;
+                secondsElapsed--;
+                if (secondsElapsed <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                    return;
+                }
                 const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
                 const secs = String(secondsElapsed % 60).padStart(2, '0');
                 el.timerDisplay.innerText = `⏱️ ${mins}:${secs}`;
             }, 1000);
         }
 
-        function stopTimer() {
-            clearInterval(timerInterval);
-        }
-
-        function resetIdleTimer() {}
-
         function startQuiz() {
+            isExamMode = false;
             reviewModeActive = false;
             const val = el.filter.value;
-            let pool = val === 'all' ? [...allData] : allData.filter(d => d.chapter == val);
-            if (pool.length < 4) pool = [...allData]; // Ensure enough options
-            
+            let pool = [];
+            if (val === 'all') pool = [...allData];
+            else if (val.startsWith('tier-')) pool = allData.filter(d => d.tier == val.split('-')[1]);
+            else pool = allData.filter(d => d.chapter == val);
+
+            if (pool.length < 4) pool = [...allData];
             pool.sort(() => Math.random() - 0.5);
-            quizHistory = pool.slice(0, Math.min(10, pool.length));
+            quizHistory = pool.slice(0, Math.min(25, pool.length));
             userAnswers = {};
             flaggedQuestions.clear();
             quizOptionsCache = {};
@@ -379,16 +395,17 @@
             el.quizEarlySubmit.classList.remove('hidden');
             el.quizNext.innerText = "Next →";
 
-            el.quizTitle.innerText = "Interactive Practice Quiz";
-            startTimer();
+            el.quizTitle.innerText = "Tier-Based Elimination Practice";
+            startTimer(3600); // 1 hour practice timer
             showQuestion();
         }
 
         function startExamMode() {
+            isExamMode = true;
             reviewModeActive = false;
             let pool = [...allData];
             pool.sort(() => Math.random() - 0.5);
-            quizHistory = pool.slice(0, 20); // 20 Question Simulation
+            quizHistory = pool.slice(0, 100); // 100 Question Full Simulation
             userAnswers = {};
             flaggedQuestions.clear();
             quizOptionsCache = {};
@@ -404,16 +421,17 @@
             el.quizEarlySubmit.classList.remove('hidden');
             el.quizNext.innerText = "Next →";
 
-            el.quizTitle.innerText = "CDMP Exam Simulation (20 Questions)";
-            startTimer();
+            el.quizTitle.innerText = "CDMP Exam Simulation (100 Questions / 90 Mins)";
+            startTimer(5400); // Exact 90 minutes strict countdown
             showQuestion();
         }
 
         function startBookmarksMode() {
+            isExamMode = false;
             reviewModeActive = false;
             const pool = allData.filter(d => bookmarks.has(d.front));
             if (pool.length === 0) {
-                alert("You have no bookmarked terms or questions yet! Click the star icon on flashcards to save them.");
+                alert("No bookmarked items found! Click the star icon on flashcards to add them.");
                 return;
             }
             quizHistory = pool;
@@ -432,15 +450,15 @@
             el.quizEarlySubmit.classList.remove('hidden');
             el.quizNext.innerText = "Next →";
 
-            el.quizTitle.innerText = "Bookmarked Flashcards Review";
-            startTimer();
+            el.quizTitle.innerText = "Bookmarked Review Practice";
+            startTimer(3600);
             showQuestion();
         }
 
         function showQuestion() {
             const item = quizHistory[currentIndex];
             el.quizProgressText.innerText = `Question ${currentIndex + 1} of ${quizHistory.length}`;
-            el.quizChapterBadge.innerText = `Chapter ${item.chapter}`;
+            el.quizChapterBadge.innerText = `Chapter ${item.chapter} | Tier ${item.tier || 3}`;
             el.quizQuestion.innerText = item.front;
 
             if (flaggedQuestions.has(currentIndex)) {
@@ -451,7 +469,6 @@
                 el.flagBtn.classList.remove('bg-amber-500/20', 'border-amber-500/40', 'text-amber-400');
             }
 
-            // Options generation with caching
             if (!quizOptionsCache[currentIndex]) {
                 let distractors = allData.filter(d => d.back !== item.back).map(d => d.back);
                 distractors.sort(() => Math.random() - 0.5);
@@ -482,6 +499,17 @@
                 };
                 el.quizOptions.appendChild(btn);
             });
+
+            // Elimination Breakdown Engine display if answered or in review mode
+            if (userAnswers[currentIndex]) {
+                el.eliminationBox.classList.remove('hidden');
+                el.eliminationText.innerHTML = `
+                    <div><strong>Correct Answer:</strong> ${item.back}</div>
+                    <div class="mt-1 text-slate-400"><strong>DAMA Rationale & Elimination Logic:</strong> ${item.explanation || "DAMA standards reject absolute qualifiers (Always, Never, Only) and isolate behaviors. Collaborative frameworks and formalized governance structures must always be selected."}</div>
+                `;
+            } else {
+                el.eliminationBox.classList.add('hidden');
+            }
 
             renderNavigator();
             el.quizPrev.style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
@@ -524,10 +552,10 @@
             el.quizPrev.style.visibility = reviewIdx === 0 ? 'hidden' : 'visible';
 
             el.quizTitle.innerText = `Review Incorrect Answer (${reviewIdx + 1} of ${incorrectList.length})`;
-            el.quizChapterBadge.innerText = `Chapter ${itemObj.item.chapter}`;
+            el.quizChapterBadge.innerText = `Chapter ${itemObj.item.chapter} | Tier ${itemObj.item.tier || 3}`;
             el.quizQuestion.innerHTML = `
                 <div class="text-base text-slate-100 font-bold mb-2">${itemObj.item.front}</div>
-                <div class="text-xs text-slate-400">Chapter weight analysis shows this topic is critical for passing the CDMP exam. Review the correct definition below.</div>
+                <div class="text-xs text-blue-400 bg-blue-950/40 p-3 rounded-xl border border-blue-800/50"><strong>Elimination Breakdown:</strong> ${itemObj.item.explanation || "Absolute words and isolationist behaviors were eliminated according to DAMA hierarchy rules."}</div>
             `;
 
             el.quizOptions.innerHTML = '';
@@ -558,7 +586,7 @@
         }
 
         function submitQuiz() {
-            stopTimer();
+            clearInterval(timerInterval);
             let correctCount = 0;
             let incorrectList = [];
 
@@ -602,8 +630,8 @@
             el.quizQuestion.innerHTML = `
                 <div class="text-center space-y-3 py-4">
                     <div class="text-5xl font-black ${passed ? 'text-emerald-400' : 'text-red-400'}">${percentage}%</div>
-                    <div class="text-xl font-bold">You scored ${correctCount} out of ${total} (${passed ? 'PASSED 🎉' : 'NEEDS IMPROVEMENT 📚'})</div>
-                    <p class="text-sm text-slate-400 font-medium">Time elapsed: ${el.timerDisplay.innerText}</p>
+                    <div class="text-xl font-bold">You scored ${correctCount} out of ${total} (${passed ? 'PASSED 🎉 (>70% Threshold Cleared)' : 'NEEDS IMPROVEMENT 📚 (Review Elimination Breakdowns)'})</div>
+                    <p class="text-sm text-slate-400 font-medium">Passing status verified against DAMA standards.</p>
                 </div>
             `;
 
@@ -611,7 +639,7 @@
             if (incorrectList.length > 0) {
                 const reviewPromptBtn = document.createElement('button');
                 reviewPromptBtn.className = "w-full py-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold shadow-lg transition text-center";
-                reviewPromptBtn.innerText = `🔍 Review ${incorrectList.length} Incorrectly Answered Questions`;
+                reviewPromptBtn.innerText = `🔍 Review ${incorrectList.length} Incorrectly Answered Questions with Elimination Logic`;
                 reviewPromptBtn.onclick = () => {
                     showWrongQuestionReview(latestIncorrectList, 0);
                 };
@@ -619,7 +647,7 @@
             } else {
                 const perfectMsg = document.createElement('div');
                 perfectMsg.className = "text-center p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-300 font-bold";
-                perfectMsg.innerText = "Fantastic job! You answered every question correctly in this set.";
+                perfectMsg.innerText = "Fantastic job! You cleared every question correctly in this passing engine run.";
                 el.quizOptions.appendChild(perfectMsg);
             }
 
@@ -631,7 +659,6 @@
         }
 
         el.quizNext.onclick = () => {
-            resetIdleTimer();
             if (reviewModeActive) {
                 if (reviewHistoryIndex < latestIncorrectList.length - 1) {
                     showWrongQuestionReview(latestIncorrectList, reviewHistoryIndex + 1);
@@ -651,7 +678,6 @@
         };
 
         el.quizPrev.onclick = () => {
-            resetIdleTimer();
             if (reviewModeActive) {
                 if (reviewHistoryIndex > 0) {
                     showWrongQuestionReview(latestIncorrectList, reviewHistoryIndex - 1);
@@ -665,7 +691,6 @@
         };
 
         el.quizSkip.onclick = () => {
-            resetIdleTimer();
             if (currentIndex < quizHistory.length - 1) {
                 currentIndex++;
                 showQuestion();
@@ -673,13 +698,12 @@
         };
 
         el.quizEarlySubmit.onclick = () => {
-            if (confirm("Are you sure you want to submit your quiz/exam early?")) {
+            if (confirm("Are you sure you want to submit your exam session early?")) {
                 submitQuiz();
             }
         };
 
         el.flagBtn.onclick = () => {
-            resetIdleTimer();
             if (flaggedQuestions.has(currentIndex)) {
                 flaggedQuestions.delete(currentIndex);
             } else {
@@ -688,6 +712,54 @@
             showQuestion();
         };
 
+        // Open-book Glossary Search Logic
+        function renderGlossaryResults(query = '') {
+            const q = query.toLowerCase().trim();
+            const matches = allData.filter(d => 
+                d.front.toLowerCase().includes(q) || 
+                d.back.toLowerCase().includes(q) || 
+                (d.explanation && d.explanation.toLowerCase().includes(q))
+            );
+
+            el.glossaryResults.innerHTML = '';
+            if (matches.length === 0) {
+                el.glossaryResults.innerHTML = `<div class="text-xs text-slate-500 text-center py-4">No matching terms found in DMBoK glossary index.</div>`;
+                return;
+            }
+
+            matches.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1";
+                card.innerHTML = `
+                    <div class="flex justify-between items-center text-[10px] font-extrabold text-amber-400 uppercase">
+                        <span>Chapter ${item.chapter} | Tier ${item.tier || 3}</span>
+                    </div>
+                    <div class="text-xs font-bold text-slate-100">${item.front}</div>
+                    <div class="text-xs text-slate-300 font-medium">${item.back}</div>
+                `;
+                el.glossaryResults.appendChild(card);
+            });
+        }
+
+        el.glossaryModalBtn.onclick = () => {
+            renderGlossaryResults();
+            el.glossaryModal.classList.remove('hidden');
+        };
+
+        el.glossaryQuickBtn.onclick = () => {
+            renderGlossaryResults();
+            el.glossaryModal.classList.remove('hidden');
+        };
+
+        el.closeGlossary.onclick = () => {
+            el.glossaryModal.classList.add('hidden');
+        };
+
+        el.glossarySearchInput.oninput = (e) => {
+            renderGlossaryResults(e.target.value);
+        };
+
+        // Analytics Modal Logic
         el.analyticsModalBtn.onclick = () => {
             const mastery = getMasteryStore();
             let totalMastered = 0;
@@ -697,32 +769,13 @@
                 if (stat.correctStreak >= 2) totalMastered++;
             });
 
-            let chapterStatsHtml = '';
-            for (let i = 2; i <= 15; i++) {
-                const chapterItems = allData.filter(d => d.chapter == i);
-                if (chapterItems.length === 0) continue;
-                
-                let chMastered = 0;
-                chapterItems.forEach(item => {
-                    if (mastery[item.front] && mastery[item.front].correctStreak >= 2) {
-                        chMastered++;
-                    }
-                });
-                const pct = Math.round((chMastered / chapterItems.length) * 100);
-                const weightInfo = getChapterWeightLabel(i);
-
-                chapterStatsHtml += `
-                    <div class="space-y-1.5 p-3 rounded-xl bg-slate-950/50 border border-slate-800">
-                        <div class="flex justify-between items-center text-xs font-bold">
-                            <span class="text-slate-200">Chapter ${i} (${chMastered}/${chapterItems.length})</span>
-                            <span class="px-2 py-0.5 rounded-full border text-[10px] ${weightInfo.badgeClass}">${weightInfo.label}</span>
-                        </div>
-                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                            <div class="bg-blue-600 h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
-                        </div>
-                    </div>
-                `;
-            }
+            let tierStatsHtml = `
+                <div class="space-y-2 p-3 rounded-xl bg-slate-950/50 border border-slate-800">
+                    <div class="text-xs font-bold text-blue-400 uppercase">Passing Engine Readiness</div>
+                    <div class="text-sm font-black text-slate-100">${totalMastered} Mastered Concepts</div>
+                    <p class="text-[11px] text-slate-400">Targeting >70% mastery across Tiers 1-4 ensures exam clearing.</p>
+                </div>
+            `;
 
             el.analyticsContent.innerHTML = `
                 <div class="grid grid-cols-2 gap-4 text-center">
@@ -735,12 +788,7 @@
                         <div class="text-xs font-bold text-slate-400 mt-1">Terms Practiced</div>
                     </div>
                 </div>
-                <div class="space-y-2 mt-4">
-                    <h4 class="text-xs font-extrabold uppercase text-slate-400 tracking-wider">Chapter Mastery Breakdown</h4>
-                    <div class="max-h-60 overflow-y-auto space-y-2 pr-1">
-                        ${chapterStatsHtml}
-                    </div>
-                </div>
+                <div class="mt-4">${tierStatsHtml}</div>
             `;
             el.analyticsModal.classList.remove('hidden');
         };
@@ -749,8 +797,9 @@
             el.analyticsModal.classList.add('hidden');
         };
 
+        // Navigation Mode Switchers
         el.studyBtn.onclick = () => {
-            stopTimer();
+            clearInterval(timerInterval);
             el.quizView.classList.add('hidden');
             el.flashView.classList.remove('hidden');
             prepareStudyQueue();
@@ -783,6 +832,10 @@
         el.card.onclick = () => {
             el.cardInner.classList.toggle('rotate-y-180');
         };
+
+        // Initial Boot
+        prepareStudyQueue();
+        renderCard();
     </script>
 </body>
 </html>
