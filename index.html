@@ -74,9 +74,9 @@
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Strategic Tier/Chapter:</span>
                 <select id="chapter-filter" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-200 outline-none focus:border-blue-500">
                     <option value="all">All Tiers & Chapters</option>
-                    <option value="tier-1">Tier 1: Role & Responsibility (DAMA Hierarchy)</option>
-                    <option value="tier-2">Tier 2: Process & Lifecycle (Negative Phrasing)</option>
-                    <option value="tier-3">Tier 3: Distinction & Definitions (Opposites)</option>
+                    <option value="tier-1">Tier 1: Role & Responsibility</option>
+                    <option value="tier-2">Tier 2: Process & Lifecycle</option>
+                    <option value="tier-3">Tier 3: Distinction & Definitions</option>
                     <option value="tier-4">Tier 4: Facts & Numerical Thresholds</option>
                     <option value="--divider--" disabled>--- By Chapter ---</option>
                     <option value="2">Chapter 2: Data Governance</option>
@@ -109,7 +109,7 @@
                             <button id="bookmark-card-btn" class="text-slate-500 hover:text-amber-400 text-lg transition">⭐</button>
                         </div>
                         <div class="my-auto text-center py-6">
-                            <h3 id="card-front-text" class="text-xl sm:text-2xl font-bold tracking-tight text-slate-100">Loading passing engine data...</h3>
+                            <h3 id="card-front-text" class="text-xl sm:text-2xl font-bold tracking-tight text-slate-100">Loading dataset from repository...</h3>
                         </div>
                         <div class="text-center text-xs font-bold text-slate-500 uppercase tracking-widest">Click card to flip</div>
                     </div>
@@ -208,45 +208,6 @@
 
     <!-- Application Core Script -->
     <script>
-        // Built-in fallback database so the app works instantly even if questions.json fails to load from GitHub
-        const fallbackData = [
-            {
-                chapter: 2,
-                tier: 1,
-                front: "What is the primary objective of Data Governance?",
-                back: "To ensure data is managed as an enterprise asset to create value and mitigate risk.",
-                explanation: "Data governance ensures accountability, policy enforcement, and enterprise-wide alignment."
-            },
-            {
-                chapter: 2,
-                tier: 3,
-                front: "Who holds ultimate accountability for data governance within an organization?",
-                back: "Executive Management / Chief Data Officer (CDO)",
-                explanation: "While data stewards manage day-to-day operations, executive leadership retains ultimate governance accountability."
-            },
-            {
-                chapter: 5,
-                tier: 2,
-                front: "What is the primary output of the Conceptual Data Modeling phase?",
-                back: "Enterprise data model identifying core business entities and high-level relationships.",
-                explanation: "Conceptual models are independent of technology implementation and focus entirely on business scope."
-            },
-            {
-                chapter: 13,
-                tier: 4,
-                front: "What dimension of Data Quality measures whether data values match an authoritative source?",
-                back: "Accuracy",
-                explanation: "Accuracy refers to the degree to which data correctly represents the real-world entity it describes."
-            },
-            {
-                chapter: 12,
-                tier: 1,
-                front: "What is the primary function of Metadata Management?",
-                back: "To integrate, control, and deliver accurate context about enterprise data assets.",
-                explanation: "Metadata provides 'data about data', enabling lineage, discovery, and business understanding."
-            }
-        ];
-
         let allData = [];
         let currentViewData = [];
         let currentIndex = 0;
@@ -310,24 +271,31 @@
             glossaryQuickBtn: document.getElementById('glossary-quick-btn')
         };
 
-        // Attempt to fetch questions.json, with automatic fallback to built-in data
+        // Fetch questions.json cleanly with mapping fallback
         fetch('questions.json')
             .then(res => {
-                if (!res.ok) throw new Error('Failed to load questions.json');
+                if (!res.ok) throw new Error('Network response was not ok');
                 return res.json();
             })
             .then(data => {
-                if (Array.isArray(data) && data.length > 0) {
-                    allData = data;
-                } else {
-                    allData = fallbackData;
+                let rawList = Array.isArray(data) ? data : (data.questions || data.items || []);
+                
+                allData = rawList.map(item => ({
+                    chapter: item.chapter || item.Chapter || 2,
+                    tier: item.tier || item.Tier || 3,
+                    front: item.front || item.question || item.Question || "Untitled Question",
+                    back: item.back || item.answer || item.Answer || "No answer provided",
+                    explanation: item.explanation || item.Rationale || item.rationale || "DAMA standard compliance principle."
+                }));
+
+                if (allData.length === 0) {
+                    throw new Error('Parsed dataset is empty');
                 }
                 initApp();
             })
             .catch(err => {
-                console.warn('Using fallback data due to fetch error:', err);
-                allData = fallbackData;
-                initApp();
+                console.error('Fetch error loading questions.json:', err);
+                el.frontText.innerText = "Error loading questions.json structure. Check console for formatting issues.";
             });
 
         function initApp() {
@@ -372,9 +340,9 @@
             const item = currentViewData[currentIndex];
             el.frontText.innerText = item.front;
             el.backText.innerText = item.back;
-            el.cardExplanation.innerText = item.explanation || "DAMA Principle: Focus on governance alignment and cross-functional participation.";
+            el.cardExplanation.innerText = item.explanation;
             el.chapterBadge.innerText = `Chapter ${item.chapter}`;
-            el.tierBadge.innerText = `Tier ${item.tier || 3} Strategy`;
+            el.tierBadge.innerText = `Tier ${item.tier} Strategy`;
             el.currentCardNum.innerText = currentIndex + 1;
             el.totalCardNum.innerText = currentViewData.length;
 
@@ -453,10 +421,6 @@
             reviewModeActive = false;
             let pool = [...allData];
             pool.sort(() => Math.random() - 0.5);
-            // Repeat array if pool is smaller than 100 for simulation testing
-            while(pool.length < 10 && pool.length > 0) {
-                pool = pool.concat(pool);
-            }
             quizHistory = pool.slice(0, Math.min(100, pool.length));
             userAnswers = {};
             flaggedQuestions.clear();
@@ -510,7 +474,7 @@
         function showQuestion() {
             const item = quizHistory[currentIndex];
             el.quizProgressText.innerText = `Question ${currentIndex + 1} of ${quizHistory.length}`;
-            el.quizChapterBadge.innerText = `Chapter ${item.chapter} | Tier ${item.tier || 3}`;
+            el.quizChapterBadge.innerText = `Chapter ${item.chapter} | Tier ${item.tier}`;
             el.quizQuestion.innerText = item.front;
 
             if (flaggedQuestions.has(currentIndex)) {
@@ -523,10 +487,10 @@
 
             if (!quizOptionsCache[currentIndex]) {
                 let distractors = allData.filter(d => d.back !== item.back).map(d => d.back);
-                while(distractors.length < 3) {
-                    distractors.push("Alternative DAMA compliance procedure " + (distractors.length + 1));
-                }
                 distractors.sort(() => Math.random() - 0.5);
+                while(distractors.length < 3) {
+                    distractors.push("Alternative compliance protocol option " + (distractors.length + 1));
+                }
                 let options = [item.back, ...distractors.slice(0, 3)];
                 options.sort(() => Math.random() - 0.5);
                 quizOptionsCache[currentIndex] = options;
@@ -559,7 +523,7 @@
                 el.eliminationBox.classList.remove('hidden');
                 el.eliminationText.innerHTML = `
                     <div><strong>Correct Answer:</strong> ${item.back}</div>
-                    <div class="mt-1 text-slate-400"><strong>DAMA Rationale & Elimination Logic:</strong> ${item.explanation || "DAMA standards reject absolute qualifiers and isolate behaviors."}</div>
+                    <div class="mt-1 text-slate-400"><strong>DAMA Rationale:</strong> ${item.explanation}</div>
                 `;
             } else {
                 el.eliminationBox.classList.add('hidden');
@@ -606,10 +570,10 @@
             el.quizPrev.style.visibility = reviewIdx === 0 ? 'hidden' : 'visible';
 
             el.quizTitle.innerText = `Review Incorrect Answer (${reviewIdx + 1} of ${incorrectList.length})`;
-            el.quizChapterBadge.innerText = `Chapter ${itemObj.item.chapter} | Tier ${itemObj.item.tier || 3}`;
+            el.quizChapterBadge.innerText = `Chapter ${itemObj.item.chapter} | Tier ${itemObj.item.tier}`;
             el.quizQuestion.innerHTML = `
                 <div class="text-base text-slate-100 font-bold mb-2">${itemObj.item.front}</div>
-                <div class="text-xs text-blue-400 bg-blue-950/40 p-3 rounded-xl border border-blue-800/50"><strong>Elimination Breakdown:</strong> ${itemObj.item.explanation || "Absolute terms were eliminated according to DAMA rules."}</div>
+                <div class="text-xs text-blue-400 bg-blue-950/40 p-3 rounded-xl border border-blue-800/50"><strong>Rationale:</strong> ${itemObj.item.explanation}</div>
             `;
 
             el.quizOptions.innerHTML = '';
@@ -765,7 +729,7 @@
             const matches = allData.filter(d => 
                 d.front.toLowerCase().includes(q) || 
                 d.back.toLowerCase().includes(q) || 
-                (d.explanation && d.explanation.toLowerCase().includes(q))
+                d.explanation.toLowerCase().includes(q)
             );
 
             el.glossaryResults.innerHTML = '';
@@ -779,7 +743,7 @@
                 card.className = "p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1";
                 card.innerHTML = `
                     <div class="flex justify-between items-center text-[10px] font-extrabold text-amber-400 uppercase">
-                        <span>Chapter ${item.chapter} | Tier ${item.tier || 3}</span>
+                        <span>Chapter ${item.chapter} | Tier ${item.tier}</span>
                     </div>
                     <div class="text-xs font-bold text-slate-100">${item.front}</div>
                     <div class="text-xs text-slate-300 font-medium">${item.back}</div>
@@ -834,6 +798,7 @@
             el.analyticsModal.classList.add('hidden');
         };
 
+        // FIXED: Flashcard tab switcher click handler updates view state & counters properly
         el.studyBtn.onclick = () => {
             clearInterval(timerInterval);
             el.quizView.classList.add('hidden');
