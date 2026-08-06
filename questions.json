@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "domain": "Data Governance",
+    "type": "Role & Responsibility",
+    "question": "What Organization Structure should set the overall direction for Data Governance?",
+    "options": [
+      "Data Governance Steering Committee",
+      "Data Governance Office",
+      "PMO",
+      "IT Leadership Team",
+      "Data Quality Board"
+    ],
+    "correct": 0,
+    "explanation": "The Steering Committee / Council is the highest executive body that sets direction, while the DGO handles day-to-day operations."
+  }
+]
