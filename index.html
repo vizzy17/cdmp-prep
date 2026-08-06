@@ -99,7 +99,6 @@
 
         <!-- ================= FLASHCARD VIEW ================= -->
         <div id="flashcard-view" class="flex-1 flex flex-col">
-            <!-- Expanded min-height container for flashcard to prevent text cutoff -->
             <div class="perspective-1000 w-full flex-1 min-h-[420px] sm:min-h-[480px] cursor-pointer mb-6" id="flashcard-element">
                 <div class="relative w-full h-full duration-500 transform-style-3d rounded-3xl border border-slate-800 bg-slate-900 shadow-2xl p-6 sm:p-10 flex flex-col justify-between" id="card-inner">
                     
@@ -328,6 +327,9 @@
             } else {
                 currentViewData = allData.filter(d => d.chapter == val);
             }
+            if (currentViewData.length === 0 && allData.length > 0) {
+                currentViewData = [...allData];
+            }
             currentIndex = 0;
         }
 
@@ -483,6 +485,7 @@
         }
 
         function showQuestion() {
+            if (quizHistory.length === 0) return;
             const item = quizHistory[currentIndex];
             el.quizProgressText.innerText = `Question ${currentIndex + 1} of ${quizHistory.length}`;
             el.quizChapterBadge.innerText = `Chapter ${item.chapter} | Tier ${item.tier}`;
@@ -643,7 +646,7 @@
 
             latestIncorrectList = incorrectList;
             const total = quizHistory.length;
-            const percentage = Math.round((correctCount / total) * 100);
+            const percentage = total > 0 ? Math.round((correctCount / total) * 100) : 0;
             const passed = percentage >= 70;
 
             el.quizHeaderBar.classList.add('hidden');
@@ -679,6 +682,8 @@
                 updateActiveTab(el.studyBtn);
                 el.quizView.classList.add('hidden');
                 el.flashView.classList.remove('hidden');
+                prepareStudyQueue();
+                renderCard();
             };
         }
 
@@ -690,6 +695,8 @@
                     updateActiveTab(el.studyBtn);
                     el.quizView.classList.add('hidden');
                     el.flashView.classList.remove('hidden');
+                    prepareStudyQueue();
+                    renderCard();
                 }
                 return;
             }
