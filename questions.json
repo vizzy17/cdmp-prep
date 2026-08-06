@@ -4062,7 +4062,7 @@
     "correct": 0,
     "explanation": "SQLi exploits poor input validation to run unauthorized database commands; parameterized queries neutralize this by separating code from data."
   },
-[
+
   {
     "id": 291,
     "domain": "Data Integration",
