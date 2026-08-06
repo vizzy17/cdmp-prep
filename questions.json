@@ -1473,7 +1473,7 @@
     "explanation": "Harvesting automates the gathering of technical metadata from diverse source systems to populate enterprise metadata catalogs."
   },
   {
-    id": 106,
+    "id": 106,
     "domain": "Data Quality",
     "type": "Role & Responsibility",
     "question": "Who is primarily accountable for remediating data quality errors identified within their specific business domain?",
@@ -1487,7 +1487,7 @@
     "explanation": "Business data stewards own domain data quality and work with operational teams to correct root causes and clean defective data."
   },
   {
-    id": 107,
+    "id": 107,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What does the 'Veracity' characteristic of Big Data refer to?",
@@ -1501,7 +1501,7 @@
     "explanation": "Veracity addresses the trustworthiness and data quality challenges of messy, unstructured big data streams."
   },
   {
-    id": 108,
+    "id": 108,
     "domain": "Data Handling Ethics",
     "type": "Process & Lifecycle",
     "question": "Which of the following practices represents a violation of ethical data collection?",
@@ -1515,7 +1515,7 @@
     "explanation": "Covert, unconsented data collection violates transparency, privacy rights, and ethical data management principles."
   },
   {
-    id": 109,
+    "id": 109,
     "domain": "Data Governance",
     "type": "Distinction / Definition",
     "question": "What is the primary objective of a Data Domain in enterprise governance?",
@@ -1529,7 +1529,7 @@
     "explanation": "Data domains segment the enterprise's data landscape into manageable subject areas, enabling targeted stewardship and governance."
   },
   {
-    id": 110,
+    "id": 110,
     "domain": "Data Architecture",
     "type": "Fact / Exception",
     "question": "What is Enterprise Information Architecture (EIA)?",
@@ -1543,7 +1543,7 @@
     "explanation": "EIA aligns organizational information flow, storage, and architecture models with broader business goals."
   },
   {
-    id": 111,
+    "id": 111,
     "domain": "Data Modeling and Design",
     "type": "Role & Responsibility",
     "question": "Who is responsible for establishing enterprise data modeling standards, conventions, and naming rules?",
@@ -1557,7 +1557,7 @@
     "explanation": "Senior data architects and modelers set organizational modeling standards, naming conventions, and structural design patterns."
   },
   {
-    id": 112,
+    "id": 112,
     "domain": "Data Storage and Operations",
     "type": "Process & Lifecycle",
     "question": "Which activity is part of the Database Capacity Planning lifecycle?",
@@ -1571,7 +1571,7 @@
     "explanation": "Capacity planning anticipates storage and hardware scaling needs to maintain optimal database performance as data volumes grow."
   },
   {
-    id": 113,
+    "id": 113,
     "domain": "Data Security",
     "type": "Distinction / Definition",
     "question": "What is Role-Based Access Control (RBAC)?",
@@ -1585,7 +1585,7 @@
     "explanation": "RBAC grants permissions based on defined job roles, ensuring users inherit only the access required for their operational duties."
   },
   {
-    id": 114,
+    "id": 114,
     "domain": "Data Integration",
     "type": "Fact / Exception",
     "question": "What is an Enterprise Service Bus (ESB) or API-led connectivity used for in data integration?",
@@ -1599,7 +1599,7 @@
     "explanation": "Integration middleware (ESBs, APIs) facilitates real-time, event-driven data exchange and service communication across enterprise applications."
   },
   {
-    id": 115,
+    "id": 115,
     "domain": "Document and Content Management",
     "type": "Process & Lifecycle",
     "question": "What is the primary goal of Document Indexing?",
@@ -1613,7 +1613,7 @@
     "explanation": "Indexing attaches contextual metadata to unstructured files so users can quickly locate documents within content management repositories."
   },
   {
-    id": 116,
+    "id": 116,
     "domain": "Reference and Master Data",
     "type": "Role & Responsibility",
     "question": "Who is responsible for establishing enterprise-wide standards and definitions for Reference Data (e.g., country codes, currency types)?",
@@ -1627,7 +1627,7 @@
     "explanation": "Reference data governance requires business stewardship to maintain standard, approved lookup codes across all applications."
   },
   {
-    id": 117,
+    "id": 117,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Process & Lifecycle",
     "question": "What is Data Mart consolidation?",
@@ -1641,7 +1641,7 @@
     "explanation": "Consolidating departmental data marts into an EDW creates a single version of truth and ensures enterprise reporting consistency."
   },
   {
-    id": 118,
+    "id": 118,
     "domain": "Metadata Management",
     "type": "Fact / Exception",
     "question": "What is the primary risk of neglecting Metadata Management in an enterprise?",
@@ -1655,7 +1655,7 @@
     "explanation": "Without metadata management, organizations suffer from tribal knowledge loss, unknown data origins, and inability to trust analytics."
   },
   {
-    id": 119,
+    "id": 119,
     "domain": "Data Quality",
     "type": "Distinction / Definition",
     "question": "What is the difference between Preventive and Corrective Data Quality controls?",
@@ -1669,7 +1669,7 @@
     "explanation": "Preventive controls block defects upfront at data entry, whereas corrective controls identify and remediate existing data errors downstream."
   },
   {
-    id": 120,
+    "id": 120,
     "domain": "Big Data and Data Science",
     "type": "Role & Responsibility",
     "question": "Who is accountable for managing distributed big data storage clusters, provisioning compute nodes, and ensuring cluster availability?",
@@ -1683,7 +1683,7 @@
     "explanation": "Big data administrators handle cluster infrastructure, node provisioning, and operational stability for environments like Hadoop or Spark."
   },
   {
-    id": 121,
+    "id": 121,
     "domain": "Data Handling Ethics",
     "type": "Fact / Exception",
     "question": "What is the core purpose of an Ethical Data Framework in enterprise data management?",
@@ -1697,7 +1697,7 @@
     "explanation": "An ethical framework ensures that data practices respect human rights, privacy, fairness, and transparency beyond minimum legal compliance."
   },
   {
-    id": 122,
+    "id": 122,
     "domain": "Data Governance",
     "type": "Process & Lifecycle",
     "question": "Which of the following is NOT a standard phase in the establishment of a Data Governance program?",
@@ -1711,7 +1711,7 @@
     "explanation": "Data governance relies on cross-functional business collaboration, making the disbanding of business units antithetical to governance."
   },
   {
-    id": 123,
+    "id": 123,
     "domain": "Data Architecture",
     "type": "Distinction / Definition",
     "question": "What is an Enterprise Data Model (EDM)?",
@@ -1725,7 +1725,7 @@
     "explanation": "An enterprise data model provides a global blueprint of core business concepts and relationships, serving as a standard reference for all IT projects."
   },
   {
-    id": 124,
+    "id": 124,
     "domain": "Data Modeling and Design",
     "type": "Process & Lifecycle",
     "question": "During which phase of data modeling are foreign key relationships and referential integrity constraints first established?",
@@ -2719,7 +2719,7 @@
     "explanation": "Reference data stewards review and authorize changes to lookup codes to prevent unstandardized codes from breaking enterprise applications."
   },
   {
-    id": 195,
+    "id": 195,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is Slowely Changing Dimension (SCD) Type 2?",
@@ -2733,7 +2733,7 @@
     "explanation": "SCD Type 2 preserves history by versioning dimension rows, ensuring historical facts tie correctly to the attribute values active at the time of the transaction."
   },
   {
-    id": 196,
+    "id": 196,
     "domain": "Metadata Management",
     "type": "Process & Lifecycle",
     "question": "Which of the following is a primary objective of Metadata Quality Management?",
@@ -2747,7 +2747,7 @@
     "explanation": "Metadata quality management verifies that catalogs, glossaries, and lineage data are reliable and trustworthy for organizational use."
   },
   {
-    id": 197,
+    "id": 197,
     "domain": "Data Quality",
     "type": "Role & Responsibility",
     "question": "Who is accountable for monitoring operational data entry errors at the source and implementing front-end validation rules?",
@@ -2761,7 +2761,7 @@
     "explanation": "Operational owners and stewards collaborate with IT to implement preventive validation rules where data is initially captured."
   },
   {
-    id": 198,
+    "id": 198,
     "domain": "Big Data and Data Science",
     "type": "Distinction / Definition",
     "question": "What is Apache Spark primarily used for in Big Data architectures?",
@@ -2775,7 +2775,7 @@
     "explanation": "Spark provides high-speed, in-memory distributed data processing capabilities, vastly outperforming older disk-based Hadoop MapReduce jobs."
   },
   {
-    id": 199,
+    "id": 199,
     "domain": "Data Handling Ethics",
     "type": "Fact / Exception",
     "question": "What is the ethical implication of 'Informed Consent' in data collection?",
@@ -2789,7 +2789,7 @@
     "explanation": "Informed consent requires absolute transparency, ensuring individuals understand and voluntarily agree to data collection and usage terms."
   },
   {
-    id": 200,
+    "id": 200,
     "domain": "Data Governance",
     "type": "Role & Responsibility",
     "question": "Which governing body provides ultimate oversight, resolves cross-domain disputes, and approves enterprise-wide data policies?",
@@ -3223,7 +3223,7 @@
     "explanation": "The golden record represents the ultimate single source of truth for an entity after survivorship rules resolve duplicate records."
   },
   {
-    id": 231,
+    "id": 231,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is an OLAP Cube designed to achieve in Business Intelligence?",
@@ -3251,7 +3251,7 @@
     "explanation": "Data engineers monitor operational runtime metadata (job durations, row counts, failure codes) to keep data pipelines healthy."
   },
   {
-    id": 233,
+    "id": 233,
     "domain": "Data Quality",
     "type": "Distinction / Definition",
     "question": "What does the 'Uniqueness' dimension of Data Quality measure?",
@@ -3265,7 +3265,7 @@
     "explanation": "Uniqueness checks verify that unique constraints are met, ensuring no unintended duplicate records exist for entities like customers or orders."
   },
   {
-    id": 234,
+    "id": 234,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is the primary architectural difference between a Data Lake and a Data Warehouse?",
@@ -3279,7 +3279,7 @@
     "explanation": "Data lakes use schema-on-read for raw, massive-scale multi-format data, while data warehouses use schema-on-write for structured business reporting."
   },
   {
-    id": 235,
+    "id": 235,
     "domain": "Data Handling Ethics",
     "type": "Process & Lifecycle",
     "question": "What is 'Algorithmic Bias' in data science and AI models?",
@@ -3293,7 +3293,7 @@
     "explanation": "Algorithmic bias occurs when machine learning models inherit prejudices present in historical training data, resulting in discriminatory decisions."
   },
   {
-    id": 236,
+    "id": 236,
     "domain": "Data Governance",
     "type": "Role & Responsibility",
     "question": "Who is accountable for defining business rules, data definitions, and quality expectations for specific data domains?",
@@ -3307,7 +3307,7 @@
     "explanation": "Data stewards act as the business owners of data domains, setting definitions, standards, and quality rules for their specific data areas."
   },
   {
-    id": 237,
+    "id": 237,
     "domain": "Data Architecture",
     "type": "Distinction / Definition",
     "question": "What is a Hub-and-Spoke integration architecture pattern?",
@@ -3321,7 +3321,7 @@
     "explanation": "Hub-and-spoke routes all inter-system communication through a centralized hub server rather than maintaining direct point-to-point connections."
   },
   {
-    id": 238,
+    "id": 238,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
     "question": "What is the primary function of a Foreign Key constraint in a relational database?",
@@ -3335,7 +3335,7 @@
     "explanation": "Foreign keys maintain structural integrity across relational tables by preventing orphan records and broken associations."
   },
   {
-    id": 239,
+    "id": 239,
     "domain": "Data Storage and Operations",
     "type": "Process & Lifecycle",
     "question": "What is the purpose of RAID (Redundant Array of Independent Disks) configuration in data storage?",
@@ -3349,7 +3349,7 @@
     "explanation": "RAID protects against data loss and boosts I/O performance by distributing data across multiple physical hard drives with mirroring or parity."
   },
   {
-    id": 240,
+    "id": 240,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is the core philosophy of a 'Zero Trust' security architecture?",
@@ -3363,7 +3363,7 @@
     "explanation": "Zero Trust eliminates implicit trust based on network perimeter, mandating continuous authentication and authorization for every access request."
   },
   {
-    id": 241,
+    "id": 241,
     "domain": "Data Integration",
     "type": "Distinction / Definition",
     "question": "What is Data Virtualization?",
@@ -3377,7 +3377,7 @@
     "explanation": "Data virtualization creates a unified, logical data layer that abstracts physical storage locations, delivering real-time access without physical ETL batching."
   },
   {
-    id": 242,
+    "id": 242,
     "domain": "Document and Content Management",
     "type": "Fact / Exception",
     "question": "What is the legal significance of an Electronic Signature (e-Sign) in Document Management?",
@@ -3391,7 +3391,7 @@
     "explanation": "Compliant e-signatures use digital certificates and audit trails to legally substitute traditional handwritten signatures on digital agreements."
   },
   {
-    id": 243,
+    "id": 243,
     "domain": "Reference and Master Data",
     "type": "Distinction / Definition",
     "question": "What is a 'Coexistence' deployment style in Master Data Management?",
@@ -3405,7 +3405,7 @@
     "explanation": "In a coexistence MDM model, source systems still capture data, but the MDM hub consolidates a golden record for reporting and cross-system alignment."
   },
   {
-    id": 244,
+    "id": 244,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Distinction / Definition",
     "question": "What is the difference between a Star Schema and a Snowflake Schema in dimensional modeling?",
@@ -3419,7 +3419,7 @@
     "explanation": "Star schemas use flat, denormalized dimensions for fast query performance, while snowflake schemas normalize dimensions into hierarchical sub-tables to save storage space."
   },
   {
-    id": 245,
+    "id": 245,
     "domain": "Metadata Management",
     "type": "Fact / Exception",
     "question": "What is an Enterprise Data Catalog primarily used for?",
@@ -3433,7 +3433,7 @@
     "explanation": "Data catalogs act as a searchable 'Google for enterprise data', helping users find datasets, view lineage, and check quality scorecards."
   },
   {
-    id": 246,
+    "id": 246,
     "domain": "Data Quality",
     "type": "Process & Lifecycle",
     "question": "What does the 'Completeness' dimension of Data Quality measure?",
@@ -3447,7 +3447,7 @@
     "explanation": "Completeness checks whether required fields contain actual data rather than blank, null, or missing values."
   },
   {
-    id": 247,
+    "id": 247,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What are the two core phases of the traditional Hadoop MapReduce programming model?",
@@ -3461,7 +3461,7 @@
     "explanation": "MapReduce processes big data by mapping data across distributed nodes and then reducing/aggregating the mapped intermediate results."
   },
   {
-    id": 248,
+    "id": 248,
     "domain": "Data Handling Ethics",
     "type": "Fact / Exception",
     "question": "What is the 'Right to be Forgotten' (Data Erasure) mandated by regulations like GDPR?",
@@ -3475,7 +3475,7 @@
     "explanation": "Data erasure empowers individuals to demand complete deletion of their personal information from corporate records under specified legal conditions."
   },
   {
-    id": 249,
+    "id": 249,
     "domain": "Data Governance",
     "type": "Role & Responsibility",
     "question": "Who is responsible for representing business units, prioritizing data quality issues, and collaborating on enterprise data standards?",
@@ -3489,7 +3489,7 @@
     "explanation": "Business data stewards form collaborative councils to tackle cross-functional data issues, prioritize fixes, and standardize definitions."
   },
   {
-    id": 250,
+    "id": 250,
     "domain": "Data Architecture",
     "type": "Fact / Exception",
     "question": "What is a key data management challenge in a Microservices architecture?",
@@ -3503,7 +3503,7 @@
     "explanation": "Microservices isolate database storage per service, making cross-service transactions and global data consistency challenging (often solved via eventual consistency/Sagas)."
   },
   {
-    id": 251,
+    "id": 251,
     "domain": "Data Modeling and Design",
     "type": "Distinction / Definition",
     "question": "What does Relationship Cardinality define in data modeling?",
@@ -3517,7 +3517,7 @@
     "explanation": "Cardinality specifies how many instances of one entity can be associated with instances of another entity in a data model."
   },
   {
-    id": 252,
+    "id": 252,
     "domain": "Data Storage and Operations",
     "type": "Process & Lifecycle",
     "question": "What is Data Tiering (Hot, Warm, Cold storage)?",
@@ -3531,7 +3531,7 @@
     "explanation": "Data tiering routes frequently accessed data to expensive high-performance storage (hot) and infrequently accessed data to cheap archive storage (cold)."
   },
   {
-    id": 253,
+    "id": 253,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is Multi-Factor Authentication (MFA) in data access security?",
@@ -3545,7 +3545,7 @@
     "explanation": "MFA significantly strengthens security by requiring multiple independent credentials beyond just a standard username and password."
   },
   {
-    id": 254,
+    "id": 254,
     "domain": "Data Integration",
     "type": "Distinction / Definition",
     "question": "What is a Webhook in modern data integration?",
@@ -3559,7 +3559,7 @@
     "explanation": "Webhooks enable event-driven architecture by pushing data updates automatically via HTTP POST requests the moment an event happens."
   },
   {
-    id": 255,
+    "id": 255,
     "domain": "Document and Content Management",
     "type": "Process & Lifecycle",
     "question": "What is Content Taxonomy in Document Management?",
@@ -3573,7 +3573,7 @@
     "explanation": "Taxonomies provide a structured tree of categories, enabling users to navigate and browse unstructured document repositories logically."
   },
   {
-    id": 256,
+    "id": 256,
     "domain": "Reference and Master Data",
     "type": "Distinction / Definition",
     "question": "What is a 'Registry' deployment style in Master Data Management?",
@@ -3587,7 +3587,7 @@
     "explanation": "In a registry MDM style, the hub acts as an index to resolve identities across systems without duplicating or hosting the underlying master attribute data."
   },
   {
-    id": 257,
+    "id": 257,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is a Data Mart?",
@@ -3601,7 +3601,7 @@
     "explanation": "Data marts provide tailored, department-specific dimensional views derived from or feeding into the broader enterprise data warehouse."
   },
   {
-    id": 258,
+    "id": 258,
     "domain": "Metadata Management",
     "type": "Role & Responsibility",
     "question": "Who is responsible for defining physical database schema standards and managing enterprise schema repositories?",
@@ -3615,7 +3615,7 @@
     "explanation": "DBAs and data architects maintain physical data dictionaries, database schemas, and data model repositories."
   },
   {
-    id": 259,
+    "id": 259,
     "domain": "Data Quality",
     "type": "Process & Lifecycle",
     "question": "What does the 'Consistency' dimension of Data Quality measure?",
@@ -3629,7 +3629,7 @@
     "explanation": "Consistency ensures that the same data element (e.g., customer address or status) reports identical values across different systems without contradictions."
   },
   {
-    id": 260,
+    "id": 260,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is a 'Data Lakehouse' architectural pattern?",
@@ -3643,7 +3643,7 @@
     "explanation": "Lakehouse architectures (like Delta Lake or Iceberg) bring reliability, governance, and SQL performance directly on top of low-cost object storage data lakes."
   },
   {
-    id": 261,
+    "id": 261,
     "domain": "Data Handling Ethics",
     "type": "Process & Lifecycle",
     "question": "What is the core principle of 'Data Minimization' in privacy ethics?",
@@ -3657,7 +3657,7 @@
     "explanation": "Data minimization mandates that organizations gather only the minimum personal data required for their stated objective, reducing privacy exposure."
   },
   {
-    id": 262,
+    "id": 262,
     "domain": "Data Governance",
     "type": "Fact / Exception",
     "question": "What is a Data Sharing Agreement (DSA)?",
@@ -3671,7 +3671,7 @@
     "explanation": "DSAs legally or contractually bind data providers and consumers to compliance, privacy, security, and usage boundaries."
   },
   {
-    id": 263,
+    "id": 263,
     "domain": "Data Architecture",
     "type": "Distinction / Definition",
     "question": "What is Event-Driven Architecture (EDA)?",
@@ -3685,7 +3685,7 @@
     "explanation": "EDA decouples systems by using event brokers (e.g., Kafka) to broadcast state changes instantly to any interested subscribing services."
   },
   {
-    id": 264,
+    "id": 264,
     "domain": "Data Modeling and Design",
     "type": "Process & Lifecycle",
     "question": "What is the correct hierarchical progression of data models during system development?",
@@ -3699,7 +3699,7 @@
     "explanation": "Data modeling progresses from high-level business concepts (conceptual) to detailed attributes (logical) down to database-specific DDL implementation (physical)."
   },
   {
-    id": 265,
+    "id": 265,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
     "question": "What is Write-Ahead Logging (WAL) in database systems?",
@@ -3713,7 +3713,7 @@
     "explanation": "WAL guarantees atomicity and durability, ensuring that if a crash occurs, the database can recover by replaying or undoing logged transactions."
   },
   {
-    id": 266,
+    "id": 266,
     "domain": "Data Security",
     "type": "Distinction / Definition",
     "question": "What is the difference between Data Encryption at Rest and Data Encryption in Transit?",
@@ -3727,7 +3727,7 @@
     "explanation": "At rest secures stored files and databases on disk, while in transit secures data packets traveling across networks (e.g., via TLS/HTTPS)."
   },
   {
-    id": 267,
+    "id": 267,
     "domain": "Data Integration",
     "type": "Fact / Exception",
     "question": "What is 'Reverse ETL' in modern data integration?",
@@ -3741,7 +3741,7 @@
     "explanation": "Reverse ETL operationalizes analytical data insights by syncing data warehouse tables back into CRM, marketing, and support platforms."
   },
   {
-    id": 268,
+    "id": 268,
     "domain": "Document and Content Management",
     "type": "Process & Lifecycle",
     "question": "Which of the following represents the correct lifecycle stages of a Document?",
@@ -3755,7 +3755,7 @@
     "explanation": "Documents follow a governed lifecycle from initial authoring and collaboration through active storage, archival retention, and ultimate legal disposition."
   },
   {
-    id": 269,
+    "id": 269,
     "domain": "Reference and Master Data",
     "type": "Fact / Exception",
     "question": "What is a Cross-Reference Table (XREF) used for in Master Data Management?",
@@ -3769,7 +3769,7 @@
     "explanation": "XREF tables maintain the relational links between feeder system keys and the unified MDM master identifier."
   },
   {
-    id": 270,
+    "id": 270,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is Slowly Changing Dimension (SCD) Type 1?",
@@ -3783,7 +3783,7 @@
     "explanation": "SCD Type 1 updates changed attribute values directly in place, meaning historical tracking of past attribute values is lost."
   },
   {
-    id": 271,
+    "id": 271,
     "domain": "Metadata Management",
     "type": "Process & Lifecycle",
     "question": "What is Metadata Impact Analysis used for?",
@@ -3797,7 +3797,7 @@
     "explanation": "Impact analysis uses metadata lineage to trace dependencies, letting developers see what systems break before altering production schemas."
   },
   {
-    id": 272,
+    "id": 272,
     "domain": "Data Quality",
     "type": "Fact / Exception",
     "question": "What is the purpose of automated Data Profiling Rules?",
@@ -3811,7 +3811,7 @@
     "explanation": "Profiling rules inspect data automatically to expose hidden quality defects, structural anomalies, and formatting irregularities."
   },
   {
-    id": 273,
+    "id": 273,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is a Feature Store in Machine Learning operations (MLOps)?",
@@ -3825,7 +3825,7 @@
     "explanation": "Feature stores ensure consistency and reusability by centrally managing ML features across both training pipelines and production scoring."
   },
   {
-    id": 274,
+    "id": 274,
     "domain": "Data Handling Ethics",
     "type": "Fact / Exception",
     "question": "What is a primary ethical risk associated with aggressive corporate Data Monetization?",
@@ -3839,7 +3839,7 @@
     "explanation": "Aggressive monetization without ethical safeguards can cross privacy boundaries, exploiting user data in ways consumers never anticipated or approved."
   },
   {
-    id": 275,
+    "id": 275,
     "domain": "Data Governance",
     "type": "Distinction / Definition",
     "question": "What is the difference between a Data Dictionary and a Business Glossary?",
@@ -3979,7 +3979,7 @@
     "explanation": "Data scientists design and train predictive models to uncover insights and automate complex decisions from big data."
   },
   {
-    id": 285,
+    "id": 285,
     "domain": "Data Handling Ethics",
     "type": "Distinction / Definition",
     "question": "What is the primary goal of Data Fairness in ethical analytics?",
@@ -3993,7 +3993,7 @@
     "explanation": "Fairness prevents algorithmic discrimination and ensures equitable treatment across diverse populations."
   },
   {
-    id": 286,
+    "id": 286,
     "domain": "Data Governance",
     "type": "Process & Lifecycle",
     "question": "Which of the following represents an effective operational feedback loop in Data Governance?",
@@ -4007,7 +4007,7 @@
     "explanation": "Feedback loops ensure that operational problems drive continuous improvements in governance policies, definitions, and data quality rules."
   },
   {
-    id": 287,
+    "id": 287,
     "domain": "Data Architecture",
     "type": "Role & Responsibility",
     "question": "Who is accountable for designing and maintaining the enterprise data dictionary and semantic modeling standards?",
@@ -4021,7 +4021,7 @@
     "explanation": "Data architects establish semantic definitions, naming conventions, and structural modeling standards across the enterprise."
   },
   {
-    id": 288,
+    "id": 288,
     "domain": "Data Modeling and Design",
     "type": "Distinction / Definition",
     "question": "What is a Junk Dimension in dimensional modeling?",
@@ -4035,7 +4035,7 @@
     "explanation": "Junk dimensions group miscellaneous flags and attributes (like Yes/No indicators) into a single table to avoid cluttering fact tables with countless tiny dimensions."
   },
   {
-    id": 289,
+    "id": 289,
     "domain": "Data Storage and Operations",
     "type": "Process & Lifecycle",
     "question": "What is the primary purpose of Database Capacity Planning?",
@@ -4049,7 +4049,7 @@
     "explanation": "Capacity planning ensures that database infrastructure scales proactively ahead of storage exhaustion or performance bottlenecks."
   },
   {
-    id": 290,
+    "id": 290,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is SQL Injection (SQLi) and how is it mitigated?",
@@ -4190,7 +4190,7 @@
     "explanation": "Departmental stewards apply governance standards locally, ensuring operational compliance and high data quality within their unit."
   },
   {
-    id": 300,
+    "id": 300,
     domain": "Data Architecture",
     "type": "Process & Lifecycle",
     "question": "What is the primary goal of conducting an Architecture Trade-off Analysis?",
@@ -4232,7 +4232,7 @@
     "explanation": "In-memory architectures eliminate disk I/O bottlenecks, delivering massive speed improvements for high-throughput applications."
   },
   {
-    id": 303,
+    "id": 303,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is Data Masking in database security?",
@@ -4246,7 +4246,7 @@
     "explanation": "Data masking hides sensitive real values (like credit cards or SSNs) while maintaining usable format structures for authorized testing or viewing."
   },
   {
-    id": 304,
+    "id": 304,
     "domain": "Data Integration",
     "type": "Role & Responsibility",
     "question": "Who is responsible for designing batch integration schedules and managing data transformation mapping documents?",
@@ -4274,7 +4274,7 @@
     "explanation": "Workflow automation streamlines content processing by routing files automatically to the right personnel for review and sign-off."
   },
   {
-    id": 306,
+    "id": 306,
     "domain": "Reference and Master Data",
     "type": "Fact / Exception",
     "question": "What is a 'Consolidation' deployment style in Master Data Management?",
@@ -4288,7 +4288,7 @@
     "explanation": "In consolidation MDM, the hub builds the single view of truth for analytical reporting without altering operational feeder systems."
   },
   {
-    id": 307,
+    "id": 307,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Process & Lifecycle",
     "question": "Which activity is part of the BI Semantic Layer design?",
@@ -4302,7 +4302,7 @@
     "explanation": "The semantic layer abstracts complex database joins into intuitive business terms, ensuring consistent metric calculations across all reports."
   },
   {
-    id": 308,
+    "id": 308,
     "domain": "Metadata Management",
     "type": "Role & Responsibility",
     "question": "Who is responsible for validating technical metadata automated harvesting jobs and correcting broken lineage links?",
@@ -4316,7 +4316,7 @@
     "explanation": "Metadata admins ensure automated scanners successfully capture technical lineage across databases, ETL tools, and reports."
   },
   {
-    id": 309,
+    "id": 309,
     "domain": "Data Quality",
     "type": "Distinction / Definition",
     "question": "What is the difference between Data Profiling and Data Quality Assessment?",
@@ -4330,7 +4330,7 @@
     "explanation": "Profiling explores what the data looks like, whereas assessment evaluates how well the data conforms to defined quality standards."
   },
   {
-    id": 310,
+    "id": 310,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is Unsupervised Learning in Machine Learning?",
@@ -4344,7 +4344,7 @@
     "explanation": "Unsupervised learning groups or categorizes unlabeled data automatically (e.g., customer segmentation via clustering algorithms)."
   },
   {
-    id": 311,
+    "id": 311,
     "domain": "Data Handling Ethics",
     "type": "Process & Lifecycle",
     "question": "What is an Ethical Impact Assessment (EIA) for data projects?",
@@ -4358,7 +4358,7 @@
     "explanation": "EIAs evaluate the broader societal and ethical consequences of data projects, ensuring proactive risk mitigation before launch."
   },
   {
-    id": 312,
+    "id": 312,
     "domain": "Data Governance",
     "type": "Fact / Exception",
     "question": "What is a Data Stewardship Charter?",
@@ -4372,7 +4372,7 @@
     "explanation": "The steward charter defines the scope of authority, accountability, and operational expectations for appointed data stewards."
   },
   {
-    id": 313,
+    "id": 313,
     "domain": "Data Architecture",
     "type": "Distinction / Definition",
     "question": "What is a Monolithic Architecture versus a Distributed Architecture?",
@@ -4386,7 +4386,7 @@
     "explanation": "Monoliths bundle all functions together, whereas distributed architectures scale services independently across decentralized nodes."
   },
   {
-    id": 314,
+    "id": 314,
     "domain": "Data Modeling and Design",
     "type": "Process & Lifecycle",
     "question": "Which activity is performed during Physical Data Model generation?",
@@ -4400,7 +4400,7 @@
     "explanation": "Physical modeling adapts the logical design to a specific DBMS engine, generating the actual DDL statements required for deployment."
   },
   {
-    id": 315,
+    "id": 315,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
     "question": "What is the primary purpose of Database Vacuuming (or Garbage Collection)?",
@@ -4414,7 +4414,7 @@
     "explanation": "Vacuuming cleans up dead storage rows left by updates/deletes in multi-version concurrency control (MVCC) databases, preventing disk bloat."
   },
   {
-    id": 316,
+    "id": 316,
     "domain": "Data Security",
     "type": "Process & Lifecycle",
     "question": "Which step is critical during the decommissioning phase of a database's lifecycle?",
@@ -4428,7 +4428,7 @@
     "explanation": "Decommissioning requires cryptographic sanitization or physical destruction of storage media to prevent data leakage from retired assets."
   },
   {
-    id": 317,
+    "id": 317,
     "domain": "Data Integration",
     "type": "Distinction / Definition",
     "question": "What is Enterprise Application Integration (EAI)?",
@@ -4442,7 +4442,7 @@
     "explanation": "EAI connects independent enterprise software systems so they can share data and business processes efficiently."
   },
   {
-    id": 318,
+    "id": 318,
     "domain": "Document and Content Management",
     "type": "Fact / Exception",
     "question": "What is Digital Rights Management (DRM) in content systems?",
@@ -4456,7 +4456,7 @@
     "explanation": "DRM enforces restrictions on digital files (preventing copying, printing, or unauthorized sharing) to protect intellectual property."
   },
   {
-    id": 319,
+    "id": 319,
     "domain": "Reference and Master Data",
     "type": "Role & Responsibility",
     "question": "Who is responsible for defining data matching rules, thresholds, and survivorship algorithms in an MDM hub?",
@@ -4470,7 +4470,7 @@
     "explanation": "Master data architects and stewards configure the matching logic and survivorship rules that merge duplicate records into golden records."
   },
   {
-    id": 320,
+    "id": 320,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is an Incremental Refresh in a Business Intelligence semantic model?",
@@ -4484,7 +4484,7 @@
     "explanation": "Incremental refresh saves processing time and compute resources by updating only recent data partitions in analytical models."
   },
   {
-    id": 321,
+    "id": 321,
     "domain": "Metadata Management",
     "type": "Process & Lifecycle",
     "question": "What is Metadata Harvesting?",
@@ -4498,7 +4498,7 @@
     "explanation": "Harvesting automates the extraction of metadata from diverse technical sources into a unified repository for discovery."
   },
   {
-    id": 322,
+    "id": 322,
     "domain": "Data Quality",
     "type": "Role & Responsibility",
     "question": "Who is responsible for investigating automated data quality alerts and resolving root causes within operational systems?",
@@ -4512,7 +4512,7 @@
     "explanation": "Stewards and operational owners monitor data quality dashboards and fix the root causes when rules are violated."
   },
   {
-    id": 323,
+    "id": 323,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is Feature Engineering in Machine Learning?",
@@ -4526,7 +4526,7 @@
     "explanation": "Feature engineering transforms raw data into informative variables that help machine learning algorithms discern patterns more effectively."
   },
   {
-    id": 324,
+    "id": 324,
     "domain": "Data Handling Ethics",
     "type": "Process & Lifecycle",
     "question": "Which practice demonstrates strong ethical data governance?",
@@ -4540,7 +4540,7 @@
     "explanation": "Ethical governance centers on transparency, user control, robust security, and strict adherence to privacy rights."
   },
   {
-    id": 325,
+    "id": 325,
     "domain": "Data Governance",
     "type": "Role & Responsibility",
     "question": "Who is responsible for tracking enterprise data governance KPIs, program adoption rates, and maturity scores?",
@@ -4554,7 +4554,7 @@
     "explanation": "The DGPO tracks metrics, monitors program health, and reports governance progress to the steering committee."
   },
   {
-    id": 326,
+    "id": 326,
     "domain": "Data Architecture",
     "type": "Fact / Exception",
     "question": "What is a Data Mesh architectural paradigm?",
@@ -4568,7 +4568,7 @@
     "explanation": "Data mesh decentralizes data ownership to domain teams, treating data as a first-class product with federated governance."
   },
   {
-    id": 327,
+    "id": 327,
     "domain": "Data Modeling and Design",
     "type": "Distinction / Definition",
     "question": "What is the difference between Logical and Physical Data Models?",
@@ -4582,7 +4582,7 @@
     "explanation": "Logical models capture entities, attributes, and relationships conceptually, while physical models add specific DBMS data types, indexes, and constraints."
   },
   {
-    id": 328,
+    "id": 328,
     "domain": "Data Storage and Operations",
     "type": "Process & Lifecycle",
     "question": "What is Database Failover?",
@@ -4596,7 +4596,7 @@
     "explanation": "Failover ensures business continuity by redirecting database traffic automatically to a standby replica when the primary server fails."
   },
   {
-    id": 329,
+    "id": 329,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is the primary function of a Hardware Security Module (HSM)?",
@@ -4610,7 +4610,7 @@
     "explanation": "HSMs provide tamper-resistant hardware storage and processing for highly sensitive encryption keys."
   },
   {
-    id": 330,
+    "id": 330,
     "domain": "Data Integration",
     "type": "Process & Lifecycle",
     "question": "What is Data Ingestion?",
@@ -4624,7 +4624,7 @@
     "explanation": "Ingestion is the initial data movement phase that captures and imports raw data into a staging area, data lake, or warehouse."
   },
   {
-    id": 331,
+    "id": 331,
     "domain": "Document and Content Management",
     "type": "Fact / Exception",
     "question": "What is Content Lifecycle Management (CLM) in document systems?",
@@ -4638,7 +4638,7 @@
     "explanation": "CLM governs unstructured documents across all stages of their existence to ensure compliance, security, and efficient retrieval."
   },
   {
-    id": 332,
+    "id": 332,
     "domain": "Reference and Master Data",
     "type": "Distinction / Definition",
     "question": "What is a Master Data Domain?",
@@ -4652,7 +4652,7 @@
     "explanation": "Master data domains categorize core business entities so organizations can assign targeted stewards and governance rules."
   },
   {
-    id": 333,
+    "id": 333,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Role & Responsibility",
     "question": "Who is responsible for monitoring data warehouse query performance, tuning execution plans, and managing storage indexes?",
@@ -4666,7 +4666,7 @@
     "explanation": "DBAs and data warehouse engineers tune queries, indexes, and partitions to ensure analytical workloads run efficiently."
   },
   {
-    id": 334,
+    "id": 334,
     "domain": "Metadata Management",
     "type": "Fact / Exception",
     "question": "What is Metadata Lineage Analysis?",
@@ -4680,7 +4680,7 @@
     "explanation": "Lineage analysis provides end-to-end visibility into how data is created, transformed, and utilized across the enterprise."
   },
   {
-    id": 335,
+    "id": 335,
     "domain": "Data Quality",
     "type": "Process & Lifecycle",
     "question": "Which of the following is a key phase in a Data Quality Assessment lifecycle?",
@@ -4694,7 +4694,7 @@
     "explanation": "Assessments follow a structured cycle of rule definition, measurement, defect analysis, and executive scorecard reporting."
   },
   {
-    id": 336,
+    "id": 336,
     "domain": "Big Data and Data Science",
     "type": "Distinction / Definition",
     "question": "What is Model Validation in Machine Learning?",
@@ -4708,7 +4708,7 @@
     "explanation": "Model validation tests whether predictive models generalize well to unseen data, preventing overfitting and poor performance."
   },
   {
-    id": 337,
+    "id": 337,
     "domain": "Data Handling Ethics",
     "type": "Fact / Exception",
     "question": "What is the ethical implication of 'Data Profiling without Consent'?",
@@ -4722,7 +4722,7 @@
     "explanation": "Covert profiling breaches ethical boundaries and privacy expectations by evaluating personal behaviors without transparent consent."
   },
   {
-    id": 338,
+    "id": 338,
     "domain": "Data Governance",
     "type": "Process & Lifecycle",
     "question": "What is the primary purpose of a Data Governance Council Escalation Path?",
@@ -4736,7 +4736,7 @@
     "explanation": "Escalation paths ensure that cross-functional disputes that cannot be resolved at the stewardship level are decided by executive leadership."
   },
   {
-    id": 339,
+    "id": 339,
     "domain": "Data Architecture",
     "type": "Role & Responsibility",
     "question": "Who is responsible for defining enterprise cloud migration strategies, hybrid storage models, and architectural patterns?",
@@ -4750,7 +4750,7 @@
     "explanation": "Cloud architects design enterprise migration roadmaps, ensuring cloud storage and integration patterns meet security and scalability standards."
   },
   {
-    id": 340,
+    "id": 340,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
     "question": "What is a Bridge Entity in relational database modeling?",
@@ -4764,7 +4764,7 @@
     "explanation": "Bridge (or junction) tables break down many-to-many relationships by storing foreign keys pointing to both related parent tables."
   },
   {
-    id": 341,
+    "id": 341,
     "domain": "Data Storage and Operations",
     "type": "Process & Lifecycle",
     "question": "What is the primary purpose of Database Performance Tuning?",
@@ -4778,7 +4778,7 @@
     "explanation": "Performance tuning identifies and eliminates bottlenecks (like missing indexes or bad execution plans) to maximize database throughput."
   },
   {
-    id": 342,
+    "id": 342,
     "domain": "Data Security",
     "type": "Distinction / Definition",
     "question": "What is the difference between Vulnerability Assessment and Penetration Testing?",
@@ -4792,7 +4792,7 @@
     "explanation": "Vulnerability scanning lists potential security gaps, whereas penetration testing tests system resilience by attempting real-world exploits."
   },
   {
-    id": 343,
+    "id": 343,
     "domain": "Data Integration",
     "type": "Fact / Exception",
     "question": "What is an Enterprise Service Bus (ESB) anti-pattern?",
@@ -4806,7 +4806,7 @@
     "explanation": "Treating an ESB as a monolithic dumping ground for complex business logic creates heavy maintenance bottlenecks and architectural coupling."
   },
   {
-    id": 344,
+    "id": 344,
     "domain": "Document and Content Management",
     "type": "Process & Lifecycle",
     "question": "What is Content Ingestion and Classification?",
@@ -4820,7 +4820,7 @@
     "explanation": "Ingestion and classification organize unstructured files upon entry, making them searchable and governed by retention policies."
   },
   {
-    id": 345,
+    "id": 345,
     "domain": "Reference and Master Data",
     "type": "Fact / Exception",
     "question": "What is a 'Hybrid' deployment style in Master Data Management?",
@@ -4834,7 +4834,7 @@
     "explanation": "Hybrid MDM balances centralized golden record governance with flexible local source modifications for specific attributes."
   },
   {
-    id": 346,
+    "id": 346,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Process & Lifecycle",
     "question": "Which of the following is a primary objective of Data Warehouse Dimensional Modeling?",
@@ -4848,7 +4848,7 @@
     "explanation": "Dimensional modeling simplifies analytical querying, providing business users with fast, understandable star schema structures."
   },
   {
-    id": 347,
+    "id": 347,
     "domain": "Metadata Management",
     "type": "Role & Responsibility",
     "question": "Who is responsible for defining data governance policies around metadata tagging standards and catalog maintenance?",
@@ -4862,7 +4862,7 @@
     "explanation": "Governance teams and metadata architects establish the standards, glossaries, and tagging rules required for enterprise catalogs."
   },
   {
-    id": 348,
+    "id": 348,
     "domain": "Data Quality",
     "type": "Fact / Exception",
     "question": "What does the 'Validity' dimension of Data Quality ensure?",
@@ -4876,7 +4876,7 @@
     "explanation": "Validity checks verify that data adheres to required formats and rule constraints (e.g., email addresses contain '@')."
   },
   {
-    id": 349,
+    "id": 349,
     "domain": "Big Data and Data Science",
     "type": "Role & Responsibility",
     "question": "Who is responsible for operationalizing machine learning models, managing CI/CD pipelines for ML, and monitoring model drift in production?",
@@ -4890,7 +4890,7 @@
     "explanation": "MLOps engineers bridge data science and IT operations, automating model deployments, tracking performance, and detecting drift."
   },
   {
-    id": 350,
+    "id": 350,
     "domain": "Data Handling Ethics",
     "type": "Distinction / Definition",
     "question": "What is the difference between Legal Compliance and Data Ethics?",
@@ -4904,7 +4904,7 @@
     "explanation": "Compliance ensures adherence to laws (like GDPR/HIPAA), while ethics covers the moral duty to treat data responsibly beyond minimum legal rules."
   },
   {
-    id": 351,
+    "id": 351,
     "domain": "Data Governance",
     "type": "Process & Lifecycle",
     "question": "Which activity is a core responsibility of Data Governance Operations?",
@@ -4918,7 +4918,7 @@
     "explanation": "Governance operations handle daily stewardship tasks, issue resolution, glossary curation, and policy enforcement."
   },
   {
-    id": 352,
+    "id": 352,
     "domain": "Data Architecture",
     "type": "Role & Responsibility",
     "question": "Who is accountable for evaluating emerging data technologies, cloud storage platforms, and establishing enterprise integration standards?",
@@ -4932,7 +4932,7 @@
     "explanation": "CTOs and enterprise architects evaluate new technology trends and define the overarching architecture standards for the firm."
   },
   {
-    id": 353,
+    "id": 353,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
     "question": "What is the primary purpose of normalization in relational database design?",
@@ -4946,7 +4946,7 @@
     "explanation": "Normalization organizes database tables into normal forms (1NF, 2NF, 3NF) to eliminate redundancy and protect data integrity."
   },
   {
-    id": 354,
+    "id": 354,
     "domain": "Data Storage and Operations",
     "type": "Process & Lifecycle",
     "question": "What is Database Replication?",
@@ -4960,7 +4960,7 @@
     "explanation": "Replication creates synchronized copies of databases across servers, supporting fault tolerance, load balancing, and failover."
   },
   {
-    id": 355,
+    "id": 355,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is Data Loss Prevention (DLP) software designed to do?",
@@ -4974,7 +4974,7 @@
     "explanation": "DLP solutions monitor endpoints, networks, and storage to block sensitive data leaks and ensure confidential data stays secure."
   },
   {
-    id": 356,
+    "id": 356,
     "domain": "Data Integration",
     "type": "Distinction / Definition",
     "question": "What is the difference between Push and Pull Data Integration mechanisms?",
@@ -4988,7 +4988,7 @@
     "explanation": "Push mechanisms are event-driven and initiated by the source, whereas pull mechanisms are scheduled and initiated by the consumer."
   },
   {
-    id": 357,
+    "id": 357,
     "domain": "Document and Content Management",
     "type": "Fact / Exception",
     "question": "What is Records Retention Schedule?",
@@ -5002,7 +5002,7 @@
     "explanation": "Retention schedules dictate mandatory holding periods for records based on statutory, regulatory, and business requirements."
   },
   {
-    id": 358,
+    "id": 358,
     "domain": "Reference and Master Data",
     "type": "Role & Responsibility",
     "question": "Who is responsible for verifying the accuracy of master data attributes during exception review workflows?",
@@ -5016,7 +5016,7 @@
     "explanation": "Stewards review ambiguous entity matches and exceptions flagged by MDM matching engines to ensure golden record accuracy."
   },
   {
-    id": 359,
+    "id": 359,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is a Conformed Dimension in dimensional data warehousing?",
@@ -5030,7 +5030,7 @@
     "explanation": "Conformed dimensions allow enterprise-wide drill-across reporting by standardizing dimension attributes across multiple star schemas."
   },
   {
-    id": 360,
+    "id": 360,
     "domain": "Metadata Management",
     "type": "Process & Lifecycle",
     "question": "What is Metadata Curation?",
@@ -5044,7 +5044,7 @@
     "explanation": "Curation adds business value to raw technical metadata by enriching descriptions, adding tags, and curating glossaries."
   },
   {
-    id": 361,
+    "id": 361,
     "domain": "Data Quality",
     "type": "Role & Responsibility",
     "question": "Who is accountable for setting enterprise data quality scorecards and reporting quality metrics to executive leadership?",
@@ -5058,7 +5058,7 @@
     "explanation": "The CDO and governance office report enterprise-wide data quality health and scorecards to executive leadership."
   },
   {
-    id": 362,
+    "id": 362,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is Apache Kafka primarily used for in Big Data architectures?",
@@ -5072,7 +5072,7 @@
     "explanation": "Kafka acts as a high-performance distributed messaging backbone, enabling real-time event streaming across modern enterprise systems."
   },
   {
-    id": 363,
+    "id": 363,
     "domain": "Data Handling Ethics",
     "type": "Process & Lifecycle",
     "question": "What is the ethical requirement of 'Transparency in Automated Decision Making'?",
@@ -5086,7 +5086,7 @@
     "explanation": "Algorithm transparency ensures users are aware of automated profiling and have the right to understand how decisions affecting them were calculated."
   },
   {
-    id": 364,
+    "id": 364,
     "domain": "Data Governance",
     "type": "Role & Responsibility",
     "question": "Which body is responsible for approving enterprise data policies, funding, and strategic roadmap alignment?",
@@ -5100,7 +5100,7 @@
     "explanation": "The executive steering committee provides organizational authority, budget approval, and strategic direction for governance."
   },
   {
-    id": 365,
+    "id": 365,
     "domain": "Data Architecture",
     "type": "Process & Lifecycle",
     "question": "What is the primary goal of an Enterprise Architecture Roadmap?",
@@ -5114,7 +5114,7 @@
     "explanation": "The architecture roadmap provides a structured timeline of projects, migrations, and milestones needed to reach target capabilities."
   },
   {
-    id": 366,
+    "id": 366,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
     "question": "What is a Surrogate Key in dimensional modeling?",
@@ -5128,7 +5128,7 @@
     "explanation": "Surrogate keys protect analytical star schemas from changes in operational source system primary keys while improving join performance."
   },
   {
-    id": 367,
+    "id": 367,
     "domain": "Data Storage and Operations",
     "type": "Process & Lifecycle",
     "question": "What is Database Index Fragmentation?",
@@ -5142,7 +5142,7 @@
     "explanation": "Fragmentation causes inefficient disk I/O during range scans, requiring periodic index defragmentation or rebuilding."
   },
   {
-    id": 368,
+    "id": 368,
     "domain": "Data Security",
     "type": "Distinction / Definition",
     "question": "What is Role-Based Access Control (RBAC) versus Attribute-Based Access Control (ABAC)?",
@@ -5156,7 +5156,7 @@
     "explanation": "RBAC groups permissions by static job roles, while ABAC evaluates fine-grained dynamic attributes (e.g., time of day, clearance level, location) for access."
   },
   {
-    id": 369,
+    "id": 369,
     "domain": "Data Integration",
     "type": "Fact / Exception",
     "question": "What is a Data Pipeline Orchestrator used for?",
@@ -5170,7 +5170,7 @@
     "explanation": "Orchestrators (like Apache Airflow or Prefect) manage complex data pipelines, handling task dependencies, retries, and scheduling."
   },
   {
-    id": 370,
+    "id": 370,
     "domain": "Document and Content Management",
     "type": "Process & Lifecycle",
     "question": "What is Document Versioning control?",
@@ -5184,7 +5184,7 @@
     "explanation": "Versioning ensures collaboration without data loss by saving historical revisions every time a file is checked in or modified."
   },
   {
-    id": 371,
+    "id": 371,
     "domain": "Reference and Master Data",
     "type": "Distinction / Definition",
     "question": "What is Entity Resolution in Master Data Management?",
@@ -5198,7 +5198,7 @@
     "explanation": "Entity resolution uses matching algorithms to link and merge duplicate records into a single authoritative master profile."
   },
   {
-    id": 372,
+    "id": 372,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is a Fact Table in dimensional modeling?",
@@ -5212,7 +5212,7 @@
     "explanation": "Fact tables contain quantitative metrics (facts) resulting from business events, surrounded by contextual dimension tables."
   },
   {
-    id": 373,
+    "id": 373,
     "domain": "Metadata Management",
     "type": "Role & Responsibility",
     "question": "Who is responsible for curating business metadata and approving enterprise glossary definitions?",
@@ -5226,7 +5226,7 @@
     "explanation": "Business data stewards own glossary definitions, ensuring terms are understood consistently across departments."
   },
   {
-    id": 374,
+    "id": 374,
     "domain": "Data Quality",
     "type": "Process & Lifecycle",
     "question": "Which of the following is a primary objective of automated Data Quality Rules?",
@@ -5240,7 +5240,7 @@
     "explanation": "Automated quality rules catch errors immediately, preventing corrupted data from propagating into reports and analytics."
   },
   {
-    id": 375,
+    "id": 375,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is Distributed Computing in Big Data architectures?",
@@ -5254,7 +5254,7 @@
     "explanation": "Distributed computing splits big data processing tasks across server clusters, overcoming the hardware limitations of single machines."
   },
   {
-    id": 376,
+    "id": 376,
     "domain": "Data Handling Ethics",
     "type": "Fact / Exception",
     "question": "What is the ethical implication of 'Involuntary Data Collection'?",
@@ -5268,7 +5268,7 @@
     "explanation": "Involuntary collection bypasses individual consent, representing a severe ethical and regulatory breach of personal privacy."
   },
   {
-    id": 377,
+    "id": 377,
     "domain": "Data Governance",
     "type": "Distinction / Definition",
     "question": "What is the difference between Data Governance and Data Management?",
@@ -5282,7 +5282,7 @@
     "explanation": "Governance sets the rules, policies, and accountability, while management implements and executes the technical data workflows."
   },
   {
-    id": 378,
+    "id": 378,
     "domain": "Data Architecture",
     "type": "Fact / Exception",
     "question": "What is a Data Lakehouse architecture designed to resolve?",
@@ -5296,7 +5296,7 @@
     "explanation": "Lakehouses combine object storage flexibility with transactional reliability (ACID) and BI performance in a single platform."
   },
   {
-    id": 379,
+    "id": 379,
     "domain": "Data Modeling and Design",
     "type": "Process & Lifecycle",
     "question": "What is Conceptual Data Modeling primarily focused on?",
@@ -5310,7 +5310,7 @@
     "explanation": "Conceptual models provide an abstract business-level overview of enterprise entities and relationships before diving into technical design."
   },
   {
-    id": 380,
+    "id": 380,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
     "question": "What does the 'Durability' property in ACID database transactions guarantee?",
@@ -5324,7 +5324,7 @@
     "explanation": "Durability ensures committed transaction changes are written to non-volatile storage, preventing data loss during crashes."
   },
   {
-    id": 381,
+    "id": 381,
     "domain": "Data Security",
     "type": "Process & Lifecycle",
     "question": "Which of the following is a key step in a Data Security Incident Response Plan?",
@@ -5338,7 +5338,7 @@
     "explanation": "Incident response frameworks ensure structured containment, eradication, and recovery following a security breach."
   },
   {
-    id": 382,
+    "id": 382,
     "domain": "Data Integration",
     "type": "Distinction / Definition",
     "question": "What is Enterprise Application Integration (EAI) middleware?",
@@ -5352,7 +5352,7 @@
     "explanation": "EAI middleware acts as the integration glue connecting heterogeneous enterprise applications."
   },
   {
-    id": 383,
+    "id": 383,
     "domain": "Document and Content Management",
     "type": "Fact / Exception",
     "question": "What is Enterprise Content Management (ECM)?",
@@ -5366,7 +5366,7 @@
     "explanation": "ECM encompasses the holistic lifecycle management of all organizational unstructured content and documents."
   },
   {
-    id": 384,
+    "id": 384,
     "domain": "Reference and Master Data",
     "type": "Role & Responsibility",
     "question": "Who is accountable for approving reference data changes and ensuring code set standardizations?",
@@ -5380,7 +5380,7 @@
     "explanation": "Reference data stewards review and authorize lookup code updates to maintain consistency across enterprise systems."
   },
   {
-    id": 385,
+    "id": 385,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Process & Lifecycle",
     "question": "Which of the following is a core activity in Data Warehouse ETL design?",
@@ -5394,7 +5394,7 @@
     "explanation": "ETL design handles the data pipeline movement from operational sources into structured analytical data warehouses."
   },
   {
-    id": 386,
+    "id": 386,
     "domain": "Metadata Management",
     "type": "Distinction / Definition",
     "question": "What is Technical Metadata Lineage?",
@@ -5408,7 +5408,7 @@
     "explanation": "Technical lineage maps physical data flows across database schemas, integration scripts, and reporting views."
   },
   {
-    id": 387,
+    "id": 387,
     "domain": "Data Quality",
     "type": "Fact / Exception",
     "question": "What does the 'Timeliness' dimension of Data Quality measure?",
@@ -5422,7 +5422,7 @@
     "explanation": "Timeliness ensures that information is current and delivered within the required operational timeframe."
   },
   {
-    id": 388,
+    "id": 388,
     "domain": "Big Data and Data Science",
     "type": "Role & Responsibility",
     "question": "Who is responsible for designing big data cluster architectures and optimizing distributed storage pipelines?",
@@ -5436,7 +5436,7 @@
     "explanation": "Big data engineers build and scale distributed storage clusters and data pipelines using frameworks like Spark and Hadoop."
   },
   {
-    id": 389,
+    "id": 389,
     "domain": "Data Handling Ethics",
     "type": "Process & Lifecycle",
     "question": "What is Privacy by Design in data architecture?",
@@ -5450,7 +5450,7 @@
     "explanation": "Privacy by Design bakes data protection and privacy controls directly into software architecture and development practices."
   },
   {
-    id": 390,
+    "id": 390,
     "domain": "Data Governance",
     "type": "Role & Responsibility",
     "question": "Which role acts as the primary executive champion for the Enterprise Data Governance program?",
@@ -5618,7 +5618,7 @@
     "explanation": "Deep learning uses deep neural networks to automatically model complex patterns in images, text, and voice data."
   },
   {
-    id": 402,
+    "id": 402,
     "domain": "Data Handling Ethics",
     "type": "Fact / Exception",
     "question": "What is the ethical requirement of 'Informed Consent' in data collection?",
@@ -5632,7 +5632,7 @@
     "explanation": "Informed consent guarantees users understand data collection practices clearly before granting permission to use their personal information."
   },
   {
-    id": 403,
+    "id": 403,
     "domain": "Data Governance",
     "type": "Role & Responsibility",
     "question": "Who is responsible for executing data cleansing tasks and updating records when quality defects are identified?",
@@ -5646,7 +5646,7 @@
     "explanation": "Stewards and data operations teams execute the hands-on corrections required to remediate poor data quality."
   },
   {
-    id": 404,
+    "id": 404,
     "domain": "Data Architecture",
     "type": "Process & Lifecycle",
     "question": "What is the primary goal of creating a Target State Data Architecture?",
@@ -5660,7 +5660,7 @@
     "explanation": "The target state architecture provides the blueprint that enterprise transformation initiatives strive to build toward."
   },
   {
-    id": 405,
+    "id": 405,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
     "question": "What is a Surrogate Key in relational data modeling?",
@@ -5674,7 +5674,7 @@
     "explanation": "Surrogate keys provide stable, immutable primary keys that insulate database designs from changes in business natural keys."
   },
   {
-    id": 406,
+    "id": 406,
     "domain": "Data Storage and Operations",
     "type": "Distinction / Definition",
     "question": "What is the difference between Hot Backup and Cold Backup?",
@@ -5688,7 +5688,7 @@
     "explanation": "Hot backups maintain 24/7 system availability during capture, whereas cold backups require taking the database offline."
   },
   {
-    id": 407,
+    "id": 407,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is Network Segmentation in enterprise security?",
@@ -5702,7 +5702,7 @@
     "explanation": "Segmentation restricts lateral movement for attackers, ensuring a breach in one network zone cannot easily compromise core databases."
   },
   {
-    id": 408,
+    "id": 408,
     "domain": "Data Integration",
     "type": "Role & Responsibility",
     "question": "Who is responsible for designing real-time streaming integration pipelines and managing event broker clusters?",
@@ -5716,7 +5716,7 @@
     "explanation": "Streaming engineers build real-time event-driven pipelines using technologies like Kafka, Flink, and Spark Streaming."
   },
   {
-    id": 409,
+    "id": 409,
     "domain": "Document and Content Management",
     "type": "Process & Lifecycle",
     "question": "What is Automated Document Archiving?",
@@ -5730,7 +5730,7 @@
     "explanation": "Automated archiving ensures documents transition smoothly into retention storage once active business use concludes."
   },
   {
-    id": 410,
+    "id": 410,
     "domain": "Reference and Master Data",
     "type": "Fact / Exception",
     "question": "What is a 'Registry' deployment style in MDM?",
@@ -5744,7 +5744,7 @@
     "explanation": "Registry MDM acts as an index to resolve identities across feeder systems without hosting duplicate master attributes."
   },
   {
-    id": 411,
+    "id": 411,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Process & Lifecycle",
     "question": "Which activity is part of the BI Reporting Lifecycle?",
@@ -5758,7 +5758,7 @@
     "explanation": "The reporting lifecycle ensures dashboards are built against validated data models and tailored to user needs."
   },
   {
-    id": 412,
+    "id": 412,
     "domain": "Metadata Management",
     "type": "Role & Responsibility",
     "question": "Who is responsible for auditing metadata repository completeness and maintaining governance standards across catalogs?",
@@ -5772,7 +5772,7 @@
     "explanation": "Metadata managers ensure catalogs are populated, tagged accurately, and compliant with enterprise metadata standards."
   },
   {
-    id": 413,
+    "id": 413,
     "domain": "Data Quality",
     "type": "Distinction / Definition",
     "question": "What is the difference between Data Cleansing and Data Enrichment?",
@@ -5786,7 +5786,7 @@
     "explanation": "Cleansing fixes defects in existing data, while enrichment adds supplementary value (like geolocation or demographics) from external sources."
   },
   {
-    id": 414,
+    "id": 414,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is Model Drift in Machine Learning operations?",
@@ -5800,7 +5800,7 @@
     "explanation": "Model drift occurs when real-world patterns change after training, requiring model retraining to maintain high accuracy."
   },
   {
-    id": 415,
+    "id": 415,
     "domain": "Data Handling Ethics",
     "type": "Process & Lifecycle",
     "question": "Which practice demonstrates strong ethical AI governance?",
@@ -5814,7 +5814,7 @@
     "explanation": "Ethical AI governance requires transparency, rigorous bias testing, and human accountability for algorithmic outcomes."
   },
   {
-    id": 416,
+    "id": 416,
     "domain": "Data Governance",
     "type": "Fact / Exception",
     "question": "What is a Data Governance Operating Model?",
@@ -5828,7 +5828,7 @@
     "explanation": "The operating model defines who does what, how committees interact, and how data decisions are escalated and approved."
   },
   {
-    id": 417,
+    "id": 417,
     "domain": "Data Architecture",
     "type": "Distinction / Definition",
     "question": "What is the difference between Centralized and Decentralized Data Architecture?",
@@ -5842,7 +5842,7 @@
     "explanation": "Centralization funnels data through a single IT bottleneck, whereas decentralization empowers domain teams to manage their own data products."
   },
   {
-    id": 418,
+    "id": 418,
     "domain": "Data Modeling and Design",
     "type": "Process & Lifecycle",
     "question": "What is Denormalization in database design?",
@@ -5856,7 +5856,7 @@
     "explanation": "Denormalization trades storage redundancy for query speed, avoiding complex multi-table joins in high-performance reporting environments."
   },
   {
-    id": 419,
+    "id": 419,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
     "question": "What is Point-in-Time Recovery (PITR) in database operations?",
@@ -5870,7 +5870,7 @@
     "explanation": "PITR protects data integrity by replaying transaction logs up to the exact moment right before accidental data corruption occurred."
   },
   {
-    id": 420,
+    "id": 420,
     "domain": "Data Security",
     "type": "Process & Lifecycle",
     "question": "Which step is critical during the Secure Software Development Life Cycle (SSDLC)?",
@@ -5884,7 +5884,7 @@
     "explanation": "SSDLC embeds security checks proactively throughout development rather than treating security as an afterthought."
   },
   {
-    id": 421,
+    "id": 421,
     "domain": "Data Integration",
     "type": "Distinction / Definition",
     "question": "What is Enterprise Service Bus (ESB) versus API Gateway?",
@@ -5898,7 +5898,7 @@
     "explanation": "While both route messages, API gateways are optimized for modern web/microservice HTTP traffic, whereas ESBs handle heavy enterprise messaging integration."
   },
   {
-    id": 422,
+    "id": 422,
     "domain": "Document and Content Management",
     "type": "Fact / Exception",
     "question": "What is Content Metadata Tagging?",
@@ -5912,7 +5912,7 @@
     "explanation": "Metadata tagging replaces chaotic folder structures with searchable attributes, enabling fast document retrieval."
   },
   {
-    id": 423,
+    "id": 423,
     "domain": "Reference and Master Data",
     "type": "Role & Responsibility",
     "question": "Who is responsible for resolving cross-system data discrepancies during master data onboarding?",
@@ -5926,7 +5926,7 @@
     "explanation": "Stewards resolve matching conflicts and data mismatches to maintain clean golden records."
   },
   {
-    id": 424,
+    "id": 424,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is a Surrogate Key in dimensional data warehousing?",
@@ -5940,7 +5940,7 @@
     "explanation": "Surrogate keys enable SCD tracking and protect data warehouse history when operational source keys change."
   },
   {
-    id": 425,
+    "id": 425,
     "domain": "Metadata Management",
     "type": "Process & Lifecycle",
     "question": "What is Metadata Versioning?",
@@ -5954,7 +5954,7 @@
     "explanation": "Metadata versioning maintains a historical audit trail of how data definitions and schemas evolved over time."
   },
   {
-    id": 426,
+    "id": 426,
     "domain": "Data Quality",
     "type": "Role & Responsibility",
     "question": "Who is accountable for defining acceptable data error thresholds and quality SLAs for business domains?",
@@ -5968,7 +5968,7 @@
     "explanation": "Stewards and governance leads establish quantitative quality SLAs and acceptable error tolerances for their data domains."
   },
   {
-    id": 427,
+    "id": 427,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is Apache Spark primarily used for in Big Data architectures?",
@@ -5982,7 +5982,7 @@
     "explanation": "Spark accelerates big data processing by performing in-memory computations across distributed server clusters."
   },
   {
-    id": 428,
+    "id": 428,
     "domain": "Data Handling Ethics",
     "type": "Process & Lifecycle",
     "question": "What is the ethical implication of 'Dataveillance' (mass digital surveillance)?",
@@ -5996,7 +5996,7 @@
     "explanation": "Dataveillance creates profound ethical risks by continuously tracking personal activities without transparent bounds."
   },
   {
-    id": 429,
+    "id": 429,
     "domain": "Data Governance",
     "type": "Role & Responsibility",
     "question": "Which role is responsible for resolving operational data bottlenecks between different business units?",
@@ -6010,7 +6010,7 @@
     "explanation": "Governance managers mediate cross-functional disputes and streamline inter-departmental data workflows."
   },
   {
-    id": 430,
+    "id": 430,
     "domain": "Data Architecture",
     "type": "Fact / Exception",
     "question": "What is a Polyglot Persistence architectural approach?",
@@ -6024,7 +6024,7 @@
     "explanation": "Polyglot persistence matches the right database engine to the specific workload requirements rather than forcing everything into one relational model."
   },
   {
-    id": 431,
+    "id": 431,
     "domain": "Data Modeling and Design",
     "type": "Distinction / Definition",
     "question": "What is the difference between Star Schema and Snowflake Schema?",
@@ -6038,7 +6038,7 @@
     "explanation": "Star schemas prioritize query speed via denormalized dimensions, while snowflake schemas normalize dimensions to save storage space."
   },
   {
-    id": 432,
+    "id": 432,
     "domain": "Data Storage and Operations",
     "type": "Process & Lifecycle",
     "question": "What is Database Storage Provisioning?",
@@ -6052,7 +6052,7 @@
     "explanation": "Storage provisioning sets up the underlying infrastructure capacity required to host and run databases efficiently."
   },
   {
-    id": 433,
+    "id": 433,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is a Security Information and Event Management (SIEM) system?",
@@ -6066,7 +6066,7 @@
     "explanation": "SIEM tools provide centralized threat detection, security monitoring, and incident logging across enterprise IT systems."
   },
   {
-    id": 434,
+    "id": 434,
     "domain": "Data Integration",
     "type": "Process & Lifecycle",
     "question": "What is Change Data Capture (CDC)?",
@@ -6080,7 +6080,7 @@
     "explanation": "CDC tracks database mutations at the transaction log level, enabling efficient real-time data integration without heavy full-table scans."
   },
   {
-    id": 435,
+    "id": 435,
     "domain": "Document and Content Management",
     "type": "Fact / Exception",
     "question": "What is Digital Asset Management (DAM)?",
@@ -6094,7 +6094,7 @@
     "explanation": "DAM systems provide specialized storage, metadata tagging, and distribution workflows for multimedia digital assets."
   },
   {
-    id": 436,
+    "id": 436,
     "domain": "Reference and Master Data",
     "type": "Distinction / Definition",
     "question": "What is a Master Data Domain Owner?",
@@ -6108,7 +6108,7 @@
     "explanation": "Domain owners hold ultimate business accountability for the governance and quality of their assigned master data subjects."
   },
   {
-    id": 437,
+    "id": 437,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Role & Responsibility",
     "question": "Who is responsible for optimizing data warehouse storage structures and managing database maintenance routines?",
@@ -6122,7 +6122,7 @@
     "explanation": "DBAs manage database health, indexes, backups, and storage performance for enterprise data warehouses."
   },
   {
-    id": 438,
+    "id": 438,
     "domain": "Metadata Management",
     "type": "Fact / Exception",
     "question": "What is an Automated Metadata Catalog?",
@@ -6136,7 +6136,7 @@
     "explanation": "Automated catalogs scan data sources continuously to maintain up-to-date inventories of enterprise data assets."
   },
   {
-    id": 439,
+    "id": 439,
     "domain": "Data Quality",
     "type": "Process & Lifecycle",
     "question": "Which activity is part of a Continuous Data Quality Monitoring process?",
@@ -6150,7 +6150,7 @@
     "explanation": "Continuous monitoring ensures data quality rules execute automatically on schedule, catching defects before downstream impacts occur."
   },
   {
-    id": 440,
+    "id": 440,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is a Data Pipeline in Big Data systems?",
@@ -6164,7 +6164,7 @@
     "explanation": "Data pipelines automate the multi-step journey of big data from ingestion through transformation to storage."
   },
   {
-    id": 441,
+    "id": 441,
     "domain": "Data Handling Ethics",
     "type": "Process & Lifecycle",
     "question": "What is the ethical requirement of 'Data Anonymization and De-identification'?",
@@ -6178,7 +6178,7 @@
     "explanation": "Anonymization strips out PII identifiers, allowing organizations to analyze data safely without violating personal privacy."
   },
   {
-    id": 442,
+    "id": 442,
     "domain": "Data Governance",
     "type": "Role & Responsibility",
     "question": "Who is responsible for reviewing and approving enterprise data policies before executive sign-off?",
@@ -6192,7 +6192,7 @@
     "explanation": "The steering committee reviews and endorses data policies before final executive implementation."
   },
   {
-    id": 443,
+    "id": 443,
     "domain": "Data Architecture",
     "type": "Process & Lifecycle",
     "question": "What is the primary goal of an Enterprise Data Model?",
@@ -6206,7 +6206,7 @@
     "explanation": "Enterprise data models establish a unified conceptual vocabulary and structure across all business units."
   },
   {
-    id": 444,
+    "id": 444,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
     "question": "What is a Weak Entity in ER modeling?",
@@ -6220,7 +6220,7 @@
     "explanation": "Weak entities rely on a foreign key relationship pointing to a parent entity to complete their composite primary key."
   },
   {
-    id": 445,
+    "id": 445,
     "domain": "Data Storage and Operations",
     "type": "Process & Lifecycle",
     "question": "What is Database Partitioning?",
@@ -6234,7 +6234,7 @@
     "explanation": "Partitioning divides massive tables physically, enabling queries to scan only relevant subsets and speeding up operations."
   },
   {
-    id": 446,
+    "id": 446,
     "domain": "Data Security",
     "type": "Distinction / Definition",
     "question": "What is the difference between Symmetric and Asymmetric Encryption?",
@@ -6248,7 +6248,7 @@
     "explanation": "Symmetric encryption is fast and uses one shared key, while asymmetric encryption uses public/private key pairs for secure key exchange."
   },
   {
-    id": 447,
+    "id": 447,
     "domain": "Data Integration",
     "type": "Fact / Exception",
     "question": "What is an Extract, Load, Transform (ELT) integration pattern?",
@@ -6262,7 +6262,7 @@
     "explanation": "ELT leverages cloud data warehouse compute power to transform data *after* it has been loaded in its native raw format."
   },
   {
-    id": 448,
+    "id": 448,
     "domain": "Document and Content Management",
     "type": "Process & Lifecycle",
     "question": "What is Document Check-in / Check-out Control?",
@@ -6276,7 +6276,7 @@
     "explanation": "Check-in/check-out controls concurrency, ensuring document edits are serialized and versioned cleanly without accidental collisions."
   },
   {
-    id": 449,
+    "id": 449,
     "domain": "Reference and Master Data",
     "type": "Fact / Exception",
     "question": "What is a Master Data Hub?",
@@ -6290,7 +6290,7 @@
     "explanation": "The MDM hub acts as the central engine for cleansing, matching, consolidating, and distributing master data."
   },
   {
-    id": 450,
+    "id": 450,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is a Slowly Changing Dimension (SCD) Type 2?",
@@ -6304,7 +6304,7 @@
     "explanation": "SCD Type 2 tracks historical changes completely by adding new rows with version flags and start/end effective dates."
   },
   {
-    id": 451,
+    "id": 451,
     "domain": "Metadata Management",
     "type": "Role & Responsibility",
     "question": "Who is responsible for establishing technical naming conventions and metadata tagging standards for database objects?",
@@ -6318,7 +6318,7 @@
     "explanation": "Data architects and DBAs set technical naming standards and schema conventions to keep databases organized."
   },
   {
-    id": 452,
+    "id": 452,
     "domain": "Data Quality",
     "type": "Fact / Exception",
     "question": "What does the 'Accuracy' dimension of Data Quality ensure?",
@@ -6332,7 +6332,7 @@
     "explanation": "Accuracy measures the exact alignment between stored data values and true real-world facts."
   },
   {
-    id": 453,
+    "id": 453,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is Object Storage primarily used for in Big Data architectures?",
@@ -6346,7 +6346,7 @@
     "explanation": "Object storage (e.g., AWS S3) provides the scalable, cheap foundational storage layer for modern data lakes and lakehouses."
   },
   {
-    id": 454,
+    "id": 454,
     "domain": "Data Handling Ethics",
     "type": "Fact / Exception",
     "question": "What is the ethical implication of 'Data Discrimination' in machine learning?",
@@ -6360,7 +6360,7 @@
     "explanation": "Data discrimination arises when biased training data causes machine learning models to make prejudicial or unfair decisions."
   },
   {
-    id": 455,
+    "id": 455,
     "domain": "Data Governance",
     "type": "Process & Lifecycle",
     "question": "What is the primary purpose of a Data Governance Issue Log?",
@@ -6374,7 +6374,7 @@
     "explanation": "Issue logs ensure data defects and policy violations are tracked transparently from discovery through resolution."
   },
   {
-    id": 456,
+    "id": 456,
     "domain": "Data Architecture",
     "type": "Fact / Exception",
     "question": "What is a Data Fabric architectural concept?",
@@ -6388,7 +6388,7 @@
     "explanation": "Data fabric automates data integration and governance across distributed environments using continuous metadata intelligence."
   },
   {
-    id": 457,
+    "id": 457,
     "domain": "Data Modeling and Design",
     "type": "Process & Lifecycle",
     "question": "What is Forward Engineering in data modeling tools?",
@@ -6402,7 +6402,7 @@
     "explanation": "Forward engineering translates visual data models into executable database creation scripts instantly."
   },
   {
-    id": 458,
+    "id": 458,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
     "question": "What is Database Sharding?",
@@ -6416,7 +6416,7 @@
     "explanation": "Sharding distributes database tables across separate server instances, enabling massive horizontal scalability beyond single-server limits."
   },
   {
-    id": 459,
+    "id": 459,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is a Penetration Test (Pentest)?",
@@ -6430,7 +6430,7 @@
     "explanation": "Pentesting tests security posture by actively attempting to breach defenses in a controlled, authorized manner."
   },
   {
-    id": 460,
+    "id": 460,
     "domain": "Data Integration",
     "type": "Distinction / Definition",
     "question": "What is the difference between Batch and Real-Time Data Integration?",
@@ -6444,7 +6444,7 @@
     "explanation": "Batch runs on scheduled intervals (hourly/nightly), whereas real-time moves and processes data instantaneously."
   },
   {
-    id": 461,
+    "id": 461,
     "domain": "Document and Content Management",
     "type": "Fact / Exception",
     "question": "What is Content Federation in Enterprise Content Management?",
@@ -6458,7 +6458,7 @@
     "explanation": "Content federation abstracts underlying repository silos, allowing users to query multiple content systems simultaneously."
   },
   {
-    id": 462,
+    "id": 462,
     "domain": "Reference and Master Data",
     "type": "Role & Responsibility",
     "question": "Who is responsible for approving new master data records when automated matching fails to find a definitive match?",
@@ -6472,7 +6472,7 @@
     "explanation": "Stewards review unmatched records in exception queues to decide whether to create a new golden record or merge it."
   },
   {
-    id": 463,
+    "id": 463,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is an Aggregate Table in a Data Warehouse?",
@@ -6486,7 +6486,7 @@
     "explanation": "Aggregate tables speed up BI queries by pre-calculating common groupings and totals, avoiding heavy on-the-fly fact table scans."
   },
   {
-    id": 464,
+    "id": 464,
     "domain": "Metadata Management",
     "type": "Process & Lifecycle",
     "question": "What is Metadata Quality Assurance?",
@@ -6500,7 +6500,7 @@
     "explanation": "Metadata QA ensures that catalogs and glossaries remain trustworthy, accurate, and free of stale or broken entries."
   },
   {
-    id": 465,
+    "id": 465,
     "domain": "Data Quality",
     "type": "Role & Responsibility",
     "question": "Who is responsible for designing automated data quality validation scripts within ETL pipelines?",
@@ -6514,7 +6514,7 @@
     "explanation": "Data engineers embed quality validation checks directly into pipeline scripts to catch anomalies early."
   },
   {
-    id": 466,
+    "id": 466,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is a Jupyter Notebook primarily used for in Data Science?",
@@ -6528,7 +6528,7 @@
     "explanation": "Jupyter notebooks provide an interactive environment for data exploration, prototyping, and collaborative data science modeling."
   },
   {
-    id": 467,
+    "id": 467,
     "domain": "Data Handling Ethics",
     "type": "Process & Lifecycle",
     "question": "What is the ethical requirement of 'Data Retention Limits'?",
@@ -6542,7 +6542,7 @@
     "explanation": "Retention limits prevent indefinite hoarding of personal data, reducing exposure risk and respecting privacy."
   },
   {
-    id": 468,
+    "id": 468,
     "domain": "Data Governance",
     "type": "Role & Responsibility",
     "question": "Which role is responsible for maintaining the enterprise data dictionary and business glossary applications?",
@@ -6556,7 +6556,7 @@
     "explanation": "Metadata specialists and administrators manage the tools and applications hosting enterprise glossaries and dictionaries."
   },
   {
-    id": 469,
+    "id": 469,
     "domain": "Data Architecture",
     "type": "Process & Lifecycle",
     "question": "What is the primary goal of conducting an Enterprise Data Architecture Assessment?",
@@ -6570,7 +6570,7 @@
     "explanation": "Architecture assessments evaluate strengths and weaknesses in current data systems to guide strategic modernization."
   },
   {
-    id": 470,
+    "id": 470,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
     "question": "What is a Supertype and Subtype in data modeling?",
@@ -6584,7 +6584,7 @@
     "explanation": "Supertype/subtype modeling (generalization/specialization) organizes hierarchical entities efficiently, avoiding redundant attributes."
   },
   {
-    id": 471,
+    "id": 471,
     "domain": "Data Storage and Operations",
     "type": "Process & Lifecycle",
     "question": "What is Database Log Shipping?",
@@ -6598,7 +6598,7 @@
     "explanation": "Log shipping keeps a warm standby replica synchronized by continuously shipping and applying transaction log backups."
   },
   {
-    id": 472,
+    "id": 472,
     "domain": "Data Security",
     "type": "Distinction / Definition",
     "question": "What is the difference between Data Masking and Data Pseudonymization?",
@@ -6612,7 +6612,7 @@
     "explanation": "Pseudonymization allows controlled re-identification via secure key maps, whereas masking generally obscures or scrambles values for protection."
   },
   {
-    id": 473,
+    "id": 473,
     "domain": "Data Integration",
     "type": "Fact / Exception",
     "question": "What is an ESB (Enterprise Service Bus) Message Router?",
@@ -6626,7 +6626,7 @@
     "explanation": "Message routers inspect payload content or metadata to direct integration messages dynamically to correct receiving services."
   },
   {
-    id": 474,
+    "id": 474,
     "domain": "Document and Content Management",
     "type": "Process & Lifecycle",
     "question": "What is Content Disposition in records management?",
@@ -6640,7 +6640,7 @@
     "explanation": "Disposition executes the final governed action (destruction or permanent archiving) once a record's retention period expires."
   },
   {
-    id": 475,
+    "id": 475,
     "domain": "Reference and Master Data",
     "type": "Fact / Exception",
     "question": "What is a Crosswalk Table in Master Data Management?",
@@ -6654,7 +6654,7 @@
     "explanation": "Crosswalk tables maintain the relational links between feeder system keys and the unified master identifier."
   },
   {
-    id": 476,
+    "id": 476,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Process & Lifecycle",
     "question": "Which activity is part of Data Warehouse Schema Design?",
@@ -6668,7 +6668,7 @@
     "explanation": "Schema design structures analytical data into optimized dimensional models for reporting performance."
   },
   {
-    id": 477,
+    "id": 477,
     "domain": "Metadata Management",
     "type": "Role & Responsibility",
     "question": "Who is responsible for defining data asset ownership metadata in the enterprise catalog?",
@@ -6682,7 +6682,7 @@
     "explanation": "Business owners and stewards assign accountability and ownership metadata to data assets within the catalog."
   },
   {
-    id": 478,
+    "id": 478,
     "domain": "Data Quality",
     "type": "Fact / Exception",
     "question": "What does the 'Consistency' dimension of Data Quality ensure?",
@@ -6696,7 +6696,7 @@
     "explanation": "Consistency verifies that identical data elements report the same values across different systems without contradictions."
   },
   {
-    id": 479,
+    "id": 479,
     "domain": "Big Data and Data Science",
     "type": "Role & Responsibility",
     "question": "Who is responsible for designing and maintaining the underlying storage infrastructure for a Data Lakehouse?",
@@ -6710,7 +6710,7 @@
     "explanation": "Data platform engineers build and maintain scalable storage and compute infrastructure powering modern data lakehouses."
   },
   {
-    id": 480,
+    "id": 480,
     "domain": "Data Handling Ethics",
     "type": "Distinction / Definition",
     "question": "What is the difference between Privacy and Confidentiality?",
@@ -6724,7 +6724,7 @@
     "explanation": "Privacy centers on individual autonomy and personal data rights, while confidentiality focuses on secure data handling and agreements."
   },
   {
-    id": 481,
+    "id": 481,
     "domain": "Data Governance",
     "type": "Process & Lifecycle",
     "question": "What is the primary purpose of a Data Governance Maturity Assessment?",
@@ -6738,7 +6738,7 @@
     "explanation": "Maturity assessments benchmark current governance practices and provide a roadmap to elevate organizational data maturity."
   },
   {
-    id": 482,
+    "id": 482,
     "domain": "Data Architecture",
     "type": "Role & Responsibility",
     "question": "Who is accountable for ensuring that enterprise data models align with overall business strategy and architecture principles?",
@@ -6752,7 +6752,7 @@
     "explanation": "The chief data architect oversees enterprise data modeling standards and ensures alignment with strategic business goals."
   },
   {
-    id": 483,
+    "id": 483,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
     "question": "What is the primary purpose of Data Model Version Control?",
@@ -6766,7 +6766,7 @@
     "explanation": "Model version control tracks schema revisions, preventing accidental overwrites and supporting collaborative database design."
   },
   {
-    id": 484,
+    "id": 484,
     "domain": "Data Storage and Operations",
     "type": "Process & Lifecycle",
     "question": "What is Database Storage Tiering?",
@@ -6780,7 +6780,7 @@
     "explanation": "Storage tiering optimizes infrastructure costs by moving inactive data to cheaper archive tiers while keeping active data on fast disks."
   },
   {
-    id": 485,
+    "id": 485,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is Data Exfiltration?",
@@ -6794,7 +6794,7 @@
     "explanation": "Exfiltration refers to the unauthorized extraction of sensitive data out of a secure enterprise environment."
   },
   {
-    id": 486,
+    "id": 486,
     "domain": "Data Integration",
     "type": "Distinction / Definition",
     "question": "What is the difference between ETL and ELT?",
@@ -6808,7 +6808,7 @@
     "explanation": "ETL transforms data staging-side before loading, whereas ELT leverages cloud data warehouse compute to transform data post-load."
   },
   {
-    id": 487,
+    "id": 487,
     "domain": "Document and Content Management",
     "type": "Fact / Exception",
     "question": "What is Digital Records Management?",
@@ -6822,7 +6822,7 @@
     "explanation": "Digital records management ensures electronic files are governed according to strict legal retention and disposition schedules."
   },
   {
-    id": 488,
+    "id": 488,
     "domain": "Reference and Master Data",
     "type": "Role & Responsibility",
     "question": "Who is responsible for defining master data governance policies and cross-functional matching standards?",
@@ -6836,7 +6836,7 @@
     "explanation": "The master data board sets enterprise policies, matching algorithms, and governance standards for master data domains."
   },
   {
-    id": 489,
+    "id": 489,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is a Degenerate Dimension in dimensional modeling?",
@@ -6850,7 +6850,7 @@
     "explanation": "Degenerate dimensions are transaction identifiers stored directly in fact tables because they have no other descriptive attributes."
   },
   {
-    id": 490,
+    "id": 490,
     "domain": "Metadata Management",
     "type": "Process & Lifecycle",
     "question": "What is Metadata Harvesting Automation?",
@@ -6906,7 +6906,7 @@
     "explanation": "Data minimization restricts collection to only what is directly relevant and necessary, reducing privacy exposure."
   },
   {
-    id": 494,
+    "id": 494,
     "domain": "Data Governance",
     "type": "Role & Responsibility",
     "question": "Who is responsible for escalating cross-departmental data disputes to executive leadership when consensus cannot be reached?",
@@ -6920,7 +6920,7 @@
     "explanation": "The CDO or head of governance handles executive escalations and resolves deadlocked cross-functional data disputes."
   },
   {
-    id": 495,
+    "id": 495,
     "domain": "Data Architecture",
     "type": "Fact / Exception",
     "question": "What is an Enterprise Service Bus (ESB) in application architecture?",
@@ -6934,7 +6934,7 @@
     "explanation": "An ESB acts as a centralized integration backbone for routing, translating, and managing messages between services."
   },
   {
-    id": 496,
+    "id": 496,
     "domain": "Data Modeling and Design",
     "type": "Distinction / Definition",
     "question": "What is the difference between Conceptual, Logical, and Physical Data Models?",
@@ -6948,7 +6948,7 @@
     "explanation": "These three stages progress from abstract business views (conceptual) to detailed database-agnostic structures (logical) to engine-specific implementations (physical)."
   },
   {
-    id": 497,
+    "id": 497,
     "domain": "Data Storage and Operations",
     "type": "Process & Lifecycle",
     "question": "What is Database Index Defragmentation?",
@@ -6962,7 +6962,7 @@
     "explanation": "Defragmentation cleans up scattered index pages, ensuring sequential disk reads perform at peak efficiency."
   },
   {
-    id": 498,
+    "id": 498,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is Dynamic Data Masking (DDM)?",
@@ -6976,7 +6976,7 @@
     "explanation": "DDM hides sensitive fields (like social security numbers) during query execution for users lacking appropriate viewing permissions."
   },
   {
-    id": 499,
+    "id": 499,
     "domain": "Data Integration",
     "type": "Role & Responsibility",
     "question": "Who is responsible for designing, building, and maintaining scalable batch and streaming data ingestion pipelines?",
@@ -6990,7 +6990,7 @@
     "explanation": "Data engineers design the programmatic pipelines that ingest, clean, and load data from sources to analytical targets."
   },
   {
-    id": 500,
+    "id": 500,
     "domain": "Document and Content Management",
     "type": "Process & Lifecycle",
     "question": "What is Enterprise Content Classification?",
@@ -7004,7 +7004,7 @@
     "explanation": "Classification organizes unstructured documents into structured taxonomies, improving searchability and security governance."
   },
   {
-    id": 501,
+    "id": 501,
     "domain": "Reference and Master Data",
     "type": "Fact / Exception",
     "question": "What is Golden Record Survivorship in MDM?",
@@ -7018,7 +7018,7 @@
     "explanation": "Survivorship rules determine winning attributes when merging conflicting data across feeder systems into a golden record."
   },
   {
-    id": 502,
+    "id": 502,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Process & Lifecycle",
     "question": "Which activity is part of Dimensional Modeling in data warehousing?",
@@ -7032,7 +7032,7 @@
     "explanation": "Dimensional modeling organizes data warehouses into intuitive star or snowflake schemas optimized for analytical querying."
   },
   {
-    id": 503,
+    "id": 503,
     "domain": "Metadata Management",
     "type": "Role & Responsibility",
     "question": "Who is responsible for defining technical data lineage rules and mapping transformation logic in metadata catalogs?",
@@ -7046,7 +7046,7 @@
     "explanation": "Data engineers and metadata specialists map out transformation scripts and technical lineage flows for catalog tools."
   },
   {
-    id": 504,
+    "id": 504,
     "domain": "Data Quality",
     "type": "Distinction / Definition",
     "question": "What is the difference between Data Profiling and Data Cleansing?",
@@ -7060,7 +7060,7 @@
     "explanation": "Profiling inspects and assesses data health, whereas cleansing takes action to remediate the errors discovered during profiling."
   },
   {
-    id": 505,
+    "id": 505,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is Overfitting in Machine Learning?",
@@ -7074,7 +7074,7 @@
     "explanation": "Overfitted models memorize training data rather than learning generalizable patterns, causing high error rates on new data."
   },
   {
-    id": 506,
+    "id": 506,
     "domain": "Data Handling Ethics",
     "type": "Process & Lifecycle",
     "question": "What is the ethical objective of a Privacy Impact Assessment (PIA)?",
@@ -7088,7 +7088,7 @@
     "explanation": "PIAs proactively assess privacy risks during project design, ensuring ethical safeguards are built into data initiatives."
   },
   {
-    id": 507,
+    "id": 507,
     "domain": "Data Governance",
     "type": "Fact / Exception",
     "question": "What is a Data Stewardship Council?",
@@ -7102,7 +7102,7 @@
     "explanation": "The stewardship council coordinates data governance activities and standardizes operational practices across business units."
   },
   {
-    id": 508,
+    "id": 508,
     "domain": "Data Architecture",
     "type": "Distinction / Definition",
     "question": "What is the difference between Operational Data Store (ODS) and Data Warehouse?",
@@ -7116,7 +7116,7 @@
     "explanation": "ODS handles near-real-time operational integration, whereas data warehouses store deep historical data for business intelligence."
   },
   {
-    id": 509,
+    "id": 509,
     "domain": "Data Modeling and Design",
     "type": "Process & Lifecycle",
     "question": "What is Normalization in relational database design?",
@@ -7130,7 +7130,7 @@
     "explanation": "Normalization applies formal rules (like 1NF, 2NF, 3NF) to structure relational schemas cleanly and eliminate update anomalies."
   },
   {
-    id": 510,
+    "id": 510,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
     "question": "What is Database Replication?",
@@ -7144,7 +7144,7 @@
     "explanation": "Replication synchronizes data across multiple nodes, providing redundancy against failures and distributing query workloads."
   },
   {
-    id": 511,
+    "id": 511,
     "domain": "Data Security",
     "type": "Process & Lifecycle",
     "question": "What is Incident Response in cybersecurity operations?",
@@ -7158,7 +7158,7 @@
     "explanation": "Incident response defines the structured steps an organization takes to detect, contain, and recover from a security breach."
   },
   {
-    id": 512,
+    "id": 512,
     "domain": "Data Integration",
     "type": "Distinction / Definition",
     "question": "What is the difference between Message Queue and Event Stream?",
@@ -7172,7 +7172,7 @@
     "explanation": "Queues distribute tasks for single consumption and removal, whereas streams maintain persistent event logs for multiple subscribers."
   },
   {
-    id": 513,
+    "id": 513,
     "domain": "Document and Content Management",
     "type": "Fact / Exception",
     "question": "What is Version Control in Document Management?",
@@ -7186,7 +7186,7 @@
     "explanation": "Version control tracks document history, allowing users to view prior iterations, compare changes, and revert if needed."
   },
   {
-    id": 514,
+    "id": 514,
     "domain": "Reference and Master Data",
     "type": "Role & Responsibility",
     "question": "Who is responsible for defining reference data values (such as country codes and currency types) across the enterprise?",
@@ -7200,7 +7200,7 @@
     "explanation": "Reference data owners establish standard codes and lookup tables to ensure uniform values across all enterprise systems."
   },
   {
-    id": 515,
+    "id": 515,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is a Conformed Dimension in dimensional warehousing?",
@@ -7214,7 +7214,7 @@
     "explanation": "Conformed dimensions allow different subject areas to be queried together without semantic discrepancies or metric mismatches."
   },
   {
-    id": 516,
+    "id": 516,
     "domain": "Metadata Management",
     "type": "Process & Lifecycle",
     "question": "What is Metadata Lineage Mapping?",
@@ -7228,7 +7228,7 @@
     "explanation": "Lineage mapping visualizes data provenance and transformation pathways, aiding impact analysis and root-cause debugging."
   },
   {
-    id": 517,
+    "id": 517,
     "domain": "Data Quality",
     "type": "Role & Responsibility",
     "question": "Who is responsible for monitoring data quality dashboards and flagging recurring data defects to operational teams?",
@@ -7242,7 +7242,7 @@
     "explanation": "Quality analysts and stewards track metric dashboards, investigate anomalies, and coordinate remediation with operational teams."
   },
   {
-    id": 518,
+    "id": 518,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is Apache Kafka primarily used for in Big Data architectures?",
@@ -7256,7 +7256,7 @@
     "explanation": "Kafka acts as a robust backbone for real-time data streaming, connecting distributed microservices and data pipelines."
   },
   {
-    id": 519,
+    "id": 519,
     "domain": "Data Handling Ethics",
     "type": "Process & Lifecycle",
     "question": "What is the ethical practice of 'Algorithm Auditability'?",
@@ -7270,7 +7270,7 @@
     "explanation": "Auditability ensures AI decisions can be scrutinized for fairness, bias, and correctness by authorized overseers."
   },
   {
-    id": 520,
+    "id": 520,
     "domain": "Data Governance",
     "type": "Role & Responsibility",
     "question": "Which role is responsible for establishing enterprise data classification standards (e.g., Public, Internal, Confidential, Restricted)?",
@@ -7284,7 +7284,7 @@
     "explanation": "Security and governance officers define classification tiers to dictate how different types of data must be protected."
   },
   {
-    id": 521,
+    "id": 521,
     "domain": "Data Architecture",
     "type": "Process & Lifecycle",
     "question": "What is the primary objective of a Data Architecture Roadmap?",
@@ -7298,7 +7298,7 @@
     "explanation": "The architecture roadmap provides a phased timeline and execution plan for modernizing enterprise data systems."
   },
   {
-    id": 522,
+    "id": 522,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
     "question": "What is a Bridge Table in dimensional data modeling?",
@@ -7312,7 +7312,7 @@
     "explanation": "Bridge tables contain foreign keys pointing to both sides of a many-to-many relationship, enabling correct metric allocation."
   },
   {
-    id": 523,
+    "id": 523,
     "domain": "Data Storage and Operations",
     "type": "Process & Lifecycle",
     "question": "What is Database Capacity Planning?",
@@ -7326,7 +7326,7 @@
     "explanation": "Capacity planning ensures database hardware and cloud resources scale proactively ahead of business growth."
   },
   {
-    id": 524,
+    "id": 524,
     "domain": "Data Security",
     "type": "Distinction / Definition",
     "question": "What is the difference between Vulnerability Assessment and Penetration Testing?",
@@ -7340,7 +7340,7 @@
     "explanation": "Scanners find potential weaknesses (vulnerability assessment), whereas human experts actively try to breach them (penetration testing)."
   },
   {
-    id": 525,
+    "id": 525,
     "domain": "Data Integration",
     "type": "Fact / Exception",
     "question": "What is an Application Programming Interface (API) wrapper in data integration?",
@@ -7354,7 +7354,7 @@
     "explanation": "API wrappers modernize older systems, allowing modern integration tools to consume legacy data via standard HTTP calls."
   },
   {
-    id": 526,
+    "id": 526,
     "domain": "Document and Content Management",
     "type": "Process & Lifecycle",
     "question": "What is Automated Optical Character Recognition (OCR) in document management?",
@@ -7368,7 +7368,7 @@
     "explanation": "OCR extracts text from image-based scans, making physical or scanned documents fully searchable and indexable."
   },
   {
-    id": 527,
+    "id": 527,
     "domain": "Reference and Master Data",
     "type": "Fact / Exception",
     "question": "What is Hierarchy Management in Master Data Management?",
@@ -7382,7 +7382,7 @@
     "explanation": "Hierarchy management handles parent-child relationships and organizational structures within master data domains."
   },
   {
-    id": 528,
+    "id": 528,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Role & Responsibility",
     "question": "Who is responsible for defining key performance indicators (KPIs) and business metric definitions for executive dashboards?",
@@ -7396,7 +7396,7 @@
     "explanation": "Business analysts and BI owners collaborate with stakeholders to define consistent, measurable KPIs for reporting."
   },
   {
-    id": 529,
+    "id": 529,
     "domain": "Metadata Management",
     "type": "Fact / Exception",
     "question": "What is Operational Metadata?",
@@ -7410,7 +7410,7 @@
     "explanation": "Operational metadata captures performance and execution metrics of data pipelines, jobs, and scheduled tasks."
   },
   {
-    id": 530,
+    "id": 530,
     "domain": "Data Quality",
     "type": "Process & Lifecycle",
     "question": "What is Root Cause Analysis (RCA) in data quality management?",
@@ -7424,7 +7424,7 @@
     "explanation": "RCA identifies why data errors occur at the source, preventing recurring quality issues from polluting downstream systems."
   },
   {
-    id": 531,
+    "id": 531,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is Feature Store in Machine Learning operations (MLOps)?",
@@ -7438,7 +7438,7 @@
     "explanation": "Feature stores ensure consistency and reuse of engineered features across both model training and live production scoring."
   },
   {
-    id": 532,
+    "id": 532,
     "domain": "Data Handling Ethics",
     "type": "Process & Lifecycle",
     "question": "What is the ethical standard of 'Fairness in Algorithmic Decision-Making'?",
@@ -7452,7 +7452,7 @@
     "explanation": "Algorithmic fairness requires active testing and mitigation to prevent AI systems from discriminating against groups."
   },
   {
-    id": 533,
+    "id": 533,
     "domain": "Data Governance",
     "type": "Role & Responsibility",
     "question": "Who is responsible for executing day-to-day data governance tasks and enforcing data standards within their business department?",
@@ -7466,7 +7466,7 @@
     "explanation": "Data stewards act as the operational voice of governance, enforcing standards and resolving quality issues locally."
   },
   {
-    id": 534,
+    "id": 534,
     "domain": "Data Architecture",
     "type": "Process & Lifecycle",
     "question": "What is the primary purpose of a Proof of Concept (PoC) in data architecture evaluation?",
@@ -7480,7 +7480,7 @@
     "explanation": "PoCs validate whether a proposed tool or architecture meets technical requirements in a real-world sandbox environment."
   },
   {
-    id": 535,
+    "id": 535,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
     "question": "What is a Natural Key in relational data modeling?",
@@ -7494,7 +7494,7 @@
     "explanation": "Natural keys derive from real-world business attributes, whereas surrogate keys are artificial system-generated identifiers."
   },
   {
-    id": 536,
+    "id": 536,
     "domain": "Data Storage and Operations",
     "type": "Distinction / Definition",
     "question": "What is the difference between OLTP and OLAP databases?",
@@ -7508,7 +7508,7 @@
     "explanation": "OLTP powers daily application transactions, while OLAP powers business intelligence reporting and historical analysis."
   },
   {
-    id": 537,
+    "id": 537,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is Role-Based Access Control (RBAC)?",
@@ -7522,7 +7522,7 @@
     "explanation": "RBAC simplifies security administration by grouping permissions into roles (e.g., Analyst, Manager) and assigning users to roles."
   },
   {
-    id": 538,
+    "id": 538,
     "domain": "Data Integration",
     "type": "Process & Lifecycle",
     "question": "Which activity is part of Data Schema Mapping during integration?",
@@ -7536,7 +7536,7 @@
     "explanation": "Schema mapping specifies the exact translation path from source structures to target table schemas."
   },
   {
-    id": 539,
+    "id": 539,
     "domain": "Document and Content Management",
     "type": "Fact / Exception",
     "question": "What is Electronic Document Management System (EDMS)?",
@@ -7550,7 +7550,7 @@
     "explanation": "EDMS platforms provide centralized repositories, indexing, security, and lifecycle controls for digital files."
   },
   {
-    id": 540,
+    "id": 540,
     "domain": "Reference and Master Data",
     "type": "Distinction / Definition",
     "question": "What is the difference between Reference Data and Master Data?",
@@ -7578,7 +7578,7 @@
     "explanation": "Junk dimensions consolidate unrelated indicator flags and attributes into a single table to keep fact tables clean and slim."
   },
   {
-    id": 542,
+    "id": 542,
     "domain": "Metadata Management",
     "type": "Fact / Exception",
     "question": "What is Passive Metadata Harvesting?",
@@ -7592,7 +7592,7 @@
     "explanation": "Passive harvesting captures metadata insights quietly from runtime logs and query traffic without adding resource load to source databases."
   },
   {
-    id": 543,
+    "id": 543,
     "domain": "Data Quality",
     "type": "Fact / Exception",
     "question": "What does the 'Completeness' dimension of Data Quality measure?",
@@ -7606,7 +7606,7 @@
     "explanation": "Completeness checks verify that necessary data attributes are populated and not left blank or null."
   },
   {
-    id": 544,
+    "id": 544,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is Apache Airflow primarily used for in modern data engineering?",
@@ -7620,7 +7620,7 @@
     "explanation": "Airflow uses Directed Acyclic Graphs (DAGs) to orchestrate, schedule, and monitor complex multi-step data processing pipelines."
   },
   {
-    id": 545,
+    "id": 545,
     "domain": "Data Handling Ethics",
     "type": "Fact / Exception",
     "question": "What is the ethical requirement of 'Right to be Forgotten' (Data Erasure)?",
@@ -7634,7 +7634,7 @@
     "explanation": "Under privacy laws like GDPR, individuals can request complete erasure of their personal data when it is no longer necessary."
   },
   {
-    id": 546,
+    "id": 546,
     "domain": "Data Governance",
     "type": "Fact / Exception",
     "question": "What is a Data Lineage Impact Analysis?",
@@ -7648,7 +7648,7 @@
     "explanation": "Impact analysis uses data lineage maps to foresee downstream breakages before making structural changes upstream."
   },
   {
-    id": 547,
+    "id": 547,
     "domain": "Data Architecture",
     "type": "Fact / Exception",
     "question": "What is a Data Lakehouse architectural pattern?",
@@ -7662,7 +7662,7 @@
     "explanation": "Lakehouses bridge the gap between unstructured data lakes and structured data warehouses using open storage formats with transaction support."
   },
   {
-    id": 548,
+    "id": 548,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
     "question": "What is Anchor Modeling in database design?",
@@ -7676,7 +7676,7 @@
     "explanation": "Anchor modeling structures databases into minimal components (anchors, ties, attributes) to allow seamless schema evolution without rewrites."
   },
   {
-    id": 549,
+    "id": 549,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
     "question": "What is Database Vacuuming (Vacuum Operation)?",
@@ -7690,7 +7690,7 @@
     "explanation": "Vacuuming cleans up dead tuple storage space left behind by updates and deletes, preventing table bloat."
   },
   {
-    id": 550,
+    "id": 550,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is Tokenization in data security?",
@@ -7746,7 +7746,7 @@
     "explanation": "Match and merge algorithms resolve duplicate records across disparate source systems to build unified master profiles."
   },
   {
-    id": 554,
+    "id": 554,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is a Factless Fact Table in dimensional modeling?",
@@ -7760,7 +7760,7 @@
     "explanation": "Factless fact tables track events, associations, or coverages where numerical measurements are absent but relationship counts matter."
   },
   {
-    id": 555,
+    "id": 555,
     "domain": "Metadata Management",
     "type": "Fact / Exception",
     "question": "What is a Business Glossary in metadata governance?",
@@ -7774,7 +7774,7 @@
     "explanation": "A business glossary defines enterprise terminology clearly, bridging communication gaps between business and technical teams."
   },
   {
-    id": 556,
+    "id": 556,
     "domain": "Data Quality",
     "type": "Fact / Exception",
     "question": "What does the 'Uniqueness' dimension of Data Quality evaluate?",
@@ -7788,7 +7788,7 @@
     "explanation": "Uniqueness checks ensure that entity records (such as customers or orders) are not redundantly duplicated."
   },
   {
-    id": 557,
+    "id": 557,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is Data Imputation in Machine Learning preparation?",
@@ -7802,7 +7802,7 @@
     "explanation": "Imputation handles missing values in datasets so machine learning models can train without failing on null inputs."
   },
   {
-    id": 558,
+    "id": 558,
     "domain": "Data Handling Ethics",
     "type": "Fact / Exception",
     "question": "What is the ethical implication of 'Shadow AI' in the workplace?",
@@ -7816,7 +7816,7 @@
     "explanation": "Shadow AI occurs when staff input sensitive corporate or customer data into unapproved external AI platforms without governance oversight."
   },
   {
-    id": 559,
+    "id": 559,
     "domain": "Data Governance",
     "type": "Fact / Exception",
     "question": "What is Data Lineage Harvesting?",
@@ -7830,7 +7830,7 @@
     "explanation": "Lineage harvesting uses scrapers and parsers to build comprehensive flow graphs of how data travels across the enterprise."
   },
   {
-    id": 560,
+    "id": 560,
     "domain": "Data Architecture",
     "type": "Fact / Exception",
     "question": "What is a Data Mesh architectural paradigm?",
@@ -7844,7 +7844,7 @@
     "explanation": "Data mesh treats data as a product, decentralizing ownership to domain teams while enforcing global governance standards."
   },
   {
-    id": 561,
+    "id": 561,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
     "question": "What is a Dimensional Surrogate Key?",
@@ -7858,7 +7858,7 @@
     "explanation": "Dimensional surrogate keys ensure stable historical tracking and performance in data warehouses, independent of transactional source keys."
   },
   {
-    id": 562,
+    "id": 562,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
     "question": "What is Database High Availability (HA)?",
@@ -7872,7 +7872,7 @@
     "explanation": "High availability setups use clustering, failover nodes, and replication to keep databases online even if hardware components fail."
   },
   {
-    id": 563,
+    "id": 563,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is Database Activity Monitoring (DAM)?",
@@ -7886,7 +7886,7 @@
     "explanation": "DAM tools track who is querying what inside databases, providing critical audit trails and threat detection for compliance."
   },
   {
-    id": 564,
+    "id": 564,
     "domain": "Data Integration",
     "type": "Fact / Exception",
     "question": "What is Webhook Integration?",
@@ -7900,7 +7900,7 @@
     "explanation": "Webhooks allow real-time, push-based communication between web services without requiring constant polling."
   },
   {
-    id": 565,
+    "id": 565,
     "domain": "Document and Content Management",
     "type": "Fact / Exception",
     "question": "What is Content Lifecycle Management (CLM)?",
@@ -7914,7 +7914,7 @@
     "explanation": "CLM oversees unstructured content flow through every stage of its operational and compliance life cycle."
   },
   {
-    id": 566,
+    "id": 566,
     "domain": "Reference and Master Data",
     "type": "Fact / Exception",
     "question": "What is Survivorship Conflict Resolution in MDM?",
@@ -7928,7 +7928,7 @@
     "explanation": "Conflict resolution rules decide which feeder system's data wins when conflicting attributes are encountered during golden record creation."
   },
   {
-    id": 567,
+    "id": 567,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is a Slowly Changing Dimension (SCD) Type 1?",
@@ -7942,7 +7942,7 @@
     "explanation": "SCD Type 1 updates attributes in place without preserving history, which is used when previous changes do not matter for reporting."
   },
   {
-    id": 568,
+    "id": 568,
     "domain": "Metadata Management",
     "type": "Fact / Exception",
     "question": "What is Technical Metadata?",
@@ -7956,7 +7956,7 @@
     "explanation": "Technical metadata provides the structural blueprint of databases and data systems required by engineers and database engines."
   },
   {
-    id": 569,
+    "id": 569,
     "domain": "Data Quality",
     "type": "Fact / Exception",
     "question": "What does the 'Timeliness' dimension of Data Quality measure?",
@@ -7970,7 +7970,7 @@
     "explanation": "Timeliness ensures data latency meets business requirements, guaranteeing information is fresh and ready when required."
   },
   {
-    id": 570,
+    "id": 570,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is Dimensionality Reduction in Data Science?",
@@ -7984,7 +7984,7 @@
     "explanation": "Dimensionality reduction simplifies complex datasets, mitigating overfitting and speeding up machine learning computations."
   },
   {
-    id": 571,
+    "id": 571,
     "domain": "Data Handling Ethics",
     "type": "Fact / Exception",
     "question": "What is the ethical principle of 'Transparency in Automated Profiling'?",
@@ -7998,7 +7998,7 @@
     "explanation": "Transparency ensures users know when their digital footprint is being profiled and understand how conclusions are derived."
   },
   {
-    id": 572,
+    "id": 572,
     "domain": "Data Governance",
     "type": "Fact / Exception",
     "question": "What is a Data Governance Policy?",
@@ -8012,7 +8012,7 @@
     "explanation": "Governance policies set the binding rules and behavioral expectations for data management across the organization."
   },
   {
-    id": 573,
+    "id": 573,
     "domain": "Data Architecture",
     "type": "Fact / Exception",
     "question": "What is a Master Data Management (MDM) Architecture?",
@@ -8026,7 +8026,7 @@
     "explanation": "MDM architecture defines how core business entities are matched, cleaned, governed, and synchronized enterprise-wide."
   },
   {
-    id": 574,
+    "id": 574,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
     "question": "What is a Recursive Relationship in database modeling?",
@@ -8040,7 +8040,7 @@
     "explanation": "Recursive (self-referencing) relationships model hierarchical data where instances of an entity connect to other instances of the same entity."
   },
   {
-    id": 575,
+    "id": 575,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
     "question": "What is Database Connection Pooling?",
@@ -8054,7 +8054,7 @@
     "explanation": "Connection pooling avoids the heavy overhead of establishing a fresh database connection for every user request, boosting performance."
   },
   {
-    id": 576,
+    "id": 576,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is Hardware Security Module (HSM)?",
@@ -8068,7 +8068,7 @@
     "explanation": "HSMs provide tamper-resistant hardware protection for cryptographic keys and sensitive enterprise encryption operations."
   },
   {
-    id": 577,
+    "id": 577,
     "domain": "Data Integration",
     "type": "Fact / Exception",
     "question": "What is Data Federating Integration?",
@@ -8082,7 +8082,7 @@
     "explanation": "Data federation virtualizes queries across distributed systems, eliminating the need for costly physical ETL copying."
   },
   {
-    id": 578,
+    "id": 578,
     "domain": "Document and Content Management",
     "type": "Fact / Exception",
     "question": "What is Content Analytics in Enterprise Content Management?",
@@ -8096,7 +8096,7 @@
     "explanation": "Content analytics applies text mining and NLP to unlock business intelligence from massive volumes of unstructured files."
   },
   {
-    id": 579,
+    "id": 579,
     "domain": "Reference and Master Data",
     "type": "Fact / Exception",
     "question": "What is a 'Consolidation' deployment style in MDM?",
@@ -8110,7 +8110,7 @@
     "explanation": "Consolidation MDM creates a reporting gold copy without altering operational source systems directly."
   },
   {
-    id": 580,
+    "id": 580,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is a Slowly Changing Dimension (SCD) Type 3?",
@@ -8124,7 +8124,7 @@
     "explanation": "SCD Type 3 retains only the previous and current values in designated columns, offering a compromise between Type 1 and Type 2."
   },
   {
-    id": 581,
+    "id": 581,
     "domain": "Metadata Management",
     "type": "Fact / Exception",
     "question": "What is Metadata Governance?",
@@ -8138,7 +8138,7 @@
     "explanation": "Metadata governance ensures that data catalogs, dictionaries, and lineage tracking remain accurate and compliant with standards."
   },
   {
-    id": 582,
+    "id": 582,
     "domain": "Data Quality",
     "type": "Fact / Exception",
     "question": "What does the 'Consistency' metric verify in data quality assessment?",
@@ -8152,7 +8152,7 @@
     "explanation": "Consistency checks guarantee that identical attributes (such as customer status) report matching values across all enterprise silos."
   },
   {
-    id": 583,
+    "id": 583,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is A/B Testing in Data Science?",
@@ -8166,7 +8166,7 @@
     "explanation": "A/B testing uses statistical hypothesis testing to evaluate changes in user behavior or model performance scientifically."
   },
   {
-    id": 584,
+    "id": 584,
     "domain": "Data Handling Ethics",
     "type": "Fact / Exception",
     "question": "What is the ethical requirement of 'Purpose Limitation' in data processing?",
@@ -8180,7 +8180,7 @@
     "explanation": "Purpose limitation ensures organizations only use personal data for the explicit reasons disclosed to the user at collection."
   },
   {
-    id": 585,
+    "id": 585,
     "domain": "Data Governance",
     "type": "Fact / Exception",
     "question": "What is a Data Governance Council?",
@@ -8194,7 +8194,7 @@
     "explanation": "The governance council provides top-level organizational leadership and policy approval for enterprise data management."
   },
   {
-    id": 586,
+    "id": 586,
     "domain": "Data Architecture",
     "type": "Fact / Exception",
     "question": "What is Event-Driven Architecture (EDA)?",
@@ -8208,7 +8208,7 @@
     "explanation": "EDA enables real-time asynchronous communication between microservices by publishing and reacting to system events."
   },
   {
-    id": 587,
+    "id": 587,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
     "question": "What is Anchor Entity in Data Modeling?",
@@ -8222,7 +8222,7 @@
     "explanation": "Anchor entities represent core independent business subjects in specialized modeling methodologies like anchor modeling."
   },
   {
-    id": 588,
+    "id": 588,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
     "question": "What is Database Query Optimization?",
@@ -8236,7 +8236,7 @@
     "explanation": "Query optimization tunes database execution plans, indexes, and syntax to retrieve requested data with minimum computational cost."
   },
   {
-    id": 589,
+    "id": 589,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is Zero Trust Architecture (ZTA)?",
@@ -8250,7 +8250,7 @@
     "explanation": "Zero Trust eliminates implicit trust based on network perimeter location, enforcing continuous authentication and least privilege."
   },
   {
-    id": 590,
+    "id": 590,
     "domain": "Data Integration",
     "type": "Fact / Exception",
     "question": "What is Enterprise Application Integration (EAI)?",
@@ -8264,7 +8264,7 @@
     "explanation": "EAI bridges isolated software applications, enabling them to share business logic and operational data smoothly."
   },
   {
-    id": 591,
+    "id": 591,
     "domain": "Document and Content Management",
     "type": "Fact / Exception",
     "question": "What is Automated Content Tagging?",
@@ -8278,7 +8278,7 @@
     "explanation": "Automated tagging uses AI/NLP to classify and tag unstructured content instantly upon ingestion, reducing manual overhead."
   },
   {
-    id": 592,
+    "id": 592,
     "domain": "Reference and Master Data",
     "type": "Fact / Exception",
     "question": "What is a 'Coexistence' deployment style in MDM?",
@@ -8292,7 +8292,7 @@
     "explanation": "Coexistence MDM syncs golden records back to feeder systems, allowing both central governance and local operational usage."
   },
   {
-    id": 593,
+    "id": 593,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is a Accumulating Snapshot Fact Table?",
@@ -8306,7 +8306,7 @@
     "explanation": "Accumulating snapshot fact tables feature multiple date columns to track pipeline progression through defined workflow milestones."
   },
   {
-    id": 594,
+    "id": 594,
     "domain": "Metadata Management",
     "type": "Fact / Exception",
     "question": "What is Metadata Stewardship?",
@@ -8320,7 +8320,7 @@
     "explanation": "Metadata stewards manage catalog definitions, descriptions, and ownership tags to keep metadata reliable for users."
   },
   {
-    id": 595,
+    "id": 595,
     "domain": "Data Quality",
     "type": "Fact / Exception",
     "question": "What does the 'Precision' metric evaluate in data matching algorithms?",
@@ -8334,7 +8334,7 @@
     "explanation": "Precision measures the accuracy of positive match predictions, minimizing false positives in data deduplication."
   },
   {
-    id": 596,
+    "id": 596,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is Cross-Validation in Machine Learning model evaluation?",
@@ -8348,7 +8348,7 @@
     "explanation": "Cross-validation ensures model performance metrics are robust and not dependent on a single lucky train/test data split."
   },
   {
-    id": 597,
+    "id": 597,
     "domain": "Data Handling Ethics",
     "type": "Fact / Exception",
     "question": "What is the ethical implication of 'Implicit Bias in Training Data'?",
@@ -8362,7 +8362,7 @@
     "explanation": "Implicit bias in data leads AI models to learn and perpetuate unfair social inequalities if left unmitigated."
   },
   {
-    id": 598,
+    "id": 598,
     "domain": "Data Governance",
     "type": "Fact / Exception",
     "question": "What is a Data Governance Dashboard?",
@@ -8376,7 +8376,7 @@
     "explanation": "Governance dashboards provide leadership with real-time visibility into data health, compliance tracking, and governance adoption."
   },
   {
-    id": 599,
+    "id": 599,
     "domain": "Data Architecture",
     "type": "Fact / Exception",
     "question": "What is Data Virtualization Architecture?",
@@ -8390,7 +8390,7 @@
     "explanation": "Data virtualization abstracts physical storage locations, allowing consumers to query distributed datasets seamlessly as one source."
   },
   {
-    id": 600,
+    "id": 600,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
     "question": "What is Temporal Data Modeling?",
@@ -8404,7 +8404,7 @@
     "explanation": "Temporal modeling incorporates native time-dimension handling into database schemas to track historical state changes seamlessly."
   },
   {
-    id": 601,
+    "id": 601,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
     "question": "What is Database Backup Compression?",
@@ -8418,7 +8418,7 @@
     "explanation": "Backup compression minimizes storage footprints and speeds up backup/restore durations across enterprise networks."
   },
   {
-    id": 602,
+    "id": 602,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is Endpoint Detection and Response (EDR)?",
@@ -8432,7 +8432,7 @@
     "explanation": "EDR protects servers and user workstations by detecting abnormal behavior and blocking advanced threats at the endpoint level."
   },
   {
-    id": 603,
+    "id": 603,
     "domain": "Data Integration",
     "type": "Fact / Exception",
     "question": "What is Schema Drift Handling in data pipelines?",
@@ -8446,7 +8446,7 @@
     "explanation": "Schema drift handling prevents pipeline failures when source upstream schemas mutate unexpectedly."
   },
   {
-    id": 604,
+    "id": 604,
     "domain": "Document and Content Management",
     "type": "Fact / Exception",
     "question": "What is Records Retention Schedule?",
@@ -8460,7 +8460,7 @@
     "explanation": "Retention schedules mandate legal holding periods for different document classes, ensuring compliant archiving and destruction."
   },
   {
-    id": 605,
+    "id": 605,
     "domain": "Reference and Master Data",
     "type": "Fact / Exception",
     "question": "What is a Master Data Source System?",
@@ -8474,7 +8474,7 @@
     "explanation": "Source systems (like CRM or ERP) generate raw operational records that feed upstream into master data management hubs."
   },
   {
-    id": 606,
+    "id": 606,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is a Periodic Snapshot Fact Table?",
@@ -8488,7 +8488,7 @@
     "explanation": "Periodic snapshots capture state metrics at scheduled intervals (e.g., end of every month), regardless of whether activity occurred."
   },
   {
-    id": 607,
+    "id": 607,
     "domain": "Metadata Management",
     "type": "Fact / Exception",
     "question": "What is Metadata Enrichment?",
@@ -8502,7 +8502,7 @@
     "explanation": "Metadata enrichment adds rich business context to raw technical database schemas, making data assets discoverable and understandable."
   },
   {
-    id": 608,
+    "id": 608,
     "domain": "Data Quality",
     "type": "Fact / Exception",
     "question": "What does the 'Recall' metric evaluate in data matching and classification?",
@@ -8516,7 +8516,7 @@
     "explanation": "Recall measures an algorithm's ability to capture all relevant positive cases, minimizing false negatives."
   },
   {
-    id": 609,
+    "id": 609,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is Hyperparameter Tuning in Machine Learning?",
@@ -8530,7 +8530,7 @@
     "explanation": "Hyperparameter tuning systematically tests different model architecture settings to find the combination yielding optimal performance."
   },
   {
-    id": 610,
+    "id": 610,
     "domain": "Data Handling Ethics",
     "type": "Fact / Exception",
     "question": "What is the ethical principle of 'Data Accountability'?",
@@ -8544,7 +8544,7 @@
     "explanation": "Data accountability requires organizations to demonstrate compliance and take full ethical ownership of their data practices."
   },
   {
-    id": 611,
+    "id": 611,
     "domain": "Data Governance",
     "type": "Fact / Exception",
     "question": "What is a Data Governance Framework?",
@@ -8558,7 +8558,7 @@
     "explanation": "A governance framework establishes the operational rules, organization structure, and processes for managing enterprise data assets."
   },
   {
-    id": 612,
+    "id": 612,
     "domain": "Data Architecture",
     "type": "Fact / Exception",
     "question": "What is a Lambda Architecture in Big Data processing?",
@@ -8572,7 +8572,7 @@
     "explanation": "Lambda architecture combines a low-latency speed layer with a fault-tolerant batch layer to achieve real-time analytics with historical accuracy."
   },
   {
-    id": 613,
+    "id": 613,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
     "question": "What is a Subtype Discriminator in relational modeling?",
@@ -8586,7 +8586,7 @@
     "explanation": "A subtype discriminator is a column holding a value that indicates which specialized subtype model inherits the parent record."
   },
   {
-    id": 614,
+    "id": 614,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
     "question": "What is Database Read Replica Scaling?",
@@ -8600,7 +8600,7 @@
     "explanation": "Read replica scaling distributes heavy analytical query traffic across secondary nodes, preserving primary database capacity for writes."
   },
   {
-    id": 615,
+    "id": 615,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is Data Loss Prevention (DLP)?",
@@ -8614,7 +8614,7 @@
     "explanation": "DLP systems inspect network traffic and endpoints to block sensitive data (like PII or IP) from leaking outside corporate bounds."
   },
   {
-    id": 616,
+    "id": 616,
     "domain": "Data Integration",
     "type": "Fact / Exception",
     "question": "What is Bulk Load Integration?",
@@ -8628,7 +8628,7 @@
     "explanation": "Bulk loading uses optimized engine utilities to ingest large datasets rapidly into data warehouses or storage targets."
   },
   {
-    id": 617,
+    "id": 617,
     "domain": "Document and Content Management",
     "type": "Fact / Exception",
     "question": "What is Electronic Signature Integration in Document Management?",
@@ -8642,7 +8642,7 @@
     "explanation": "E-signature integration enables secure, compliant approval workflows directly on electronic document repositories."
   },
   {
-    id": 618,
+    "id": 618,
     "domain": "Reference and Master Data",
     "type": "Fact / Exception",
     "question": "What is Cross-Domain Master Data Matching?",
@@ -8656,7 +8656,7 @@
     "explanation": "Cross-domain matching establishes complex relational ties between disparate master subjects to gain unified business insights."
   },
   {
-    id": 619,
+    "id": 619,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is a Outrigger Dimension in data warehousing?",
@@ -8670,7 +8670,7 @@
     "explanation": "Outrigger dimensions normalize descriptive attributes out of a primary dimension table into a secondary lookup dimension."
   },
   {
-    id": 620,
+    "id": 620,
     "domain": "Metadata Management",
     "type": "Fact / Exception",
     "question": "What is an Automated Data Dictionary?",
@@ -8684,7 +8684,7 @@
     "explanation": "Automated data dictionaries sync schema definitions automatically, removing the burden of manual documentation maintenance."
   },
   {
-    id": 621,
+    "id": 621,
     "domain": "Data Quality",
     "type": "Fact / Exception",
     "question": "What is Automated Data Remediation?",
@@ -8698,7 +8698,7 @@
     "explanation": "Automated remediation fixes known data anomalies on the fly, ensuring clean data populates downstream analytic models without manual intervention."
   },
   {
-    id": 622,
+    "id": 622,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is Model Registry in MLOps platforms?",
@@ -8712,7 +8712,7 @@
     "explanation": "Model registries track model version history, performance metrics, and stage transitions (staging, production) reliably."
   },
   {
-    id": 623,
+    "id": 623,
     "domain": "Data Handling Ethics",
     "type": "Fact / Exception",
     "question": "What is the ethical guideline of 'Algorithmic Redacting and Explainability'?",
@@ -8726,7 +8726,7 @@
     "explanation": "Explainability ensures users and auditors understand how an algorithm reached a decision, preserving accountability and fairness."
   },
   {
-    id": 624,
+    "id": 624,
     "domain": "Data Governance",
     "type": "Fact / Exception",
     "question": "What is a Data Governance Charter?",
@@ -8740,7 +8740,7 @@
     "explanation": "The governance charter formally establishes the program's mandate, executive sponsorship, and decision-making authority."
   },
   {
-    id": 625,
+    "id": 625,
     "domain": "Data Architecture",
     "type": "Fact / Exception",
     "question": "What is Kappa Architecture in Big Data processing?",
@@ -8754,7 +8754,7 @@
     "explanation": "Kappa architecture simplifies big data pipelines by processing everything as a real-time event stream through log storage."
   },
   {
-    id": 626,
+    "id": 626,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
     "question": "What is Object-Relational Modeling (ORM)?",
@@ -8768,7 +8768,7 @@
     "explanation": "ORMs bridge object-oriented programming code with relational databases, translating object properties into SQL queries and rows."
   },
   {
-    id": 627,
+    "id": 627,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
     "question": "What is Database Storage Bloat?",
@@ -8782,7 +8782,7 @@
     "explanation": "Storage bloat degrades query performance and wastes disk capacity, requiring routine vacuuming or table rebuilding."
   },
   {
-    id": 628,
+    "id": 628,
     "domain": "Data Security",
     "type": "Fact / Exception",
     "question": "What is Database Transparent Data Encryption (TDE)?",
@@ -8796,7 +8796,7 @@
     "explanation": "TDE encrypts databases at rest automatically, protecting physical storage media files from theft or unauthorized disk reads."
   },
   {
-    id": 629,
+    "id": 629,
     "domain": "Data Integration",
     "type": "Fact / Exception",
     "question": "What is API Rate Limiting in integration workflows?",
@@ -8810,7 +8810,7 @@
     "explanation": "Rate limiting protects integration APIs from Denial of Service (DoS) attacks and excessive consumption traffic."
   },
   {
-    id": 630,
+    "id": 630,
     "domain": "Document and Content Management",
     "type": "Fact / Exception",
     "question": "What is Document Workflow Automation?",
@@ -8824,7 +8824,7 @@
     "explanation": "Workflow automation streamlines document review cycles, passing files automatically between users and departments."
   },
   {
-    id": 631,
+    "id": 631,
     "domain": "Reference and Master Data",
     "type": "Fact / Exception",
     "question": "What is Master Data Stewardship Workflows?",
@@ -8838,7 +8838,7 @@
     "explanation": "Stewardship workflows ensure manual intervention is applied efficiently when automated matching algorithms encounter ambiguity."
   },
   {
-    id": 632,
+    "id": 632,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
     "question": "What is a BI Semantic Layer?",
@@ -8852,7 +8852,7 @@
     "explanation": "The semantic layer ensures consistent metric calculations and definitions across all reporting dashboards and business users."
   },
   {
-    id": 633,
+    "id": 633,
     "domain": "Metadata Management",
     "type": "Fact / Exception",
     "question": "What is Metadata Synchronization?",
@@ -8866,7 +8866,7 @@
     "explanation": "Metadata synchronization ensures that changes made in one data catalog propagate accurately to connected governance systems."
   },
   {
-    id": 634,
+    "id": 634,
     "domain": "Data Quality",
     "type": "Fact / Exception",
     "question": "What is Data Quality Scorecarding?",
@@ -8880,7 +8880,7 @@
     "explanation": "Scorecards provide leadership with high-level, trackable health indicators measuring ongoing data quality improvements."
   },
   {
-    id": 635,
+    "id": 635,
     "domain": "Big Data and Data Science",
     "type": "Fact / Exception",
     "question": "What is Model Inference in Machine Learning?",
@@ -8894,7 +8894,7 @@
     "explanation": "Inference represents the operational phase where a trained model actively scores incoming data in production applications."
   },
   {
-    id": 636,
+    "id": 636,
     "domain": "Data Handling Ethics",
     "type": "Fact / Exception",
     "question": "What is the ethical requirement of 'Consent Revocation'?",
@@ -8908,7 +8908,7 @@
     "explanation": "Consent revocation ensures users retain control over their personal data, allowing them to opt out whenever they choose."
   },
   {
-    id": 637,
+    "id": 637,
     "domain": "Data Governance",
     "type": "Fact / Exception",
     "question": "What is Data Governance Enforcement?",
@@ -8922,7 +8922,7 @@
     "explanation": "Enforcement ensures that established data policies have teeth, holding organizational units accountable for non-compliance."
   },
   {
-    id": 638,
+    "id": 638,
     "domain": "Data Architecture",
     "type": "Fact / Exception",
     "question": "What is a Hub-and-Spoke Data Architecture?",
@@ -8936,7 +8936,7 @@
     "explanation": "Hub-and-spoke centralizes data integration and transformation logic, connecting various spoke systems through a singular core hub."
   },
   {
-    id": 639,
+    "id": 639,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
     "question": "What is Conceptual Data Normalization?",
@@ -8950,7 +8950,7 @@
     "explanation": "Conceptual normalization ensures high-level business definitions are clear, cohesive, and free of logical contradictions."
   },
   {
-    id": 640,
+    "id": 640,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
     "question": "What is Database Storage Indexing?",
@@ -8964,4 +8964,3 @@
     "explanation": "Indexes accelerate query retrieval speeds dramatically by creating organized pointer structures for table columns."
   }
 ]
-
