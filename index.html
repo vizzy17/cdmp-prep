@@ -109,7 +109,7 @@
                             <button id="bookmark-card-btn" class="text-slate-500 hover:text-amber-400 text-lg transition">⭐</button>
                         </div>
                         <div class="my-auto text-center py-6">
-                            <h3 id="card-front-text" class="text-xl sm:text-2xl font-bold tracking-tight text-slate-100">Loading passing engine data...[cite: 1]</h3>
+                            <h3 id="card-front-text" class="text-xl sm:text-2xl font-bold tracking-tight text-slate-100">Loading passing engine data...</h3>
                         </div>
                         <div class="text-center text-xs font-bold text-slate-500 uppercase tracking-widest">Click card to flip</div>
                     </div>
@@ -208,6 +208,45 @@
 
     <!-- Application Core Script -->
     <script>
+        // Built-in fallback database so the app works instantly even if questions.json fails to load from GitHub
+        const fallbackData = [
+            {
+                chapter: 2,
+                tier: 1,
+                front: "What is the primary objective of Data Governance?",
+                back: "To ensure data is managed as an enterprise asset to create value and mitigate risk.",
+                explanation: "Data governance ensures accountability, policy enforcement, and enterprise-wide alignment."
+            },
+            {
+                chapter: 2,
+                tier: 3,
+                front: "Who holds ultimate accountability for data governance within an organization?",
+                back: "Executive Management / Chief Data Officer (CDO)",
+                explanation: "While data stewards manage day-to-day operations, executive leadership retains ultimate governance accountability."
+            },
+            {
+                chapter: 5,
+                tier: 2,
+                front: "What is the primary output of the Conceptual Data Modeling phase?",
+                back: "Enterprise data model identifying core business entities and high-level relationships.",
+                explanation: "Conceptual models are independent of technology implementation and focus entirely on business scope."
+            },
+            {
+                chapter: 13,
+                tier: 4,
+                front: "What dimension of Data Quality measures whether data values match an authoritative source?",
+                back: "Accuracy",
+                explanation: "Accuracy refers to the degree to which data correctly represents the real-world entity it describes."
+            },
+            {
+                chapter: 12,
+                tier: 1,
+                front: "What is the primary function of Metadata Management?",
+                back: "To integrate, control, and deliver accurate context about enterprise data assets.",
+                explanation: "Metadata provides 'data about data', enabling lineage, discovery, and business understanding."
+            }
+        ];
+
         let allData = [];
         let currentViewData = [];
         let currentIndex = 0;
@@ -271,21 +310,30 @@
             glossaryQuickBtn: document.getElementById('glossary-quick-btn')
         };
 
-        // Fetch questions.json cleanly
+        // Attempt to fetch questions.json, with automatic fallback to built-in data
         fetch('questions.json')
             .then(res => {
                 if (!res.ok) throw new Error('Failed to load questions.json');
                 return res.json();
             })
             .then(data => {
-                allData = data;
-                prepareStudyQueue();
-                renderCard();
+                if (Array.isArray(data) && data.length > 0) {
+                    allData = data;
+                } else {
+                    allData = fallbackData;
+                }
+                initApp();
             })
             .catch(err => {
-                console.error('Error loading JSON:', err);
-                el.frontText.innerText = "Error: Could not load questions.json. Ensure it is uploaded alongside this HTML file in your repository[cite: 1]. If running locally, make sure to use a local development server (like Live Server) to bypass browser CORS restrictions.";
+                console.warn('Using fallback data due to fetch error:', err);
+                allData = fallbackData;
+                initApp();
             });
+
+        function initApp() {
+            prepareStudyQueue();
+            renderCard();
+        }
 
         function getMasteryStore() {
             return JSON.parse(localStorage.getItem('cdmp_mastery') || '{}');
@@ -377,7 +425,7 @@
             else if (val.startsWith('tier-')) pool = allData.filter(d => d.tier == val.split('-')[1]);
             else pool = allData.filter(d => d.chapter == val);
 
-            if (pool.length < 4) pool = [...allData];
+            if (pool.length === 0) pool = [...allData];
             pool.sort(() => Math.random() - 0.5);
             quizHistory = pool.slice(0, Math.min(25, pool.length));
             userAnswers = {};
@@ -405,7 +453,11 @@
             reviewModeActive = false;
             let pool = [...allData];
             pool.sort(() => Math.random() - 0.5);
-            quizHistory = pool.slice(0, 100);
+            // Repeat array if pool is smaller than 100 for simulation testing
+            while(pool.length < 10 && pool.length > 0) {
+                pool = pool.concat(pool);
+            }
+            quizHistory = pool.slice(0, Math.min(100, pool.length));
             userAnswers = {};
             flaggedQuestions.clear();
             quizOptionsCache = {};
@@ -421,7 +473,7 @@
             el.quizEarlySubmit.classList.remove('hidden');
             el.quizNext.innerText = "Next →";
 
-            el.quizTitle.innerText = "CDMP Exam Simulation (100 Questions / 90 Mins)";
+            el.quizTitle.innerText = "CDMP Exam Simulation";
             startTimer(5400);
             showQuestion();
         }
@@ -471,6 +523,9 @@
 
             if (!quizOptionsCache[currentIndex]) {
                 let distractors = allData.filter(d => d.back !== item.back).map(d => d.back);
+                while(distractors.length < 3) {
+                    distractors.push("Alternative DAMA compliance procedure " + (distractors.length + 1));
+                }
                 distractors.sort(() => Math.random() - 0.5);
                 let options = [item.back, ...distractors.slice(0, 3)];
                 options.sort(() => Math.random() - 0.5);
