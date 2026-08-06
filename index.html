@@ -1,869 +1,205 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CDMP Master Engine - High-Conversion Exam Prep</title>
+    <title>CDMP Master Engine - Passing Engine Suite</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: { 50: '#eff6ff', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        .perspective-1000 { perspective: 1000px; }
-        .transform-style-3d { transform-style: preserve-3d; }
-        .backface-hidden { backface-visibility: hidden; }
-        .rotate-y-180 { transform: rotateY(180deg); }
-    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-blue-500 selection:text-white">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
 
-    <!-- Top Navigation / Header -->
-    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-blue-600 flex items-center justify-center font-black text-xl shadow-lg shadow-blue-500/30">C</div>
-                <div>
-                    <h1 class="font-extrabold text-base tracking-tight leading-none">CDMP Master Engine</h1>
-                    <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Passing Engine Suite</span>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-2">
-                <button id="glossary-modal-btn" class="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 text-xs font-bold transition flex items-center gap-1.5 border border-amber-500/20">
-                    📖 DMBoK Glossary
-                </button>
-                <button id="analytics-modal-btn" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold transition flex items-center gap-1.5 border border-slate-700">
-                    📊 Analytics
-                </button>
-            </div>
+    <!-- Header Navigation -->
+    <header class="bg-slate-800 border-b border-slate-700 px-6 py-4 flex flex-wrap justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <span class="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">CDMP Master Engine</span>
+            <span class="text-xs bg-slate-700 px-2 py-1 rounded text-slate-300">Passing Engine Suite</span>
         </div>
+        <nav class="flex flex-wrap gap-3 text-sm text-slate-300 mt-2 sm:mt-0">
+            <button class="hover:text-blue-400 transition">📖 DMBoK Glossary</button>
+            <button class="hover:text-blue-400 transition">📊 Analytics</button>
+            <button class="hover:text-blue-400 transition">🗂️ Flashcards</button>
+            <button class="hover:text-blue-400 transition">⚡ Tier Practice</button>
+            <button class="hover:text-blue-400 transition">📝 90-Min Exam</button>
+            <button class="hover:text-blue-400 transition">⭐ Bookmarks</button>
+        </nav>
     </header>
 
     <!-- Main Container -->
-    <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-6 flex flex-col">
-
-        <!-- Mode Selector Toolbar -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
-            <button id="study-btn" class="nav-tab p-3 rounded-2xl bg-blue-600 text-white font-extrabold text-xs tracking-wider uppercase shadow-md shadow-blue-600/30 transition flex items-center justify-center gap-2">
-                🗂️ Flashcards
-            </button>
-            <button id="quiz-btn" class="nav-tab p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-extrabold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2">
-                ⚡ Tier Practice
-            </button>
-            <button id="exam-btn" class="nav-tab p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-extrabold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2">
-                📝 90-Min Exam
-            </button>
-            <button id="bookmarks-btn" class="nav-tab p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-extrabold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2">
-                ⭐ Bookmarks
-            </button>
+    <main class="flex-grow flex flex-col items-center justify-center p-6">
+        
+        <!-- Filter Selector -->
+        <div class="w-full max-w-2xl mb-6">
+            <label for="tierSelect" class="block text-sm font-medium text-slate-400 mb-2">Strategic Tier/Chapter:</label>
+            <select id="tierSelect" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-slate-100 focus:outline-none focus:border-blue-500">
+                <option value="all">All Tiers & Chapters</option>
+                <option value="Tier 1: Role & Responsibility">Tier 1: Role & Responsibility</option>
+                <option value="Tier 2: Process & Lifecycle">Tier 2: Process & Lifecycle</option>
+                <option value="Tier 3: Distinction & Definitions">Tier 3: Distinction & Definitions</option>
+                <option value="Tier 4: Facts & Numerical Thresholds">Tier 4: Facts & Numerical Thresholds</option>
+                <optgroup label="--- By Chapter ---">
+                    <option value="Chapter 2: Data Governance">Chapter 2: Data Governance</option>
+                    <option value="Chapter 3: Data Handling Ethics">Chapter 3: Data Handling Ethics</option>
+                    <option value="Chapter 4: Data Architecture">Chapter 4: Data Architecture</option>
+                    <option value="Chapter 5: Data Modeling & Design">Chapter 5: Data Modeling & Design</option>
+                    <option value="Chapter 6: Data Storage & Operations">Chapter 6: Data Storage & Operations</option>
+                    <option value="Chapter 7: Data Security">Chapter 7: Data Security</option>
+                    <option value="Chapter 8: Data Integration">Chapter 8: Data Integration</option>
+                    <option value="Chapter 10: Reference & Master Data">Chapter 10: Reference & Master Data</option>
+                    <option value="Chapter 11: Data Warehousing & BI">Chapter 11: Data Warehousing & BI</option>
+                    <option value="Chapter 12: Metadata Management">Chapter 12: Metadata Management</option>
+                    <option value="Chapter 13: Data Quality">Chapter 13: Data Quality</option>
+                </optgroup>
+            </select>
         </div>
 
-        <!-- Filter Bar -->
-        <div class="bg-slate-900/50 border border-slate-800 p-4 rounded-2xl mb-6 flex flex-wrap items-center justify-between gap-4">
-            <div class="flex items-center gap-2">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Strategic Tier/Chapter:</span>
-                <select id="chapter-filter" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-200 outline-none focus:border-blue-500">
-                    <option value="all">All Tiers & Chapters</option>
-                    <option value="tier-1">Tier 1: Role & Responsibility</option>
-                    <option value="tier-2">Tier 2: Process & Lifecycle</option>
-                    <option value="tier-3">Tier 3: Distinction & Definitions</option>
-                    <option value="tier-4">Tier 4: Facts & Numerical Thresholds</option>
-                    <option value="--divider--" disabled>--- By Chapter ---</option>
-                    <option value="2">Chapter 2: Data Governance</option>
-                    <option value="3">Chapter 3: Data Handling Ethics</option>
-                    <option value="4">Chapter 4: Data Architecture</option>
-                    <option value="5">Chapter 5: Data Modeling & Design</option>
-                    <option value="6">Chapter 6: Data Storage & Operations</option>
-                    <option value="7">Chapter 7: Data Security</option>
-                    <option value="8">Chapter 8: Data Integration</option>
-                    <option value="10">Chapter 10: Reference & Master Data</option>
-                    <option value="11">Chapter 11: Data Warehousing & BI</option>
-                    <option value="12">Chapter 12: Metadata Management</option>
-                    <option value="13">Chapter 13: Data Quality</option>
-                </select>
+        <!-- Question Card Box -->
+        <div id="cardContainer" class="w-full max-w-2xl bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-xl cursor-pointer transition transform hover:border-slate-600 relative">
+            <div class="flex justify-between items-center mb-4 text-xs text-slate-400">
+                <span id="cardMeta">Chapter / Domain</span>
+                <button id="bookmarkBtn" class="text-slate-500 hover:text-yellow-400 text-lg transition">⭐</button>
             </div>
-            <div id="stats-counter" class="text-xs font-bold text-slate-400">
-                Card <span id="current-card-num">0</span> of <span id="total-card-num">0</span>
+            
+            <!-- Card Text / Content -->
+            <div id="cardContent" class="min-h-[140px] flex items-center justify-center text-center text-lg font-medium text-slate-200">
+                Loading questions...
+            </div>
+
+            <div class="mt-6 text-center text-xs text-slate-500">
+                Click card to flip
             </div>
         </div>
 
-        <!-- ================= FLASHCARD VIEW ================= -->
-        <div id="flashcard-view" class="flex-1 flex flex-col">
-            <div class="perspective-1000 w-full flex-1 min-h-[420px] sm:min-h-[480px] cursor-pointer mb-6" id="flashcard-element">
-                <div class="relative w-full h-full duration-500 transform-style-3d rounded-3xl border border-slate-800 bg-slate-900 shadow-2xl p-6 sm:p-10 flex flex-col justify-between" id="card-inner">
-                    
-                    <!-- Front Face -->
-                    <div class="absolute inset-0 p-6 sm:p-10 flex flex-col justify-between backface-hidden">
-                        <div class="flex justify-between items-center">
-                            <span id="card-chapter-badge" class="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[10px] font-extrabold uppercase">Chapter</span>
-                            <button id="bookmark-card-btn" class="text-slate-500 hover:text-amber-400 text-lg transition">⭐</button>
-                        </div>
-                        <div class="my-auto text-center py-4">
-                            <h3 id="card-front-text" class="text-lg sm:text-2xl font-bold tracking-tight text-slate-100">Loading dataset...</h3>
-                        </div>
-                        <div class="text-center text-xs font-bold text-slate-500 uppercase tracking-widest">Click card to flip</div>
-                    </div>
-
-                    <!-- Back Face -->
-                    <div class="absolute inset-0 p-6 sm:p-10 flex flex-col justify-between backface-hidden rotate-y-180 bg-slate-900/95 rounded-3xl overflow-y-auto">
-                        <div class="flex justify-between items-center">
-                            <span id="card-tier-badge" class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-extrabold uppercase">Strategic Tier</span>
-                        </div>
-                        <div class="my-auto py-4 space-y-3">
-                            <p id="card-back-text" class="text-base sm:text-lg font-medium text-slate-200 leading-relaxed"></p>
-                            <div id="card-explanation" class="text-xs text-blue-300 bg-blue-950/40 p-3 rounded-xl border border-blue-800/50"></div>
-                        </div>
-                        <div class="text-center text-xs font-bold text-emerald-500 uppercase tracking-widest">Click to flip back</div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Flashcard Controls -->
-            <div class="flex items-center justify-between gap-4">
-                <button id="prev-btn" class="flex-1 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 font-bold text-xs uppercase tracking-wider transition">← Previous</button>
-                <button id="next-btn" class="flex-1 py-4 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-blue-600/30 transition">Next Card →</button>
-            </div>
+        <!-- Progress Counter -->
+        <div class="mt-4 text-sm text-slate-400">
+            Card <span id="currentIndex">0</span> of <span id="totalQuestions">0</span>
         </div>
 
-        <!-- ================= QUIZ / EXAM VIEW ================= -->
-        <div id="quiz-view" class="hidden flex-1 flex flex-col">
-            <div id="quiz-header-bar" class="flex justify-between items-center mb-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-                <div class="flex items-center gap-3">
-                    <span id="timer-display" class="font-mono text-sm font-bold text-amber-400">⏱️ 90:00</span>
-                    <span id="quiz-progress-text" class="text-xs font-bold text-slate-400">Question 1 of 100</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button id="glossary-quick-btn" class="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 text-xs font-bold border border-amber-500/20 transition">📖 Open-Book Index</button>
-                    <button id="flag-btn" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold border border-slate-700 transition">🚩 Flag</button>
-                    <button id="quiz-early-submit" class="px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-bold border border-red-500/20 transition">End Session</button>
-                </div>
-            </div>
-
-            <div class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-3xl shadow-xl flex-1 flex flex-col justify-between mb-6">
-                <div>
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 id="quiz-title" class="text-xs font-extrabold uppercase tracking-wider text-blue-400">Passing Engine Practice</h3>
-                        <span id="quiz-chapter-badge" class="px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-[10px] font-bold text-slate-300">Chapter</span>
-                    </div>
-                    <p id="quiz-question" class="text-lg sm:text-xl font-bold text-slate-100 mb-6 leading-snug"></p>
-                    <div id="quiz-options" class="space-y-3"></div>
-                </div>
-
-                <div id="completion-bar-container" class="mt-6 pt-4 border-t border-slate-800 flex justify-between items-center">
-                    <span id="flagged-indicator" class="text-xs font-bold text-amber-400 hidden">🚩 Flagged for review</span>
-                    <div id="elimination-breakdown-box" class="hidden w-full bg-slate-950 p-4 rounded-2xl border border-blue-500/30 text-xs space-y-2">
-                        <div class="font-extrabold text-blue-400 uppercase tracking-wide">💡 DAMA Elimination Breakdown:</div>
-                        <p id="elimination-text" class="text-slate-300 leading-relaxed"></p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quiz Navigation Bottom Bar -->
-            <div class="flex items-center justify-between gap-4">
-                <button id="quiz-prev" class="px-6 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 font-bold text-xs uppercase tracking-wider transition">Previous</button>
-                <div id="navigator-container" class="hidden sm:flex items-center gap-1 overflow-x-auto py-2 max-w-md"></div>
-                <div class="flex gap-2">
-                    <button id="quiz-skip" class="px-6 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 font-bold text-xs uppercase tracking-wider transition">Skip</button>
-                    <button id="quiz-next" class="px-6 py-4 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-blue-600/30 transition">Next →</button>
-                </div>
-            </div>
+        <!-- Action Buttons -->
+        <div class="flex gap-4 mt-6">
+            <button id="quizBtn" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-medium transition shadow-lg">Start Tier Practice</button>
+            <button id="examBtn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg font-medium transition shadow-lg">Start 90-Min Exam</button>
         </div>
 
     </main>
 
-    <!-- Analytics Modal -->
-    <div id="analytics-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-3xl p-6 shadow-2xl space-y-6">
-            <div class="flex justify-between items-center">
-                <h3 class="text-base font-black uppercase tracking-wider">Passing Analytics Engine</h3>
-                <button id="close-analytics" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center font-bold">✕</button>
-            </div>
-            <div id="analytics-content" class="space-y-4"></div>
-        </div>
-    </div>
-
-    <!-- Glossary / Open-Book Modal -->
-    <div id="glossary-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-3xl p-6 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
-            <div class="flex justify-between items-center">
-                <h3 class="text-base font-black uppercase tracking-wider text-amber-400">📖 DMBoK Simulated Index & Glossary</h3>
-                <button id="close-glossary" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center font-bold">✕</button>
-            </div>
-            <p class="text-xs text-slate-400">Search keywords instantly below to simulate real exam open-book lookup speed.</p>
-            <input type="text" id="glossary-search-input" placeholder="Type term (e.g. data governance, OLAP, metadata)..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-xs text-slate-200 outline-none focus:border-amber-500">
-            <div id="glossary-results" class="flex-1 overflow-y-auto space-y-3 pr-1"></div>
-        </div>
-    </div>
-
-    <!-- Application Core Script -->
+    <!-- Footer Script / Controller -->
     <script>
-        // Fallback dataset in case questions.json fails to load or fetch
-        const fallbackData = [
-            { chapter: 2, tier: 1, front: "Who is ultimately accountable for data governance across an enterprise?", back: "Data Governance Steering Committee / Data Owner", explanation: "Data Governance frameworks dictate that business owners hold accountability, while data stewards handle operational execution." },
-            { chapter: 2, tier: 3, front: "What is the primary distinction between Data Governance and Data Management?", back: "Governance sets policy and strategy; Management executes and implements processes.", explanation: "Governance is the 'what' and 'who', whereas Management is the 'how'." },
-            { chapter: 5, tier: 2, front: "What is the standard sequence of data modeling stages?", back: "Conceptual -> Logical -> Physical", explanation: "DAMA DMBoK specifies moving from high-level business concepts down to platform-specific physical schemas." },
-            { chapter: 7, tier: 4, front: "What type of control is data encryption at rest considered?", back: "Preventative Safeguard", explanation: "Encryption prevents unauthorized physical or logical media inspection." },
-            { chapter: 13, tier: 2, front: "What is the first step in a Data Quality management process?", back: "Define data quality requirements and critical data elements (CDEs).", explanation: "You cannot measure or improve quality without first defining stakeholder expectations and thresholds." }
-        ];
-
-        let allData = [];
-        let currentViewData = [];
-        let currentIndex = 0;
-        let bookmarks = new Set(JSON.parse(localStorage.getItem('cdmp_bookmarks') || '[]'));
-        
-        let quizHistory = [];
-        let userAnswers = {};
-        let flaggedQuestions = new Set();
-        let timerInterval = null;
-        let secondsElapsed = 0;
-        let reviewModeActive = false;
-        let latestIncorrectList = [];
-        let reviewHistoryIndex = 0;
-        let quizOptionsCache = {};
-        let isExamMode = false;
+        let allQuestions = [];
+        let filteredQuestions = [];
+        let currentIdx = 0;
+        let isFlipped = false;
 
         const el = {
-            flashView: document.getElementById('flashcard-view'),
-            quizView: document.getElementById('quiz-view'),
-            card: document.getElementById('flashcard-element'),
-            cardInner: document.getElementById('card-inner'),
-            frontText: document.getElementById('card-front-text'),
-            backText: document.getElementById('card-back-text'),
-            cardExplanation: document.getElementById('card-explanation'),
-            chapterBadge: document.getElementById('card-chapter-badge'),
-            tierBadge: document.getElementById('card-tier-badge'),
-            bookmarkCardBtn: document.getElementById('bookmark-card-btn'),
-            currentCardNum: document.getElementById('current-card-num'),
-            totalCardNum: document.getElementById('total-card-num'),
-            filter: document.getElementById('chapter-filter'),
-            studyBtn: document.getElementById('study-btn'),
-            quizBtn: document.getElementById('quiz-btn'),
-            examBtn: document.getElementById('exam-btn'),
-            bookmarksBtn: document.getElementById('bookmarks-btn'),
-            quizHeaderBar: document.getElementById('quiz-header-bar'),
-            timerDisplay: document.getElementById('timer-display'),
-            quizProgressText: document.getElementById('quiz-progress-text'),
-            flagBtn: document.getElementById('flag-btn'),
-            quizEarlySubmit: document.getElementById('quiz-early-submit'),
-            quizTitle: document.getElementById('quiz-title'),
-            quizChapterBadge: document.getElementById('quiz-chapter-badge'),
-            quizQuestion: document.getElementById('quiz-question'),
-            quizOptions: document.getElementById('quiz-options'),
-            completionBarContainer: document.getElementById('completion-bar-container'),
-            flaggedIndicator: document.getElementById('flagged-indicator'),
-            eliminationBox: document.getElementById('elimination-breakdown-box'),
-            eliminationText: document.getElementById('elimination-text'),
-            navigatorContainer: document.getElementById('navigator-container'),
-            quizPrev: document.getElementById('quiz-prev'),
-            quizNext: document.getElementById('quiz-next'),
-            quizSkip: document.getElementById('quiz-skip'),
-            analyticsModal: document.getElementById('analytics-modal'),
-            analyticsModalBtn: document.getElementById('analytics-modal-btn'),
-            closeAnalytics: document.getElementById('close-analytics'),
-            analyticsContent: document.getElementById('analytics-content'),
-            glossaryModal: document.getElementById('glossary-modal'),
-            glossaryModalBtn: document.getElementById('glossary-modal-btn'),
-            closeGlossary: document.getElementById('close-glossary'),
-            glossarySearchInput: document.getElementById('glossary-search-input'),
-            glossaryResults: document.getElementById('glossary-results'),
-            glossaryQuickBtn: document.getElementById('glossary-quick-btn')
+            cardContainer: document.getElementById('cardContainer'),
+            cardContent: document.getElementById('cardContent'),
+            cardMeta: document.getElementById('cardMeta'),
+            currentIndex: document.getElementById('currentIndex'),
+            totalQuestions: document.getElementById('totalQuestions'),
+            tierSelect: document.getElementById('tierSelect'),
+            quizBtn: document.getElementById('quizBtn'),
+            examBtn: document.getElementById('examBtn')
         };
 
-        function updateActiveTab(activeButton) {
-            document.querySelectorAll('.nav-tab').forEach(btn => {
-                btn.className = "nav-tab p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-extrabold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2";
-            });
-            activeButton.className = "nav-tab p-3 rounded-2xl bg-blue-600 text-white font-extrabold text-xs tracking-wider uppercase shadow-md shadow-blue-600/35 transition flex items-center justify-center gap-2";
-        }
-
-        function loadAppData(dataList) {
-            let rawList = Array.isArray(dataList) ? dataList : (dataList.questions || dataList.items || []);
-            allData = rawList.map(item => ({
-                chapter: item.chapter || item.Chapter || 2,
-                tier: item.tier || item.Tier || 3,
-                front: item.front || item.question || item.Question || "Untitled Question",
-                back: item.back || item.answer || item.Answer || "No answer provided",
-                explanation: item.explanation || item.Rationale || item.rationale || "DAMA standard compliance principle."
-            }));
-
-            if (allData.length === 0) {
-                allData = fallbackData;
-            }
-            initApp();
-        }
-
-        // Attempt fetching questions.json, fall back gracefully if it fails
-        fetch('questions.json')
+        // Fetch JSON safely with robust property mapping fallback
+        fetch('./questions.json')
             .then(res => {
-                if (!res.ok) throw new Error('File not found');
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
                 return res.json();
             })
-            .then(data => loadAppData(data))
+            .then(data => {
+                // Map fields cleanly to prevent undefined property crashes
+                allQuestions = data.map((q, index) => ({
+                    id: q.id || index,
+                    domain: q.domain || "General",
+                    type: q.type || "Standard",
+                    question: q.question || "No question text provided.",
+                    options: q.options || [],
+                    correct: q.correct !== undefined ? q.correct : 0,
+                    explanation: q.explanation || "No explanation provided."
+                }));
+                
+                filteredQuestions = [...allQuestions];
+                updateFilter();
+            })
             .catch(err => {
-                console.warn('Could not load external questions.json, using fallback data:', err);
-                loadAppData(fallbackData);
+                console.error('Fetch error loading questions.json:', err);
+                el.cardContent.innerText = "Error loading questions.json structure. Check console for formatting issues.";
             });
 
-        function initApp() {
-            prepareStudyQueue();
-            renderCard();
-        }
-
-        function getMasteryStore() {
-            return JSON.parse(localStorage.getItem('cdmp_mastery') || '{}');
-        }
-
-        function saveMasteryStore(store) {
-            localStorage.setItem('cdmp_mastery', JSON.stringify(store));
-        }
-
-        function prepareStudyQueue() {
-            const val = el.filter.value;
-            if (val === 'all') {
-                currentViewData = [...allData];
-            } else if (val.startsWith('tier-')) {
-                const tierNum = val.split('-')[1];
-                currentViewData = allData.filter(d => d.tier == tierNum);
+        function updateFilter() {
+            const selectedVal = el.tierSelect.value;
+            if (selectedVal === 'all') {
+                filteredQuestions = [...allQuestions];
             } else {
-                currentViewData = allData.filter(d => d.chapter == val);
+                filteredQuestions = allQuestions.filter(q => q.domain === selectedVal || q.type === selectedVal);
             }
-            if (currentViewData.length === 0 && allData.length > 0) {
-                currentViewData = [...allData];
-            }
-            currentIndex = 0;
-        }
-
-        function renderCard() {
-            el.cardInner.classList.remove('rotate-y-180');
-            if (currentViewData.length === 0) {
-                el.frontText.innerText = "No flashcards found.";
-                el.backText.innerText = "Try changing filter.";
-                el.cardExplanation.innerText = "";
-                el.chapterBadge.innerText = "Empty";
-                el.tierBadge.innerText = "N/A";
-                el.currentCardNum.innerText = 0;
-                el.totalCardNum.innerText = 0;
-                return;
-            }
-
-            const item = currentViewData[currentIndex];
-            el.frontText.innerText = item.front;
-            el.backText.innerText = item.back;
-            el.cardExplanation.innerText = item.explanation;
-            el.chapterBadge.innerText = `Chapter ${item.chapter}`;
-            el.tierBadge.innerText = `Tier ${item.tier} Strategy`;
-            el.currentCardNum.innerText = currentIndex + 1;
-            el.totalCardNum.innerText = currentViewData.length;
-
-            if (bookmarks.has(item.front)) {
-                el.bookmarkCardBtn.innerText = "⭐";
-                el.bookmarkCardBtn.classList.add('text-amber-400');
-            } else {
-                el.bookmarkCardBtn.innerText = "☆";
-                el.bookmarkCardBtn.classList.remove('text-amber-400');
-            }
-        }
-
-        el.bookmarkCardBtn.onclick = (e) => {
-            e.stopPropagation();
-            if (currentViewData.length === 0) return;
-            const item = currentViewData[currentIndex];
-            if (bookmarks.has(item.front)) {
-                bookmarks.delete(item.front);
-            } else {
-                bookmarks.add(item.front);
-            }
-            localStorage.setItem('cdmp_bookmarks', JSON.stringify([...bookmarks]));
-            renderCard();
-        };
-
-        function startTimer(durationInSeconds) {
-            clearInterval(timerInterval);
-            secondsElapsed = durationInSeconds;
-            timerInterval = setInterval(() => {
-                secondsElapsed--;
-                if (secondsElapsed <= 0) {
-                    clearInterval(timerInterval);
-                    submitQuiz();
-                    return;
-                }
-                const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
-                const secs = String(secondsElapsed % 60).padStart(2, '0');
-                el.timerDisplay.innerText = `⏱️ ${mins}:${secs}`;
-            }, 1000);
-        }
-
-        function startQuiz() {
-            updateActiveTab(el.quizBtn);
-            isExamMode = false;
-            reviewModeActive = false;
-            const val = el.filter.value;
-            let pool = [];
-            if (val === 'all') pool = [...allData];
-            else if (val.startsWith('tier-')) pool = allData.filter(d => d.tier == val.split('-')[1]);
-            else pool = allData.filter(d => d.chapter == val);
-
-            if (pool.length === 0) pool = [...allData];
-            pool.sort(() => Math.random() - 0.5);
-            quizHistory = pool.slice(0, Math.min(25, pool.length));
-            userAnswers = {};
-            flaggedQuestions.clear();
-            quizOptionsCache = {};
-            currentIndex = 0;
-
-            el.flashView.classList.add('hidden');
-            el.quizView.classList.remove('hidden');
-            el.quizHeaderBar.classList.remove('hidden');
-            el.completionBarContainer.classList.remove('hidden');
-            el.navigatorContainer.classList.remove('hidden');
-            el.flagBtn.classList.remove('hidden');
-            el.quizSkip.classList.remove('hidden');
-            el.quizEarlySubmit.classList.remove('hidden');
-            el.quizNext.innerText = "Next →";
-
-            el.quizTitle.innerText = "Tier-Based Elimination Practice";
-            startTimer(3600);
-            showQuestion();
-        }
-
-        function startExamMode() {
-            updateActiveTab(el.examBtn);
-            isExamMode = true;
-            reviewModeActive = false;
-            let pool = [...allData];
-            pool.sort(() => Math.random() - 0.5);
-            quizHistory = pool.slice(0, Math.min(100, pool.length));
-            userAnswers = {};
-            flaggedQuestions.clear();
-            quizOptionsCache = {};
-            currentIndex = 0;
-
-            el.flashView.classList.add('hidden');
-            el.quizView.classList.remove('hidden');
-            el.quizHeaderBar.classList.remove('hidden');
-            el.completionBarContainer.classList.remove('hidden');
-            el.navigatorContainer.classList.remove('hidden');
-            el.flagBtn.classList.remove('hidden');
-            el.quizSkip.classList.remove('hidden');
-            el.quizEarlySubmit.classList.remove('hidden');
-            el.quizNext.innerText = "Next →";
-
-            el.quizTitle.innerText = "CDMP Exam Simulation";
-            startTimer(5400);
-            showQuestion();
-        }
-
-        function startBookmarksMode() {
-            updateActiveTab(el.bookmarksBtn);
-            isExamMode = false;
-            reviewModeActive = false;
-            const pool = allData.filter(d => bookmarks.has(d.front));
-            if (pool.length === 0) {
-                alert("No bookmarked items found! Click the star icon on flashcards to add them.");
-                updateActiveTab(el.studyBtn);
-                return;
-            }
-            quizHistory = pool;
-            userAnswers = {};
-            flaggedQuestions.clear();
-            quizOptionsCache = {};
-            currentIndex = 0;
-
-            el.flashView.classList.add('hidden');
-            el.quizView.classList.remove('hidden');
-            el.quizHeaderBar.classList.remove('hidden');
-            el.completionBarContainer.classList.remove('hidden');
-            el.navigatorContainer.classList.remove('hidden');
-            el.flagBtn.classList.remove('hidden');
-            el.quizSkip.classList.remove('hidden');
-            el.quizEarlySubmit.classList.remove('hidden');
-            el.quizNext.innerText = "Next →";
-
-            el.quizTitle.innerText = "Bookmarked Review Practice";
-            startTimer(3600);
+            currentIdx = 0;
             showQuestion();
         }
 
         function showQuestion() {
-            if (quizHistory.length === 0) return;
-            const item = quizHistory[currentIndex];
-            el.quizProgressText.innerText = `Question ${currentIndex + 1} of ${quizHistory.length}`;
-            el.quizChapterBadge.innerText = `Chapter ${item.chapter} | Tier ${item.tier}`;
-            el.quizQuestion.innerText = item.front;
-
-            if (flaggedQuestions.has(currentIndex)) {
-                el.flaggedIndicator.classList.remove('hidden');
-                el.flagBtn.classList.add('bg-amber-500/20', 'border-amber-500/40', 'text-amber-400');
-            } else {
-                el.flaggedIndicator.classList.add('hidden');
-                el.flagBtn.classList.remove('bg-amber-500/20', 'border-amber-500/40', 'text-amber-400');
-            }
-
-            if (!quizOptionsCache[currentIndex]) {
-                let distractors = allData.filter(d => d.back !== item.back).map(d => d.back);
-                distractors.sort(() => Math.random() - 0.5);
-                while(distractors.length < 3) {
-                    distractors.push("Alternative compliance protocol option " + (distractors.length + 1));
-                }
-                let options = [item.back, ...distractors.slice(0, 3)];
-                options.sort(() => Math.random() - 0.5);
-                quizOptionsCache[currentIndex] = options;
-            }
-
-            const currentOptions = quizOptionsCache[currentIndex];
-            el.quizOptions.innerHTML = '';
-            const letters = ['A', 'B', 'C', 'D'];
-
-            currentOptions.forEach((opt, idx) => {
-                const isSelected = userAnswers[currentIndex] === opt;
-                const btn = document.createElement('button');
-                btn.className = `option-btn w-full text-left p-4 rounded-2xl border-2 transition flex items-center gap-4 font-medium shadow-sm ${
-                    isSelected 
-                        ? 'border-blue-500 bg-blue-500/10 text-blue-200 font-bold shadow-md' 
-                        : 'border-slate-800 bg-slate-900 hover:bg-slate-800/80 text-slate-300'
-                }`;
-                btn.innerHTML = `
-                    <span class="w-8 h-8 rounded-xl ${isSelected ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 border border-slate-700'} flex items-center justify-center font-bold text-sm shrink-0">${letters[idx]}</span>
-                    <span class="flex-1">${opt}</span>
-                `;
-                btn.onclick = () => {
-                    userAnswers[currentIndex] = opt;
-                    showQuestion();
-                };
-                el.quizOptions.appendChild(btn);
-            });
-
-            if (userAnswers[currentIndex]) {
-                el.eliminationBox.classList.remove('hidden');
-                el.eliminationText.innerHTML = `
-                    <div><strong>Correct Answer:</strong> ${item.back}</div>
-                    <div class="mt-1 text-slate-400"><strong>DAMA Rationale:</strong> ${item.explanation}</div>
-                `;
-            } else {
-                el.eliminationBox.classList.add('hidden');
-            }
-
-            renderNavigator();
-            el.quizPrev.style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
-            el.quizNext.innerText = currentIndex === quizHistory.length - 1 ? "Finish & Submit 🏁" : "Next →";
-        }
-
-        function renderNavigator() {
-            el.navigatorContainer.innerHTML = '';
-            quizHistory.forEach((_, idx) => {
-                const dot = document.createElement('button');
-                let style = "w-7 h-7 rounded-lg text-xs font-bold border transition flex items-center justify-center ";
-                if (idx === currentIndex) {
-                    style += "border-blue-500 bg-blue-600 text-white shadow-md";
-                } else if (userAnswers[idx]) {
-                    style += "border-emerald-500/40 bg-emerald-500/10 text-emerald-400";
-                } else {
-                    style += "border-slate-800 bg-slate-900 text-slate-500 hover:bg-slate-800";
-                }
-                dot.className = style;
-                dot.innerText = idx + 1;
-                dot.onclick = () => {
-                    currentIndex = idx;
-                    showQuestion();
-                };
-                el.navigatorContainer.appendChild(dot);
-            });
-        }
-
-        function showWrongQuestionReview(incorrectList, reviewIdx) {
-            reviewModeActive = true;
-            reviewHistoryIndex = reviewIdx;
-            const itemObj = incorrectList[reviewIdx];
-
-            el.quizHeaderBar.classList.add('hidden');
-            el.completionBarContainer.classList.add('hidden');
-            el.navigatorContainer.classList.add('hidden');
-            el.flagBtn.classList.add('hidden');
-            el.quizSkip.classList.add('hidden');
-            el.quizEarlySubmit.classList.add('hidden');
-            el.quizPrev.style.visibility = reviewIdx === 0 ? 'hidden' : 'visible';
-
-            el.quizTitle.innerText = `Review Incorrect Answer (${reviewIdx + 1} of ${incorrectList.length})`;
-            el.quizChapterBadge.innerText = `Chapter ${itemObj.item.chapter} | Tier ${itemObj.item.tier}`;
-            el.quizQuestion.innerHTML = `
-                <div class="text-base text-slate-100 font-bold mb-2">${itemObj.item.front}</div>
-                <div class="text-xs text-blue-400 bg-blue-950/40 p-3 rounded-xl border border-blue-800/50"><strong>Rationale:</strong> ${itemObj.item.explanation}</div>
-            `;
-
-            el.quizOptions.innerHTML = '';
-            itemObj.options.forEach((opt, idx) => {
-                const letters = ['A', 'B', 'C', 'D'];
-                const btn = document.createElement('button');
-                let btnStyle = "border-slate-800 bg-slate-900 text-slate-400 opacity-60";
-                let badgeStyle = "bg-slate-800 border-slate-700 text-slate-500";
-
-                if (opt === itemObj.item.back) {
-                    btnStyle = "border-emerald-500 bg-emerald-500/10 text-emerald-200 font-bold shadow-md opacity-100";
-                    badgeStyle = "bg-emerald-600 text-white";
-                } else if (opt === itemObj.userAnswer) {
-                    btnStyle = "border-red-500 bg-red-500/10 text-red-200 font-bold shadow-md opacity-100";
-                    badgeStyle = "bg-red-600 text-white";
-                }
-
-                btn.className = `option-btn w-full text-left p-4 rounded-2xl border-2 ${btnStyle} flex items-center gap-4 font-medium shadow-sm cursor-default`;
-                btn.disabled = true;
-                btn.innerHTML = `
-                    <span class="w-8 h-8 rounded-xl ${badgeStyle} border flex items-center justify-center font-bold text-sm shrink-0">${letters[idx]}</span>
-                    <span class="flex-1">${opt}</span>
-                `;
-                el.quizOptions.appendChild(btn);
-            });
-
-            el.quizNext.innerText = reviewIdx === incorrectList.length - 1 ? "Finish Review 🏁" : "Next Incorrect →";
-        }
-
-        function submitQuiz() {
-            clearInterval(timerInterval);
-            let correctCount = 0;
-            let incorrectList = [];
-
-            quizHistory.forEach((item, idx) => {
-                const userAnswer = userAnswers[idx];
-                const mastery = getMasteryStore();
-                if (!mastery[item.front]) {
-                    mastery[item.front] = { correctStreak: 0, timesTested: 0 };
-                }
-                mastery[item.front].timesTested++;
-
-                if (userAnswer === item.back) {
-                    correctCount++;
-                    mastery[item.front].correctStreak++;
-                } else {
-                    mastery[item.front].correctStreak = 0;
-                    incorrectList.push({
-                        item: item,
-                        userAnswer: userAnswer || "No Answer",
-                        options: quizOptionsCache[idx] || [item.back]
-                    });
-                }
-                saveMasteryStore(mastery);
-            });
-
-            latestIncorrectList = incorrectList;
-            const total = quizHistory.length;
-            const percentage = total > 0 ? Math.round((correctCount / total) * 100) : 0;
-            const passed = percentage >= 70;
-
-            el.quizHeaderBar.classList.add('hidden');
-            el.completionBarContainer.classList.add('hidden');
-            el.navigatorContainer.classList.add('hidden');
-            el.flagBtn.classList.add('hidden');
-            el.quizPrev.style.visibility = 'hidden';
-            el.quizSkip.classList.add('hidden');
-            el.quizEarlySubmit.classList.add('hidden');
-            el.quizNext.style.visibility = 'visible';
-
-            el.quizTitle.innerText = `Simulation Results`;
-            el.quizQuestion.innerHTML = `
-                <div class="text-center space-y-3 py-4">
-                    <div class="text-5xl font-black ${passed ? 'text-emerald-400' : 'text-red-400'}">${percentage}%</div>
-                    <div class="text-xl font-bold">You scored ${correctCount} out of ${total} (${passed ? 'PASSED 🎉 (>70% Threshold Cleared)' : 'NEEDS IMPROVEMENT 📚'})</div>
-                </div>
-            `;
-
-            el.quizOptions.innerHTML = '';
-            if (incorrectList.length > 0) {
-                const reviewPromptBtn = document.createElement('button');
-                reviewPromptBtn.className = "w-full py-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold shadow-lg transition text-center";
-                reviewPromptBtn.innerText = `🔍 Review ${incorrectList.length} Incorrectly Answered Questions`;
-                reviewPromptBtn.onclick = () => {
-                    showWrongQuestionReview(latestIncorrectList, 0);
-                };
-                el.quizOptions.appendChild(reviewPromptBtn);
-            }
-
-            el.quizNext.innerText = "Return to Dashboard 🏠";
-            el.quizNext.onclick = () => {
-                updateActiveTab(el.studyBtn);
-                el.quizView.classList.add('hidden');
-                el.flashView.classList.remove('hidden');
-                prepareStudyQueue();
-                renderCard();
-            };
-        }
-
-        el.quizNext.onclick = () => {
-            if (reviewModeActive) {
-                if (reviewHistoryIndex < latestIncorrectList.length - 1) {
-                    showWrongQuestionReview(latestIncorrectList, reviewHistoryIndex + 1);
-                } else {
-                    updateActiveTab(el.studyBtn);
-                    el.quizView.classList.add('hidden');
-                    el.flashView.classList.remove('hidden');
-                    prepareStudyQueue();
-                    renderCard();
-                }
+            if (!filteredQuestions || filteredQuestions.length === 0) {
+                el.cardContent.innerText = "No questions available for this filter selection.";
+                el.cardMeta.innerText = "Empty Filter";
+                el.currentIndex.innerText = 0;
+                el.totalQuestions.innerText = 0;
                 return;
             }
 
-            if (currentIndex === quizHistory.length - 1) {
-                submitQuiz();
+            if (currentIdx >= filteredQuestions.length) currentIdx = 0;
+            if (currentIdx < 0) currentIdx = filteredQuestions.length - 1;
+
+            const q = filteredQuestions[currentIdx];
+            isFlipped = false;
+
+            el.cardMeta.innerText = `${q.domain} | ${q.type}`;
+            el.currentIndex.innerText = currentIdx + 1;
+            el.totalQuestions.innerText = filteredQuestions.length;
+
+            renderCardFront(q);
+        }
+
+        function renderCardFront(q) {
+            let html = `<div class="w-full text-left"><p class="font-semibold text-base mb-3">${q.question}</p><ul class="space-y-2 text-sm text-slate-300">`;
+            q.options.forEach((opt, i) => {
+                html += `<li class="bg-slate-700/50 p-2 rounded">${String.fromCharCode(65 + i)}. ${opt}</li>`;
+            });
+            html += `</ul></div>`;
+            el.cardContent.innerHTML = html;
+        }
+
+        function renderCardBack(q) {
+            let html = `<div class="w-full text-left"><p class="text-emerald-400 font-bold mb-2">Correct Answer: Option ${String.fromCharCode(65 + q.correct)}</p><p class="text-sm text-slate-300"><strong class="text-slate-100">Explanation:</strong> ${q.explanation}</p></div>`;
+            el.cardContent.innerHTML = html;
+        }
+
+        // Flip interaction on click
+        el.cardContainer.onclick = () => {
+            if (!filteredQuestions || filteredQuestions.length === 0) return;
+            isFlipped = !isFlipped;
+            const q = filteredQuestions[currentIdx];
+            if (isFlipped) {
+                renderCardBack(q);
             } else {
-                currentIndex++;
-                showQuestion();
+                renderCardFront(q);
             }
         };
 
-        el.quizPrev.onclick = () => {
-            if (reviewModeActive) {
-                if (reviewHistoryIndex > 0) {
-                    showWrongQuestionReview(latestIncorrectList, reviewHistoryIndex - 1);
-                }
-                return;
-            }
-            if (currentIndex > 0) {
-                currentIndex--;
-                showQuestion();
-            }
-        };
+        el.tierSelect.onchange = updateFilter;
 
-        el.quizSkip.onclick = () => {
-            if (currentIndex < quizHistory.length - 1) {
-                currentIndex++;
-                showQuestion();
-            }
-        };
-
-        el.quizEarlySubmit.onclick = () => {
-            if (confirm("Are you sure you want to submit your exam session early?")) {
-                submitQuiz();
-            }
-        };
-
-        el.flagBtn.onclick = () => {
-            if (flaggedQuestions.has(currentIndex)) {
-                flaggedQuestions.delete(currentIndex);
-            } else {
-                flaggedQuestions.add(currentIndex);
-            }
+        function startQuiz() {
+            currentIdx = 0;
             showQuestion();
-        };
-
-        function renderGlossaryResults(query = '') {
-            const q = query.toLowerCase().trim();
-            const matches = allData.filter(d => 
-                d.front.toLowerCase().includes(q) || 
-                d.back.toLowerCase().includes(q) || 
-                d.explanation.toLowerCase().includes(q)
-            );
-
-            el.glossaryResults.innerHTML = '';
-            if (matches.length === 0) {
-                el.glossaryResults.innerHTML = `<div class="text-xs text-slate-500 text-center py-4">No matching terms found in DMBoK glossary index.</div>`;
-                return;
-            }
-
-            matches.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1";
-                card.innerHTML = `
-                    <div class="flex justify-between items-center text-[10px] font-extrabold text-amber-400 uppercase">
-                        <span>Chapter ${item.chapter} | Tier ${item.tier}</span>
-                    </div>
-                    <div class="text-xs font-bold text-slate-100">${item.front}</div>
-                    <div class="text-xs text-slate-300 font-medium">${item.back}</div>
-                `;
-                el.glossaryResults.appendChild(card);
-            });
         }
 
-        el.glossaryModalBtn.onclick = () => {
-            renderGlossaryResults();
-            el.glossaryModal.classList.remove('hidden');
-        };
+        function startExamMode() {
+            currentIdx = 0;
+            showQuestion();
+        }
 
-        el.glossaryQuickBtn.onclick = () => {
-            renderGlossaryResults();
-            el.glossaryModal.classList.remove('hidden');
-        };
-
-        el.closeGlossary.onclick = () => {
-            el.glossaryModal.classList.add('hidden');
-        };
-
-        el.glossarySearchInput.oninput = (e) => {
-            renderGlossaryResults(e.target.value);
-        };
-
-        el.analyticsModalBtn.onclick = () => {
-            const mastery = getMasteryStore();
-            let totalMastered = 0;
-            let totalStudied = Object.keys(mastery).length;
-
-            Object.values(mastery).forEach(stat => {
-                if (stat.correctStreak >= 2) totalMastered++;
-            });
-
-            el.analyticsContent.innerHTML = `
-                <div class="grid grid-cols-2 gap-4 text-center">
-                    <div class="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20">
-                        <div class="text-2xl font-black text-blue-400">${totalMastered}</div>
-                        <div class="text-xs font-bold text-slate-400 mt-1">Mastered Terms</div>
-                    </div>
-                    <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
-                        <div class="text-2xl font-black text-emerald-400">${totalStudied}</div>
-                        <div class="text-xs font-bold text-slate-400 mt-1">Terms Practiced</div>
-                    </div>
-                </div>
-            `;
-            el.analyticsModal.classList.remove('hidden');
-        };
-
-        el.closeAnalytics.onclick = () => {
-            el.analyticsModal.classList.add('hidden');
-        };
-
-        el.studyBtn.onclick = () => {
-            updateActiveTab(el.studyBtn);
-            clearInterval(timerInterval);
-            el.quizView.classList.add('hidden');
-            el.flashView.classList.remove('hidden');
-            prepareStudyQueue();
-            renderCard();
-        };
-
-        el.quizBtn.onclick = () => { startQuiz(); };
-        el.examBtn.onclick = () => { startExamMode(); };
-        el.bookmarksBtn.onclick = () => { startBookmarksMode(); };
-
-        el.filter.onchange = () => {
-            if (!el.flashView.classList.contains('hidden')) {
-                prepareStudyQueue();
-                renderCard();
-            }
-        };
-
-        document.getElementById('next-btn').onclick = () => {
-            if (currentViewData.length === 0) return;
-            currentIndex = (currentIndex + 1) % currentViewData.length;
-            renderCard();
-        };
-
-        document.getElementById('prev-btn').onclick = () => {
-            if (currentViewData.length === 0) return;
-            currentIndex = (currentIndex - 1 + currentViewData.length) % currentViewData.length;
-            renderCard();
-        };
-
-        el.card.onclick = () => {
-            el.cardInner.classList.toggle('rotate-y-180');
-        };
+        el.quizBtn.onclick = startQuiz;
+        el.examBtn.onclick = startExamMode;
     </script>
 </body>
 </html>
