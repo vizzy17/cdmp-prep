@@ -109,7 +109,7 @@
                             <button id="bookmark-card-btn" class="text-slate-500 hover:text-amber-400 text-lg transition">⭐</button>
                         </div>
                         <div class="my-auto text-center py-4">
-                            <h3 id="card-front-text" class="text-lg sm:text-2xl font-bold tracking-tight text-slate-100">Loading dataset from repository...</h3>
+                            <h3 id="card-front-text" class="text-lg sm:text-2xl font-bold tracking-tight text-slate-100">Loading dataset...</h3>
                         </div>
                         <div class="text-center text-xs font-bold text-slate-500 uppercase tracking-widest">Click card to flip</div>
                     </div>
@@ -200,7 +200,7 @@
                 <h3 class="text-base font-black uppercase tracking-wider text-amber-400">📖 DMBoK Simulated Index & Glossary</h3>
                 <button id="close-glossary" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center font-bold">✕</button>
             </div>
-            <p class="text-xs text-slate-400">Search keywords instantly below to simulate real exam open-book lookup speed (under 15 seconds).</p>
+            <p class="text-xs text-slate-400">Search keywords instantly below to simulate real exam open-book lookup speed.</p>
             <input type="text" id="glossary-search-input" placeholder="Type term (e.g. data governance, OLAP, metadata)..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-xs text-slate-200 outline-none focus:border-amber-500">
             <div id="glossary-results" class="flex-1 overflow-y-auto space-y-3 pr-1"></div>
         </div>
@@ -208,6 +208,15 @@
 
     <!-- Application Core Script -->
     <script>
+        // Fallback dataset in case questions.json fails to load or fetch
+        const fallbackData = [
+            { chapter: 2, tier: 1, front: "Who is ultimately accountable for data governance across an enterprise?", back: "Data Governance Steering Committee / Data Owner", explanation: "Data Governance frameworks dictate that business owners hold accountability, while data stewards handle operational execution." },
+            { chapter: 2, tier: 3, front: "What is the primary distinction between Data Governance and Data Management?", back: "Governance sets policy and strategy; Management executes and implements processes.", explanation: "Governance is the 'what' and 'who', whereas Management is the 'how'." },
+            { chapter: 5, tier: 2, front: "What is the standard sequence of data modeling stages?", back: "Conceptual -> Logical -> Physical", explanation: "DAMA DMBoK specifies moving from high-level business concepts down to platform-specific physical schemas." },
+            { chapter: 7, tier: 4, front: "What type of control is data encryption at rest considered?", back: "Preventative Safeguard", explanation: "Encryption prevents unauthorized physical or logical media inspection." },
+            { chapter: 13, tier: 2, front: "What is the first step in a Data Quality management process?", back: "Define data quality requirements and critical data elements (CDEs).", explanation: "You cannot measure or improve quality without first defining stakeholder expectations and thresholds." }
+        ];
+
         let allData = [];
         let currentViewData = [];
         let currentIndex = 0;
@@ -278,30 +287,32 @@
             activeButton.className = "nav-tab p-3 rounded-2xl bg-blue-600 text-white font-extrabold text-xs tracking-wider uppercase shadow-md shadow-blue-600/35 transition flex items-center justify-center gap-2";
         }
 
+        function loadAppData(dataList) {
+            let rawList = Array.isArray(dataList) ? dataList : (dataList.questions || dataList.items || []);
+            allData = rawList.map(item => ({
+                chapter: item.chapter || item.Chapter || 2,
+                tier: item.tier || item.Tier || 3,
+                front: item.front || item.question || item.Question || "Untitled Question",
+                back: item.back || item.answer || item.Answer || "No answer provided",
+                explanation: item.explanation || item.Rationale || item.rationale || "DAMA standard compliance principle."
+            }));
+
+            if (allData.length === 0) {
+                allData = fallbackData;
+            }
+            initApp();
+        }
+
+        // Attempt fetching questions.json, fall back gracefully if it fails
         fetch('questions.json')
             .then(res => {
-                if (!res.ok) throw new Error('Network response was not ok');
+                if (!res.ok) throw new Error('File not found');
                 return res.json();
             })
-            .then(data => {
-                let rawList = Array.isArray(data) ? data : (data.questions || data.items || []);
-                
-                allData = rawList.map(item => ({
-                    chapter: item.chapter || item.Chapter || 2,
-                    tier: item.tier || item.Tier || 3,
-                    front: item.front || item.question || item.Question || "Untitled Question",
-                    back: item.back || item.answer || item.Answer || "No answer provided",
-                    explanation: item.explanation || item.Rationale || item.rationale || "DAMA standard compliance principle."
-                }));
-
-                if (allData.length === 0) {
-                    throw new Error('Parsed dataset is empty');
-                }
-                initApp();
-            })
+            .then(data => loadAppData(data))
             .catch(err => {
-                console.error('Fetch error loading questions.json:', err);
-                el.frontText.innerText = "Error loading questions.json structure. Check console for formatting issues.";
+                console.warn('Could not load external questions.json, using fallback data:', err);
+                loadAppData(fallbackData);
             });
 
         function initApp() {
@@ -336,8 +347,8 @@
         function renderCard() {
             el.cardInner.classList.remove('rotate-y-180');
             if (currentViewData.length === 0) {
-                el.frontText.innerText = "No flashcards found for this selection.";
-                el.backText.innerText = "Try changing your filter tier or chapter.";
+                el.frontText.innerText = "No flashcards found.";
+                el.backText.innerText = "Try changing filter.";
                 el.cardExplanation.innerText = "";
                 el.chapterBadge.innerText = "Empty";
                 el.tierBadge.innerText = "N/A";
