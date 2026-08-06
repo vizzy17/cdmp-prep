@@ -109,7 +109,7 @@
                             <button id="bookmark-card-btn" class="text-slate-500 hover:text-amber-400 text-lg transition">⭐</button>
                         </div>
                         <div class="my-auto text-center py-6">
-                            <h3 id="card-front-text" class="text-xl sm:text-2xl font-bold tracking-tight text-slate-100">Loading passing engine data...</h3>
+                            <h3 id="card-front-text" class="text-xl sm:text-2xl font-bold tracking-tight text-slate-100">Loading passing engine data...[cite: 1]</h3>
                         </div>
                         <div class="text-center text-xs font-bold text-slate-500 uppercase tracking-widest">Click card to flip</div>
                     </div>
@@ -271,7 +271,7 @@
             glossaryQuickBtn: document.getElementById('glossary-quick-btn')
         };
 
-        // Fetch questions.json
+        // Fetch questions.json cleanly
         fetch('questions.json')
             .then(res => {
                 if (!res.ok) throw new Error('Failed to load questions.json');
@@ -284,7 +284,7 @@
             })
             .catch(err => {
                 console.error('Error loading JSON:', err);
-                el.frontText.innerText = "Error: Could not load questions.json. Make sure it is in your local server directory.";
+                el.frontText.innerText = "Error: Could not load questions.json. Ensure it is uploaded alongside this HTML file in your repository[cite: 1].";
             });
 
         function getMasteryStore() {
@@ -396,7 +396,7 @@
             el.quizNext.innerText = "Next →";
 
             el.quizTitle.innerText = "Tier-Based Elimination Practice";
-            startTimer(3600); // 1 hour practice timer
+            startTimer(3600);
             showQuestion();
         }
 
@@ -405,7 +405,7 @@
             reviewModeActive = false;
             let pool = [...allData];
             pool.sort(() => Math.random() - 0.5);
-            quizHistory = pool.slice(0, 100); // 100 Question Full Simulation
+            quizHistory = pool.slice(0, 100);
             userAnswers = {};
             flaggedQuestions.clear();
             quizOptionsCache = {};
@@ -422,7 +422,7 @@
             el.quizNext.innerText = "Next →";
 
             el.quizTitle.innerText = "CDMP Exam Simulation (100 Questions / 90 Mins)";
-            startTimer(5400); // Exact 90 minutes strict countdown
+            startTimer(5400);
             showQuestion();
         }
 
@@ -500,12 +500,11 @@
                 el.quizOptions.appendChild(btn);
             });
 
-            // Elimination Breakdown Engine display if answered or in review mode
             if (userAnswers[currentIndex]) {
                 el.eliminationBox.classList.remove('hidden');
                 el.eliminationText.innerHTML = `
                     <div><strong>Correct Answer:</strong> ${item.back}</div>
-                    <div class="mt-1 text-slate-400"><strong>DAMA Rationale & Elimination Logic:</strong> ${item.explanation || "DAMA standards reject absolute qualifiers (Always, Never, Only) and isolate behaviors. Collaborative frameworks and formalized governance structures must always be selected."}</div>
+                    <div class="mt-1 text-slate-400"><strong>DAMA Rationale & Elimination Logic:</strong> ${item.explanation || "DAMA standards reject absolute qualifiers and isolate behaviors."}</div>
                 `;
             } else {
                 el.eliminationBox.classList.add('hidden');
@@ -555,7 +554,7 @@
             el.quizChapterBadge.innerText = `Chapter ${itemObj.item.chapter} | Tier ${itemObj.item.tier || 3}`;
             el.quizQuestion.innerHTML = `
                 <div class="text-base text-slate-100 font-bold mb-2">${itemObj.item.front}</div>
-                <div class="text-xs text-blue-400 bg-blue-950/40 p-3 rounded-xl border border-blue-800/50"><strong>Elimination Breakdown:</strong> ${itemObj.item.explanation || "Absolute words and isolationist behaviors were eliminated according to DAMA hierarchy rules."}</div>
+                <div class="text-xs text-blue-400 bg-blue-950/40 p-3 rounded-xl border border-blue-800/50"><strong>Elimination Breakdown:</strong> ${itemObj.item.explanation || "Absolute terms were eliminated according to DAMA rules."}</div>
             `;
 
             el.quizOptions.innerHTML = '';
@@ -630,8 +629,7 @@
             el.quizQuestion.innerHTML = `
                 <div class="text-center space-y-3 py-4">
                     <div class="text-5xl font-black ${passed ? 'text-emerald-400' : 'text-red-400'}">${percentage}%</div>
-                    <div class="text-xl font-bold">You scored ${correctCount} out of ${total} (${passed ? 'PASSED 🎉 (>70% Threshold Cleared)' : 'NEEDS IMPROVEMENT 📚 (Review Elimination Breakdowns)'})</div>
-                    <p class="text-sm text-slate-400 font-medium">Passing status verified against DAMA standards.</p>
+                    <div class="text-xl font-bold">You scored ${correctCount} out of ${total} (${passed ? 'PASSED 🎉 (>70% Threshold Cleared)' : 'NEEDS IMPROVEMENT 📚'})</div>
                 </div>
             `;
 
@@ -639,16 +637,11 @@
             if (incorrectList.length > 0) {
                 const reviewPromptBtn = document.createElement('button');
                 reviewPromptBtn.className = "w-full py-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold shadow-lg transition text-center";
-                reviewPromptBtn.innerText = `🔍 Review ${incorrectList.length} Incorrectly Answered Questions with Elimination Logic`;
+                reviewPromptBtn.innerText = `🔍 Review ${incorrectList.length} Incorrectly Answered Questions`;
                 reviewPromptBtn.onclick = () => {
                     showWrongQuestionReview(latestIncorrectList, 0);
                 };
                 el.quizOptions.appendChild(reviewPromptBtn);
-            } else {
-                const perfectMsg = document.createElement('div');
-                perfectMsg.className = "text-center p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-300 font-bold";
-                perfectMsg.innerText = "Fantastic job! You cleared every question correctly in this passing engine run.";
-                el.quizOptions.appendChild(perfectMsg);
             }
 
             el.quizNext.innerText = "Return to Dashboard 🏠";
@@ -712,7 +705,6 @@
             showQuestion();
         };
 
-        // Open-book Glossary Search Logic
         function renderGlossaryResults(query = '') {
             const q = query.toLowerCase().trim();
             const matches = allData.filter(d => 
@@ -759,7 +751,6 @@
             renderGlossaryResults(e.target.value);
         };
 
-        // Analytics Modal Logic
         el.analyticsModalBtn.onclick = () => {
             const mastery = getMasteryStore();
             let totalMastered = 0;
@@ -768,14 +759,6 @@
             Object.values(mastery).forEach(stat => {
                 if (stat.correctStreak >= 2) totalMastered++;
             });
-
-            let tierStatsHtml = `
-                <div class="space-y-2 p-3 rounded-xl bg-slate-950/50 border border-slate-800">
-                    <div class="text-xs font-bold text-blue-400 uppercase">Passing Engine Readiness</div>
-                    <div class="text-sm font-black text-slate-100">${totalMastered} Mastered Concepts</div>
-                    <p class="text-[11px] text-slate-400">Targeting >70% mastery across Tiers 1-4 ensures exam clearing.</p>
-                </div>
-            `;
 
             el.analyticsContent.innerHTML = `
                 <div class="grid grid-cols-2 gap-4 text-center">
@@ -788,7 +771,6 @@
                         <div class="text-xs font-bold text-slate-400 mt-1">Terms Practiced</div>
                     </div>
                 </div>
-                <div class="mt-4">${tierStatsHtml}</div>
             `;
             el.analyticsModal.classList.remove('hidden');
         };
@@ -797,7 +779,6 @@
             el.analyticsModal.classList.add('hidden');
         };
 
-        // Navigation Mode Switchers
         el.studyBtn.onclick = () => {
             clearInterval(timerInterval);
             el.quizView.classList.add('hidden');
@@ -832,10 +813,6 @@
         el.card.onclick = () => {
             el.cardInner.classList.toggle('rotate-y-180');
         };
-
-        // Initial Boot
-        prepareStudyQueue();
-        renderCard();
     </script>
 </body>
 </html>
