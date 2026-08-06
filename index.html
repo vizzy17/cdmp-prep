@@ -1,963 +1,514 @@
+```html
 <!DOCTYPE html>
-<html lang="en" class="">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CDMP Exam Master Prep</title>
+    <title>CDMP Master App - Flashcards & Exam Simulator</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#eff6ff', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
+                    }
+                }
+            }
         }
     </script>
     <style>
-        .card-inner { transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; cursor: pointer; }
-        .card-inner.is-flipped { transform: rotateY(180deg); }
-        .card-face { backface-visibility: hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        .card-back { transform: rotateY(180deg); }
         .perspective-1000 { perspective: 1000px; }
-        .gradient-bg { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
-        .option-btn { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
-        .option-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15); }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
     </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 via-slate-100 to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950 min-h-screen font-sans text-gray-800 dark:text-gray-100 transition-colors duration-300">
-    <div id="app" class="max-w-4xl mx-auto px-4 py-8">
-        <header class="flex justify-between items-center mb-8 border-b border-gray-200 dark:border-slate-800 pb-4">
-            <div>
-                <h1 class="text-3xl font-extrabold text-blue-900 dark:text-blue-400 tracking-tight">CDMP Exam Master Prep</h1>
-                <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Smart Spaced Repetition & Analytics Engine</p>
-            </div>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-blue-500 selection:text-white">
+
+    <!-- Top Navigation / Header -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <button id="dark-mode-toggle" class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm hover:bg-gray-50 dark:hover:bg-slate-700 transition" title="Toggle Dark Mode">
-                    🌙
-                </button>
-                <button id="analytics-modal-btn" class="px-4 py-2 bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-xl font-bold text-sm hover:bg-slate-300 dark:hover:bg-slate-700 transition shadow-sm">
+                <div class="w-10 h-10 rounded-2xl bg-blue-600 flex items-center justify-center font-black text-xl shadow-lg shadow-blue-500/30">C</div>
+                <div>
+                    <h1 class="font-extrabold text-base tracking-tight leading-none">CDMP Master</h1>
+                    <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Exam Prep Suite</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <button id="analytics-modal-btn" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold transition flex items-center gap-1.5 border border-slate-700">
                     📊 Analytics
                 </button>
-            </div>
-        </header>
-
-        <div class="flex flex-wrap justify-center gap-3 mb-8">
-            <select id="chapter-filter" class="px-4 py-3 border border-gray-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-900 shadow-sm outline-none font-medium text-gray-700 dark:text-gray-200 hover:border-blue-400 transition">
-                <option value="all">All Chapters</option>
-                <optgroup label="Foundational & Strategy">
-                    <option value="2">Chapter 2: Data Governance</option>
-                    <option value="3">Chapter 3: Data Architecture</option>
-                </optgroup>
-                <optgroup label="Core Data Management">
-                    <option value="4">Chapter 4: Data Integration</option>
-                    <option value="5">Chapter 5: Data Modeling</option>
-                    <option value="6">Chapter 6: Data Storage and Operations</option>
-                </optgroup>
-                <optgroup label="Security & Master Data">
-                    <option value="7">Chapter 7: Data Security</option>
-                    <option value="10">Chapter 10: Reference & Master Data</option>
-                </optgroup>
-                <optgroup label="Analytics & Quality">
-                    <option value="8">Chapter 8: Data Warehousing & BI</option>
-                    <option value="12">Chapter 12: Metadata Management</option>
-                    <option value="13">Chapter 13: Data Quality</option>
-                </optgroup>
-                <optgroup label="Specialized Topics">
-                    <option value="9">Chapter 9: Document Management</option>
-                    <option value="11">Chapter 11: Big Data (Alt)</option>
-                    <option value="14">Chapter 14: Integration & Big Data</option>
-                    <option value="15">Chapter 15: Data Ethics</option>
-                </optgroup>
-            </select>
-            <button id="study-mode-btn" class="gradient-bg text-white px-5 py-3 rounded-xl shadow-md hover:opacity-95 font-semibold transition">Study Mode</button>
-            <button id="quiz-mode-btn" class="bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-md hover:bg-emerald-700 font-semibold transition">Chapter Quiz</button>
-            <button id="exam-mode-btn" class="bg-purple-600 text-white px-5 py-3 rounded-xl shadow-md hover:bg-purple-700 transition font-bold">🎯 Exam Mock</button>
-            <button id="bookmarks-mode-btn" class="bg-amber-600 text-white px-5 py-3 rounded-xl shadow-md hover:bg-amber-700 transition font-bold">⭐ Bookmarked</button>
-        </div>
-
-        <!-- Flashcard View -->
-        <div id="flashcard-container" class="hidden">
-            <div class="flex justify-between items-center mb-4 max-w-lg mx-auto">
-                <span id="study-tag-indicator" class="text-xs font-bold px-3 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 rounded-full">New / Unseen Queue</span>
-                <button id="bookmark-card-btn" class="text-xs font-semibold px-3 py-1.5 bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300 rounded-xl hover:bg-amber-200 transition flex items-center gap-1 shadow-sm">
-                    ⭐ <span id="bookmark-btn-text">Bookmark Card</span>
+                <button id="dark-mode-toggle" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold transition border border-slate-700">
+                    🌙
                 </button>
             </div>
-            <div class="relative w-full max-w-lg mx-auto h-80 perspective-1000 mb-6">
-                <div id="main-card" class="card-inner w-full h-full relative">
-                    <div id="card-front-face" class="card-face card-front bg-white dark:bg-slate-900 rounded-2xl shadow-xl border-t-4 border-blue-600 flex flex-col items-center justify-center p-8 text-center">
-                        <span id="card-chapter-label" class="absolute top-4 left-4 text-xs font-bold uppercase"></span>
-                        <div id="front-text" class="text-xl font-bold text-gray-800 dark:text-gray-100"></div>
-                    </div>
-                    <div id="card-back-face" class="card-face card-back bg-blue-50 dark:bg-slate-800 rounded-2xl shadow-xl border-t-4 border-emerald-500 flex items-center justify-center p-8 text-center">
-                        <div id="back-text" class="text-lg leading-relaxed dark:text-gray-200"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="flex justify-between max-w-lg mx-auto">
-                <button id="prev-btn" class="bg-white dark:bg-slate-900 px-5 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm font-medium hover:bg-gray-100 dark:hover:bg-slate-800 transition">← Prev</button>
-                <button id="next-btn" class="bg-white dark:bg-slate-900 px-5 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm font-medium hover:bg-gray-100 dark:hover:bg-slate-800 transition">Next →</button>
-            </div>
-            <p id="counter" class="text-center text-gray-500 dark:text-gray-400 mt-4 font-medium"></p>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-6 flex flex-col">
+
+        <!-- Mode Selector Toolbar -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
+            <button id="study-btn" class="p-3 rounded-2xl bg-blue-600 text-white font-extrabold text-xs tracking-wider uppercase shadow-md shadow-blue-600/30 transition flex items-center justify-center gap-2">
+                🗂️ Flashcards
+            </button>
+            <button id="quiz-btn" class="p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-extrabold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2">
+                ⚡ Quiz Mode
+            </button>
+            <button id="exam-btn" class="p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-extrabold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2">
+                📝 Exam Mode
+            </button>
+            <button id="bookmarks-btn" class="p-3 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-extrabold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2">
+                ⭐ Bookmarks
+            </button>
         </div>
 
-        <!-- Quiz & Exam Container -->
-        <div id="quiz-container" class="hidden bg-white dark:bg-slate-900 p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100 dark:border-slate-800 max-w-3xl mx-auto">
-            <div id="quiz-header-bar" class="mb-6 flex justify-between items-center border-b border-gray-100 dark:border-slate-800 pb-4">
-                <h3 id="quiz-title" class="text-xl font-extrabold text-blue-900 dark:text-blue-400 tracking-tight">Quiz Mode</h3>
+        <!-- Filter Bar -->
+        <div class="bg-slate-900/50 border border-slate-800 p-4 rounded-2xl mb-6 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Chapter Filter:</span>
+                <select id="chapter-filter" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-200 outline-none focus:border-blue-500">
+                    <option value="all">All Chapters (2-15)</option>
+                    <option value="2">Chapter 2: Data Governance</option>
+                    <option value="3">Chapter 3: Data Handling Ethics</option>
+                    <option value="4">Chapter 4: Data Architecture</option>
+                    <option value="5">Chapter 5: Data Modeling & Design</option>
+                    <option value="6">Chapter 6: Data Storage & Operations</option>
+                    <option value="7">Chapter 7: Data Security</option>
+                    <option value="8">Chapter 8: Data Integration & Interoperability</option>
+                    <option value="9">Chapter 9: Document & Content Management</option>
+                    <option value="10">Chapter 10: Reference & Master Data</option>
+                    <option value="11">Chapter 11: Data Warehousing & BI</option>
+                    <option value="12">Chapter 12: Metadata Management</option>
+                    <option value="13">Chapter 13: Data Quality</option>
+                    <option value="14">Chapter 14: Big Data & Data Science</option>
+                    <option value="15">Chapter 15: Data Management Maturity</option>
+                </select>
+            </div>
+            <div id="stats-counter" class="text-xs font-bold text-slate-400">
+                Card <span id="current-card-num">0</span> of <span id="total-card-num">0</span>
+            </div>
+        </div>
+
+        <!-- ================= FLASHCARD VIEW ================= -->
+        <div id="flashcard-view" class="flex-1 flex flex-col">
+            <!-- Card Container -->
+            <div class="perspective-1000 w-full flex-1 min-h-[320px] cursor-pointer mb-6" id="flashcard-element">
+                <div class="relative w-full h-full duration-500 transform-style-3d rounded-3xl border border-slate-800 bg-slate-900 shadow-2xl p-8 flex flex-col justify-between" id="card-inner">
+                    
+                    <!-- Front Face -->
+                    <div class="absolute inset-0 p-8 flex flex-col justify-between backface-hidden">
+                        <div class="flex justify-between items-center">
+                            <span id="card-chapter-badge" class="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[10px] font-extrabold uppercase">Chapter</span>
+                            <button id="bookmark-card-btn" class="text-slate-500 hover:text-amber-400 text-lg transition">⭐</button>
+                        </div>
+                        <div class="my-auto text-center py-6">
+                            <h3 id="card-front-text" class="text-xl sm:text-2xl font-bold tracking-tight text-slate-100">Loading questions...</h3>
+                        </div>
+                        <div class="text-center text-xs font-bold text-slate-500 uppercase tracking-widest">Click card to flip</div>
+                    </div>
+
+                    <!-- Back Face -->
+                    <div class="absolute inset-0 p-8 flex flex-col justify-between backface-hidden rotate-y-180 bg-slate-900/95 rounded-3xl overflow-y-auto">
+                        <div class="flex justify-between items-center">
+                            <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-extrabold uppercase">Definition / Answer</span>
+                        </div>
+                        <div class="my-auto py-4">
+                            <p id="card-back-text" class="text-base sm:text-lg font-medium text-slate-200 leading-relaxed"></p>
+                        </div>
+                        <div class="text-center text-xs font-bold text-emerald-500 uppercase tracking-widest">Click to flip back</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Flashcard Controls -->
+            <div class="flex items-center justify-between gap-4">
+                <button id="prev-btn" class="flex-1 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 font-bold text-xs uppercase tracking-wider transition">← Previous</button>
+                <button id="next-btn" class="flex-1 py-4 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-blue-600/30 transition">Next Card →</button>
+            </div>
+        </div>
+
+        <!-- ================= QUIZ / EXAM VIEW ================= -->
+        <div id="quiz-view" class="hidden flex-1 flex flex-col">
+            <div id="quiz-header-bar" class="flex justify-between items-center mb-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
                 <div class="flex items-center gap-3">
-                    <div id="timer-badge" class="flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-full font-mono text-base font-black shadow-sm tracking-wider">
-                        <span id="timer-display">00:00</span>
+                    <span id="timer-display" class="font-mono text-sm font-bold text-amber-400">⏱️ 00:00</span>
+                    <span id="quiz-progress-text" class="text-xs font-bold text-slate-400">Question 1 of 10</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="flag-btn" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold border border-slate-700 transition">🚩 Flag</button>
+                    <button id="quiz-early-submit" class="px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-bold border border-red-500/20 transition">End Session</button>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-3xl shadow-xl flex-1 flex flex-col justify-between mb-6">
+                <div>
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 id="quiz-title" class="text-xs font-extrabold uppercase tracking-wider text-blue-400">Practice Quiz</h3>
+                        <span id="quiz-chapter-badge" class="px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-[10px] font-bold text-slate-300">Chapter</span>
                     </div>
-                    <span id="quiz-progress" class="text-xs font-bold px-3 py-1.5 bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-full"></span>
+                    <p id="quiz-question" class="text-lg sm:text-xl font-bold text-slate-100 mb-6 leading-snug"></p>
+                    <div id="quiz-options" class="space-y-3">
+                        <!-- Options injected dynamically -->
+                    </div>
                 </div>
-            </div>
-            
-            <div id="completion-bar-container" class="mb-6 bg-slate-100 dark:bg-slate-800 rounded-full h-3 overflow-hidden shadow-inner">
-                <div id="completion-progress-bar" class="bg-blue-600 h-full transition-all duration-300" style="width: 0%"></div>
+
+                <div id="completion-bar-container" class="mt-6 pt-4 border-t border-slate-800 flex justify-between items-center">
+                    <span id="flagged-indicator" class="text-xs font-bold text-amber-400 hidden">🚩 Flagged for review</span>
+                </div>
             </div>
 
-            <div id="navigator-container" class="mb-6 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Question Navigator</span>
-                </div>
-                <div id="question-navigator-grid" class="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto p-1"></div>
-            </div>
-            
-            <div id="question-card-wrapper" class="mb-8 bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 relative">
-                <div class="flex justify-between items-start mb-2">
-                    <span id="question-badge-label" class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Question</span>
-                    <button id="flag-btn" class="text-xs font-semibold px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 rounded-lg hover:bg-amber-200 transition flex items-center gap-1">
-                        <span>🚩 Flag</span>
-                    </button>
-                </div>
-                <div id="quiz-question" class="text-xl font-semibold text-gray-800 dark:text-gray-100 leading-snug"></div>
-            </div>
-
-            <div id="quiz-options" class="space-y-3.5"></div>
-            <div id="quiz-feedback" class="hidden"></div>
-            
-            <div id="quiz-action-bar" class="flex flex-wrap items-center justify-between gap-4 mt-8 pt-4 border-t border-gray-100 dark:border-slate-800">
-                <button id="quiz-prev-btn" class="px-5 py-3 rounded-xl border border-gray-300 dark:border-slate-700 text-gray-700 dark:text-gray-300 font-bold hover:bg-gray-100 dark:hover:bg-slate-800 transition shadow-sm">← Previous</button>
-                <div class="flex gap-3">
-                    <button id="quiz-early-submit-btn" class="px-5 py-3 rounded-xl bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-bold hover:bg-purple-200 transition border border-purple-200 dark:border-purple-800">Submit Early 🎯</button>
-                    <button id="quiz-skip-btn" class="px-5 py-3 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-300 dark:hover:bg-slate-700 transition">Skip →</button>
-                    <button id="quiz-next-btn" class="px-6 py-3 rounded-xl gradient-bg text-white font-bold shadow-lg hover:opacity-95 transition tracking-wide">Next →</button>
+            <!-- Quiz Navigation Bottom Bar -->
+            <div class="flex items-center justify-between gap-4">
+                <button id="quiz-prev" class="px-6 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 font-bold text-xs uppercase tracking-wider transition">Previous</button>
+                <div id="navigator-container" class="hidden sm:flex items-center gap-1 overflow-x-auto py-2"></div>
+                <div class="flex gap-2">
+                    <button id="quiz-skip" class="px-6 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 font-bold text-xs uppercase tracking-wider transition">Skip</button>
+                    <button id="quiz-next" class="px-6 py-4 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-blue-600/30 transition">Next →</button>
                 </div>
             </div>
         </div>
 
-        <!-- Analytics Modal -->
-        <div id="analytics-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-2xl border border-gray-200 dark:border-slate-800 max-h-[90vh] overflow-y-auto">
-                <div class="flex justify-between items-center mb-6 border-b border-gray-100 dark:border-slate-800 pb-4">
-                    <h3 class="text-xl font-black text-blue-900 dark:text-blue-400">📊 Mastery & Chapter Analytics</h3>
-                    <button id="close-analytics" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 font-bold text-xl">✕</button>
-                </div>
-                <div id="analytics-content" class="space-y-4"></div>
+    </main>
+
+    <!-- Analytics Modal -->
+    <div id="analytics-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-3xl p-6 shadow-2xl space-y-6">
+            <div class="flex justify-between items-center">
+                <h3 class="text-base font-black uppercase tracking-wider">Your Progress & Analytics</h3>
+                <button id="close-analytics" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center font-bold">✕</button>
+            </div>
+            <div id="analytics-content" class="space-y-4">
+                <!-- Content injected dynamically -->
             </div>
         </div>
     </div>
 
+    <!-- Application Core Script -->
     <script>
-        const allData = [// Chapter 2: Data Governance
-            {chapter: 2, front: "Core Definition", back: "Data governance is the exercise of authority and control over the management of data assets."},
-            {chapter: 2, front: "Steering Committee", back: "A data governance steering committee is a cross-functional body responsible for making enterprise-wide decisions and resolving data disputes."},
-            {chapter: 2, front: "Core Objective", back: "The primary goal of data governance is to enable an organization to manage data as an enterprise asset that drives business value."},
-            {chapter: 2, front: "Business Glossary", back: "A business glossary establishes common corporate vocabulary and standardized definitions for key enterprise terms."},
-            {chapter: 2, front: "Operating Framework", back: "A data governance operating framework defines policies, roles, responsibilities, and accountability structures across business units."},
-            {chapter: 2, front: "Value Realization", back: "Data governance promotes risk reduction, regulatory compliance, and operational efficiency through standardized control mechanisms."},
-            {chapter: 2, front: "Policy Enforcement", back: "Data governance policies dictate the mandatory rules and behavioral expectations for creating, maintaining, and using data assets."},
-            {chapter: 2, front: "Asset Valuation", back: "Data governance supports data asset valuation, treating data as a quantifiable balance-sheet asset with measurable corporate worth."},
-            {chapter: 2, front: "Change Management", back: "Change management integration ensures that organizational culture adapts smoothly to new data governance policies and standards."},
-            {chapter: 2, front: "Issue Management", back: "Data governance issue management provides a structured escalation path for resolving cross-departmental data conflicts and quality defects."},
-            {chapter: 2, front: "Data Ownership", back: "A data owner is a business leader accountable for the quality, definition, and usage policies of data within their designated domain."},
-            {chapter: 2, front: "Data Stewardship", back: "Data stewards are operational representatives responsible for day-to-day data quality, compliance, and metadata maintenance."},
-            {chapter: 2, front: "Operating Models", back: "Data governance operating models can be centralized, decentralized, or hybrid (federated) depending on corporate structure."},
-            {chapter: 2, front: "Readiness Assessment", back: "A data governance readiness assessment evaluates an organization's cultural appetite, baseline maturity, and structural preparedness."},
-            {chapter: 2, front: "Touch Points", back: "Data governance touch points map interactions between data governance bodies and existing enterprise architecture, security, and project management."},
-            {chapter: 2, front: "Executive Sponsorship", back: "Executive sponsorship secures senior leadership backing, funding, and cultural authority required to enforce data governance programs."},
-            {chapter: 2, front: "Project Underwriting", back: "Data governance underwrites data management projects by ensuring all new IT initiatives comply with enterprise data standards."},
-            {chapter: 2, front: "Regulatory Alignment", back: "Data governance coordinates compliance tracking against evolving regional and industry regulatory mandates like GDPR, CCPA, and HIPAA."},
-            {chapter: 2, front: "Workflow Automation", back: "Workflow tools automate governance processes such as review cycles, glossary sign-offs, and data access request approvals."},
-            {chapter: 2, front: "Program Metrics", back: "Data governance metrics track adoption rates, policy compliance levels, issue resolution speed, and financial value creation."},
-            {chapter: 2, front: " Conflicting Definitions", back: "  Two business units define 'Active Revenue' differently, causing conflicting quarterly reports. The issue is escalated to the data governance steering committee to establish a standard definition."},
-            {chapter: 2, front: " Federated Model Design", back: "  A multinational conglomerate with highly autonomous regional divisions implements a federated data governance operating model to balance local agility with global enterprise standards."},
-            {chapter: 2, front: " Unassigned Accountability", back: "  A major data leak occurs because no single department claims responsibility for securing customer contact tables. The governance board steps in to formally assign data ownership roles."},
-            {chapter: 2, front: " Project Bypass", back: "  An IT team rushes to launch a customer analytics portal without consulting data governance standards, resulting in non-compliant data collection. Governance mandates a project gate review."},
-            {chapter: 2, front: " Sponsorship Deficit", back: "  A data governance program stalls because mid-level managers refuse to cooperate without executive backing. The team secures a C-level sponsor to drive cultural authority and enforcement."},
-            {chapter: 2, front: " Glossary Integration", back: "  Analysts across multiple departments use different acronyms for financial metrics, causing operational chaos. Data governance sponsors an enterprise-wide business glossary project to unify terminology."},
-            {chapter: 2, front: " Audit Escalation", back: "  External regulators cite an organization for failing to track data lineage on personal identifiable information. The data governance board institutes a mandatory remediation workflow."},
-            {chapter: 2, front: " Maturity Gap Analysis", back: "  An enterprise initiates a data governance readiness survey to evaluate its current policy enforcement level, discovering a score of 1.5 out of 5, which prompts a multi-year capability improvement plan."},
-            {chapter: 2, front: " Stewardship Conflict", back: "  Two data stewards disagree on who should approve metadata updates for product pricing tables. The data governance steering committee arbitrates the dispute and updates the RACI matrix."},
-            {chapter: 2, front: " Value Tracking Dashboard", back: "  To prove return on investment to the board of directors, the data governance team implements a metrics dashboard tracking reduced defect rates and streamlined data onboarding time."},
-
-            // Chapter 3: Data Architecture
-            {chapter: 3, front: "Core Definition", back: "Data architecture defines the overall blueprint for data needs, integrating data structures with organizational strategy."},
-            {chapter: 3, front: "Enterprise Data Model", back: "An enterprise data model (EDM) is an integrated, enterprise-wide conceptual data model representing core data entities and relationships."},
-            {chapter: 3, front: "Architecture Outcomes", back: "Data architecture outcomes include consistent data definitions, streamlined integration blueprints, and optimized storage strategies."},
-            {chapter: 3, front: "Architecture Principles", back: "Data architecture principles provide foundational guidelines governing how data is stored, shared, and utilized across the enterprise."},
-            {chapter: 3, front: "Blueprint Function", back: "Data architecture acts as a structural master blueprint mapping business strategy directly to technical data infrastructure."},
-            {chapter: 3, front: "Modeling Tool Integration", back: "Data architecture leverages data modeling tools to design, store, and version enterprise conceptual, logical, and physical blueprints."},
-            {chapter: 3, front: "Asset Management Software", back: "Asset management software helps data architects track hardware, software licenses, and database repository infrastructures."},
-            {chapter: 3, front: "Graphical Design Applications", back: "Graphical design applications are utilized by architects to visually communicate system interfaces, data flows, and network blueprints."},
-            {chapter: 3, front: "Architecture Governance", back: "Data architecture governance ensures all system modifications and projects adhere to established enterprise architectural blueprints."},
-            {chapter: 3, front: "Strategic Alignment", back: "Strategic alignment ensures that enterprise data architecture directly supports long-term corporate goals and operational needs."},
-            {chapter: 3, front: "Data Flows", back: "Data flows map the movement of data between sources, integration processes, applications, and storage repositories."},
-            {chapter: 3, front: "Zachman Framework", back: "The Zachman Framework is an enterprise ontology offering a structured matrix to organize architectural artifacts by perspective and abstraction."},
-            {chapter: 3, front: "TOGAF Alignment", back: "The Open Group Architecture Framework (TOGAF) provides a comprehensive method for designing enterprise information technology architectures."},
-            {chapter: 3, front: "Subject Area Model", back: "A subject area model breaks down the enterprise data model into manageable thematic domains like Customer, Product, and Financials."},
-            {chapter: 3, front: "Data Lineage Mapping", back: "Data architecture maps end-to-end data lineage to ensure visibility into how data transforms as it moves through systems."},
-            {chapter: 3, front: "Repository Integration", back: "Repository integration links data architecture designs directly to metadata repositories and data dictionaries for automated synchronization."},
-            {chapter: 3, front: "Cloud Transition Strategy", back: "Data architecture defines the transition strategy and hybrid patterns for moving on-premise relational databases to cloud data lakes."},
-            {chapter: 3, front: "Risk and Readiness", back: "Readiness and risk assessments evaluate architectural vulnerabilities and technical debt prior to launching major infrastructure overhauls."},
-            {chapter: 3, front: "Architecture Metrics", back: "Architecture metrics track system complexity, standard adherence rates, integration latency, and technical debt reduction."},
-            {chapter: 3, front: "Enterprise Integration Standards", back: "Enterprise integration standards defined by architecture govern APIs, messaging queues, and file transfer protocols across platforms."},
-            {chapter: 3, front: " Legacy Modernization", back: "  An enterprise plans to replace legacy silos with a unified cloud data platform. Enterprise architects map current and target data flows to ensure seamless integration."},
-            {chapter: 3, front: " Zachman Matrix Implementation", back: "  Enterprise architects use the Zachman Framework to categorize data artifacts, aligning executive business perspectives (What, How, Where) with developer physical specifications."},
-            {chapter: 3, front: " Siloed Architecture Remediation", back: "  Multiple business units build independent data warehouses with conflicting schemas. Enterprise architecture steps in to establish a centralized Enterprise Data Model (EDM) to eliminate redundancy."},
-            {chapter: 3, front: " Data Flow Bottleneck", back: "  A batch data pipeline experiences massive processing bottlenecks during nightly ingestion. Architects review the data flow diagram to redesign ingestion paths into real-time streams."},
-            {chapter: 3, front: " Technical Debt Accumulation", back: "  Years of ad-hoc database patches leave an organization with unmaintainable architecture. Architects conduct a risk assessment to prioritize technical debt cleanup."},
-            {chapter: 3, front: " Cloud Migration Blueprint", back: "  To lower operational costs, an architect drafts a comprehensive migration blueprint detailing how on-premise transactional databases will transition to a distributed cloud architecture."},
-            {chapter: 3, front: " Subject Area Decomposition", back: "  The enterprise data model is too large for stakeholders to review at once. Architects decompose the model into distinct subject area models like Human Resources, Logistics, and Billing."},
-            {chapter: 3, front: " Ungoverned Custom API Sprawl", back: "  Development teams build hundreds of point-to-point APIs without architectural oversight, causing integration chaos. Architecture institutes an enterprise service bus standard."},
-            {chapter: 3, front: " Architecture Review Board", back: "  A software development team attempts to deploy a non-standard NoSQL database for structured relational data. The Architecture Review Board rejects the proposal based on enterprise standards."},
-            {chapter: 3, front: " Lineage and Impact Sync", back: "  An architect links the data flow repository to a metadata impact analysis tool, allowing engineers to instantly simulate how a source column alteration affects downstream models."},
-
-            // Chapter 4: Data Integration
-            {chapter: 4, front: "Core Definition", back: "Data integration and interoperability involves moving, transforming, and consolidating data between disparate systems and storage repositories."},
-            {chapter: 4, front: "Extract, Transform, Load", back: "ETL (Extract, Transform, Load) is the traditional data pipeline pattern where data is transformed in a staging area before loading."},
-            {chapter: 4, front: "Extract, Load, Transform", back: "ELT (Extract, Load, Transform) loads raw data directly into target storage first and leverages cloud computing power for transformations."},
-            {chapter: 4, front: "Data Pipeline", back: "A data pipeline automates the sequential steps required to extract, route, transform, and load data between systems."},
-            {chapter: 4, front: "Application Programming Interface", back: "APIs (Application Programming Interfaces) enable synchronous, real-time data exchange and interoperability between software applications."},
-            {chapter: 4, front: "Enterprise Service Bus", back: "An Enterprise Service Bus (ESB) provides centralized routing, translation, and messaging services for system integration."},
-            {chapter: 4, front: "Data Transformation", back: "Data transformation converts data formats, cleanses values, and maps structures from source schemas to target schemas."},
-            {chapter: 4, front: "Integration Tools", back: "Data integration tools provide visual mapping interfaces, pre-built connectors, and orchestration schedulers for data movement."},
-            {chapter: 4, front: "Integration Governance", back: "Integration governance establishes standards for data exchange protocols, API naming conventions, and pipeline error handling."},
-            {chapter: 4, front: "Batch vs Real-Time", back: "Integration architectures support both scheduled batch processing and real-time event streaming depending on business needs."},
-            {chapter: 4, front: "Change Data Capture", back: "Change Data Capture (CDC) identifies and extracts only newly inserted, updated, or deleted database rows to optimize pipeline efficiency."},
-            {chapter: 4, front: "Data Virtualization Integration", back: "Data virtualization provides real-time integrated views of distributed data sources without physically moving or copying the data."},
-            {chapter: 4, front: "Message Queuing", back: "Message queuing systems (e.g., Kafka, RabbitMQ) enable asynchronous, decoupled data transmission between high-volume microservices."},
-            {chapter: 4, front: "Master Data Synchronization", back: "Integration pipelines synchronize master data updates across all dependent enterprise operational applications instantly."},
-            {chapter: 4, front: "Schema Mapping", back: "Schema mapping defines how source fields correspond to target database attributes during data transformation processes."},
-            {chapter: 4, front: "Error Handling and Logging", back: "Robust error handling captures failed pipeline records, logs exception details, and triggers alerts for data engineers."},
-            {chapter: 4, front: "Webhooks and Event Streaming", back: "Webhooks and event streaming architectures push real-time notifications and data payloads when specific application triggers occur."},
-            {chapter: 4, front: "Integration Metadata", back: "Integration metadata tracks data lineage, pipeline execution timing, transformation logic, and source-to-target dependencies."},
-            {chapter: 4, front: "Data Quality Integration", back: "Integrating data quality validation checks directly into pipelines prevents corrupt or incomplete records from reaching data warehouses."},
-            {chapter: 4, front: "Cloud Integration Patterns", back: "Cloud integration patterns handle hybrid data flows between on-premise legacy databases and multi-cloud SaaS platforms."},
-            {chapter: 4, front: " Batch Window Overrun", back: "  A nightly ETL batch processing window exceeds its allocated time slot, colliding with morning business operations. Engineers refactor the batch into an incremental Change Data Capture (CDC) pipeline."},
-            {chapter: 4, front: " Point-to-Point Integration Sprawl", back: "  An enterprise builds hundreds of chaotic point-to-point database scripts connecting disparate applications, resulting in maintenance nightmares. Architecture replaces them with an enterprise integration bus."},
-            {chapter: 4, front: " Real-Time Inventory Sync", back: "  E-commerce flash sales oversell inventory because backend order systems update via slow nightly batch files. Engineers implement real-time message queuing and event streaming for instant inventory synchronization."},
-            {chapter: 4, front: " Schema Drift Pipeline Crash", back: "  A source application changes a column name without notifying data engineering, causing the nightly ETL pipeline to crash. The team implements schema drift handling and validation alerts."},
-            {chapter: 4, front: " Cloud Data Lake ELT Shift", back: "  Transforming massive raw data streams on-premise before loading overwhelms local servers. The enterprise adopts an ELT pattern, loading raw data directly into cloud storage and transforming it via cloud compute."},
-            {chapter: 4, front: " Unmonitored Pipeline Silent Failure", back: "  A data pipeline fails silently due to a network timeout, leaving dashboards outdated for days before users notice. Engineering implements rigorous error logging and automated monitoring alerts."},
-            {chapter: 4, front: " API Rate Limiting Bottleneck", back: "  A data extraction script polls a third-party SaaS API too aggressively, triggering rate limit blocks and halting data flow. The team implements exponential backoff retry logic and caching."},
-            {chapter: 4, front: " Duplicate Record Injection", back: "  A network glitch causes a data integration pipeline to execute twice, injecting duplicate financial transaction records into the ledger. Engineers implement idempotent loading patterns."},
-            {chapter: 4, front: " Legacy File Transfer Vulnerability", back: "  Financial files are transferred between banking partners using unencrypted FTP servers over the public internet. Integration governance mandates secure SFTP protocols and encrypted payloads."},
-            {chapter: 4, front: " Disparate Format Harmonization", back: "  Merging customer data from three acquired companies yields conflicting date formats and currency units. Integration pipelines incorporate comprehensive data transformation and standardization routines."},
-
-            // Chapter 5: Data Modeling
-            {chapter: 5, front: "Conceptual Model", back: "A conceptual data model is a high-level business view displaying core business entities and their main relationships without technical attributes."},
-            {chapter: 5, front: "Logical Model", back: "A logical data model adds specific attributes, keys, and data types while remaining independent of any specific database management system."},
-            {chapter: 5, front: "Physical Model", back: "A physical data model maps the logical model to a specific database platform, detailing storage parameters, indexes, and constraints."},
-            {chapter: 5, front: "Entity-Relationship Modeling", back: "Entity-relationship (ER) modeling is a standard design technique for representing data structures and relationships in relational databases."},
-            {chapter: 5, front: "Primary Key", back: "A primary key uniquely identifies each individual record or row within a database table."},
-            {chapter: 5, front: "Foreign Key", back: "A foreign key is an attribute or set of attributes that references a primary key in another table, enforcing referential integrity."},
-            {chapter: 5, front: "Cardinality", back: "Cardinality defines the numerical relationship constraints between connected entities, such as one-to-one, one-to-many, or many-to-many."},
-            {chapter: 5, front: "Modeling Tools", back: "Data modeling tools provide automated diagramming, reverse-engineering, and schema generation capabilities for database designers."},
-            {chapter: 5, front: "Model Quality Review", back: "Model quality reviews involve peer walkthroughs and validation checks against business requirements before physical deployment."},
-            {chapter: 5, front: "Model Maintenance", back: "Model maintenance ensures that enterprise data models evolve synchronously with changing business rules and application requirements."},
-            {chapter: 5, front: "Normalization", back: "Normalization is the systematic process of organizing database tables to reduce data redundancy and improve data integrity."},
-            {chapter: 5, front: "Third Normal Form", back: "Third Normal Form (3NF) eliminates transitive functional dependencies where non-key attributes depend on other non-key attributes."},
-            {chapter: 5, front: "Denormalization", back: "Denormalization intentionally introduces redundancy into a physical database schema to optimize analytical read performance."},
-            {chapter: 5, front: "Dimensional Modeling", back: "Dimensional modeling organizes data into facts (numeric measurements) and dimensions (context) optimized for data warehousing."},
-            {chapter: 5, front: "Star Schema", back: "A star schema features a central fact table surrounded by un-normalized, denormalized dimension tables."},
-            {chapter: 5, front: "Snowflake Schema", back: "A snowflake schema normalizes dimension tables into multiple related sub-tables, reducing storage redundancy at the cost of extra joins."},
-            {chapter: 5, front: "Data Profiling Integration", back: "Data profiling tools analyze existing data content to inform modeling decisions and discover hidden constraints."},
-            {chapter: 5, front: "Model Patterns", back: "Reusable data model patterns provide standardized templates for common business concepts like party, agreement, and asset tracking."},
-            {chapter: 5, front: "Model Governance", back: "Model governance establishes naming conventions, version control, and review workflows for all database design artifacts."},
-            {chapter: 5, front: "Big Data Modeling", back: "Big data modeling adapts traditional structures to handle unstructured and semi-structured formats using graph, columnar, or document designs."},
-            {chapter: 5, front: " Dimensional Modeling", back: "  A data warehouse designer builds star schemas featuring fact and conformed dimension tables to optimize fast analytical query performance."},
-            {chapter: 5, front: " Normalization vs Performance", back: "  A transactional order-processing database suffers from slow read performance due to excessive 3NF table joins. The DBA strategically denormalizes specific summary columns to speed up checkout queries."},
-            {chapter: 5, front: " Referential Integrity Violation", back: "  During data migration, child records are inserted into an order table before parent customer records exist, crashing the database due to foreign key constraint violations."},
-            {chapter: 5, front: " Snowflake vs Star Trade-off", back: "  A data architect debates whether to snowflake a product dimension table. Opting for a star schema instead, they prioritize query speed over storage optimization by keeping product categories flat."},
-            {chapter: 5, front: " Conceptual to Physical Drift", back: "  Developers modify physical database tables directly without updating the logical or conceptual data models, causing severe design drift and loss of business context documentation."},
-            {chapter: 5, front: " Many-to-Many Resolution", back: "  An architect models a relationship where students can enroll in multiple courses, and courses have multiple students. They resolve the many-to-many cardinality by introducing an associative junction table."},
-            {chapter: 5, front: " Reverse Engineering Legacy", back: "  An organization inherits an undocumented legacy database. The data engineering team uses a data modeling tool to reverse-engineer the physical database into a visual entity-relationship diagram."},
-            {chapter: 5, front: " Transitive Dependency Error", back: "  A table contains customer ID, zip code, and city name. Because city depends on zip code rather than customer ID directly, the data modeler normalizes the schema into 3NF to eliminate the anomaly."},
-            {chapter: 5, front: " Graph Modeling for Fraud", back: "  To detect complex money laundering rings, a data modeler shifts from a relational schema to a graph data model, mapping entities as nodes and financial transactions as directed edges."},
-            {chapter: 5, front: " Naming Standards Enforcement", back: "  Developers use arbitrary table and column names like 'T1_cust' and 'amt_1'. Model governance enforces strict physical naming standards across all database schemas."},
-
-            // Chapter 6: Data Storage and Operations
-            {chapter: 6, front: "Core Definition", back: "Data storage and operations encompasses the design, implementation, and support of stored data throughout its lifecycle."},
-            {chapter: 6, front: "Database Administration", back: "Database administration (DBA) involves monitoring performance, managing backups, securing access, and tuning database systems."},
-            {chapter: 6, front: "CRUD Operations", back: "CRUD operations represent the core database actions: Create, Read, Update, and Delete."},
-            {chapter: 6, front: "Backup and Recovery", back: "Backup and recovery procedures ensure data can be restored following hardware failure, corruption, or catastrophic loss."},
-            {chapter: 6, front: "Storage Lifecycle", back: "The storage lifecycle manages data from active transactional use through archiving and eventual secure disposal."},
-            {chapter: 6, front: "Monitoring Tools", back: "Database monitoring tools track CPU utilization, memory consumption, disk I/O, and query execution bottlenecks in real time."},
-            {chapter: 6, front: "Developer Support", back: "Developer support activities include writing efficient SQL queries, optimizing indexes, and assisting with schema deployments."},
-            {chapter: 6, front: "Capacity Planning", back: "Capacity planning forecasts future disk storage and memory growth requirements to prevent production hardware outages."},
-            {chapter: 6, front: "Database Security", back: "Database security operations manage user authentication, role-based access controls, and encryption keys for data at rest."},
-            {chapter: 6, front: "Operations Governance", back: "Operations governance sets service level agreements (SLAs), patch management policies, and maintenance window protocols."},
-            {chapter: 6, front: "High Availability", back: "High availability (HA) architectures utilize clustering and failover mechanisms to minimize system downtime during disruptions."},
-            {chapter: 6, front: "Disaster Recovery", back: "Disaster recovery defines backup site replication and recovery time objectives (RTO) for catastrophic regional failures."},
-            {chapter: 6, front: "Performance Tuning", back: "Performance tuning optimizes database execution plans, index strategies, and memory buffers to accelerate query processing."},
-            {chapter: 6, front: "Database Virtualization", back: "Database virtualization abstracts physical storage hardware, allowing dynamic resource allocation and rapid testing provisioning."},
-            {chapter: 6, front: "Archival Strategies", back: "Archival strategies move infrequently accessed historical data to low-cost tier storage to reduce active database bloat."},
-            {chapter: 6, front: "Data Purging", back: "Data purging securely and permanently deletes expired data in compliance with corporate retention policies and regulations."},
-            {chapter: 6, front: "Storage Tiering", back: "Storage tiering automatically moves data between high-performance SSDs and economical disk storage based on access frequency."},
-            {chapter: 6, front: "Replication Services", back: "Replication services copy database changes synchronously or asynchronously across servers for redundancy and load balancing."},
-            {chapter: 6, front: "Operations Auditing", back: "Operations auditing tracks privileged user activities, configuration modifications, and access logs for security compliance."},
-            {chapter: 6, front: "Cloud Storage Elasticity", back: "Cloud storage elasticity allows database environments to scale storage and compute capacity up or down automatically on demand."},
-            {chapter: 6, front: " Storage Capacity Outage", back: "  A transactional database runs out of disk space during peak holiday shopping, crashing the system. DBAs implement predictive capacity planning and automated alerts."},
-            {chapter: 6, front: " Disaster Recovery Failover", back: "  A primary data center experiences a total power failure. The disaster recovery cluster automatically fails over to a secondary geographic region within minutes, maintaining high availability."},
-            {chapter: 6, front: " Slow Query Optimization", back: "  An enterprise reporting query takes hours to execute, timing out user sessions. The database administrator analyzes the execution plan, adds a missing composite index, and reduces runtime to seconds."},
-            {chapter: 6, front: " Unmanaged Data Bloat", back: "  Years of accumulated transaction logs inflate database size, slowing down all read operations. Operations implements an automated archival and purging strategy."},
-            {chapter: 6, front: " Backup Corruption Incident", back: "  Following a ransomware attack, an organization attempts to restore from backups only to find backup tapes are corrupted. The DBA institutes mandatory monthly recovery drill audits."},
-            {chapter: 6, front: " Replication Lag Bottleneck", back: "  Asynchronous database replication falls hours behind the primary server during peak batch updates, causing reporting discrepancies. Engineers upgrade network bandwidth and tune replication threads."},
-            {chapter: 6, front: " Unsecured Privileged Access", back: "  Multiple developers share a single database root administrator account, making accountability impossible during an accidental data deletion. Operations mandates individual credentials and RBAC."},
-            {chapter: 6, front: " Storage Cost Explosion", back: "  Storing all historical data on high-performance enterprise SSDs leads to unsustainable cloud bills. The storage team implements automated tiering to move cold data to object storage."},
-            {chapter: 6, front: " Unmonitored Memory Leak", back: "  A rogue query causes a memory leak that silently crashes the database engine every weekend. The operations team deploys real-time monitoring tools with automated restart triggers."},
-            {chapter: 6, front: " Manual Maintenance Bottleneck", back: "  DBAs spend dozens of hours every weekend manually applying database patches across hundreds of servers. Management invests in automated database operations scripts and orchestration tools."},
-
-            // Chapter 7: Data Security
-            {chapter: 7, front: "Core Definition", back: "Data security protects data assets from unauthorized access, accidental disclosure, modification, or destruction."},
-            {chapter: 7, front: "Confidentiality, Integrity, Availability", back: "The CIA triad forms the foundational security framework: Confidentiality, Integrity, and Availability."},
-            {chapter: 7, front: "Access Control", back: "Access control ensures that users are granted only the minimum necessary privileges required to perform their job duties (Principle of Least Privilege)."},
-            {chapter: 7, front: "Encryption at Rest", back: "Encryption at rest secures stored database files, backups, and physical media against unauthorized extraction."},
-            {chapter: 7, front: "Encryption in Transit", back: "Encryption in transit protects data packets moving across networks from interception using protocols like TLS/SSL."},
-            {chapter: 7, front: "Security Policies", back: "Data security policies define mandatory rules and behavioral standards for handling sensitive corporate and customer information."},
-            {chapter: 7, front: "Authentication", back: "Authentication verifies the identity of a user or system attempting to access data resources."},
-            {chapter: 7, front: "Authorization", back: "Authorization determines whether an authenticated user has permission to view, modify, or execute specific data operations."},
-            {chapter: 7, front: "Security Auditing", back: "Security auditing involves logging and reviewing user access attempts and system modifications to detect suspicious behavior."},
-            {chapter: 7, front: "Vulnerability Assessment", back: "Vulnerability assessments scan systems and databases to identify unpatched security weaknesses and configuration flaws."},
-            {chapter: 7, front: "Role-Based Access Control", back: "Role-based access control (RBAC) assigns permissions to organizational job roles rather than individual user accounts."},
-            {chapter: 7, front: "Data Masking", back: "Data masking obfuscates sensitive data elements (like credit card numbers) in non-production environments to protect privacy."},
-            {chapter: 7, front: "Tokenization", back: "Tokenization replaces sensitive data identifiers with non-sensitive random tokens that map back via a secure vault."},
-            {chapter: 7, front: "Multi-Factor Authentication", back: "Multi-factor authentication (MFA) requires users to provide two or more verification factors to gain access to systems."},
-            {chapter: 7, front: "Threat Modeling", back: "Threat modeling systematically identifies potential security attack vectors and architectural vulnerabilities during system design."},
-            {chapter: 7, front: "Intrusion Detection", back: "Intrusion detection systems monitor network traffic and database activity for malicious sign-offs or unauthorized entry attempts."},
-            {chapter: 7, front: "Regulatory Compliance", back: "Data security ensures adherence to statutory privacy regulations such as GDPR, HIPAA, and PCI-DSS."},
-            {chapter: 7, front: "Incident Response Plan", back: "An incident response plan outlines structured steps for containing, investigating, and recovering from a data breach."},
-            {chapter: 7, front: "Secure Disposal", back: "Secure disposal utilizes cryptographic erasure or physical shredding to ensure deleted data cannot be recovered."},
-            {chapter: 7, front: "Security Governance", back: "Security governance coordinates risk management, policy enforcement, and security awareness training across the enterprise."},
-            {chapter: 7, front: " Unauthorized Exfiltration", back: "  An external attacker exfiltrates unencrypted customer credit card tables from a staging server. Security operations mandates immediate encryption at rest and dynamic data masking."},
-            {chapter: 7, front: " Insider Threat Abuse", back: "  A disgruntled employee with excessive administrative privileges downloads confidential intellectual property before resigning. Security institutes the Principle of Least Privilege and access logging."},
-            {chapter: 7, front: " Phishing Credential Compromise", back: "  An employee falls for a phishing email, allowing hackers to compromise their corporate login. The organization deploys mandatory multi-factor authentication (MFA) across all systems."},
-            {chapter: 7, front: " Non-Production Data Leak", back: "  Developers copy production customer databases containing real social security numbers into an unsecure test environment, causing a privacy breach. Data masking is implemented."},
-            {chapter: 7, front: " SQL Injection Attack", back: "  Hackers exploit an unvalidated input field in a web application to execute malicious SQL queries and dump user passwords. The development team remediates the vulnerability and enforces parameterized queries."},
-            {chapter: 7, front: " Regulatory Compliance Failure", back: "  During a PCI-DSS audit, an organization is fined for storing unencrypted cardholder verification values. Security implements tokenization and strict cryptographic controls."},
-            {chapter: 7, front: " Orphaned Employee Accounts", back: "  Former contractors retain active database access credentials months after leaving the company. Security establishes automated provisioning and de-provisioning governance workflows."},
-            {chapter: 7, front: " Insecure Cloud Storage Bucket", back: "  A data engineering team accidentally leaves a cloud storage bucket containing medical records open to the public internet. Automated security posture management tools detect and lock down the exposure."},
-            {chapter: 7, front: " Missing Incident Response Plan", back: "  When a ransomware attack locks company databases, staff panic due to a lack of coordinated procedures. Management drafts and tests a comprehensive incident response plan."},
-            {chapter: 7, front: " Hardware Retirement Leak", back: "  Old hard drives containing sensitive financial records are discarded in a dumpster without data sanitization, leading to a major security violation. Secure media disposal protocols are established."},
-
-            // Chapter 8: Data Warehousing & BI
-            {chapter: 8, front: "Core Definition", back: "Data warehousing and business intelligence (DW/BI) designs and manages decision-support architectures for analytics and reporting."},
-            {chapter: 8, front: "Data Warehouse", back: "A data warehouse is a centralized, subject-oriented, integrated, time-variant collection of data designed to support management decision-making."},
-            {chapter: 8, front: "Business Intelligence", back: "Business intelligence (BI) encompasses tools, dashboards, and reporting applications that transform data into actionable business insights."},
-            {chapter: 8, front: "Fact and Dimension Tables", back: "Fact tables store quantitative transactional measurements, while dimension tables provide descriptive contextual attributes."},
-            {chapter: 8, front: "Data Mart", back: "A data mart is a subset of a data warehouse focused on a specific business line, such as Sales, HR, or Marketing."},
-            {chapter: 8, front: "OLAP Processing", back: "Online Analytical Processing (OLAP) enables fast, multidimensional querying and aggregation of complex business metrics."},
-            {chapter: 8, front: "DW/BI Architecture", back: "DW/BI architecture structures the flow from operational source systems through staging, integration data warehouses, and reporting layers."},
-            {chapter: 8, front: "Reporting Governance", back: "Reporting governance ensures corporate dashboards use certified metrics, consistent calculations, and authorized data sources."},
-            {chapter: 8, front: "Dashboard Usability", back: "Dashboard usability principles ensure analytical interfaces are intuitive, uncluttered, and aligned with executive decision needs."},
-            {chapter: 8, front: "Analytical Data Modeling", back: "Analytical data modeling uses dimensional design to optimize read performance for complex aggregations and filtering."},
-            {chapter: 8, front: "Kimball vs Inmon Methodology", back: "Inmon advocates top-down enterprise data warehousing (Normalized 3NF), while Kimball advocates bottom-up dimensional data mart bus architecture."},
-            {chapter: 8, front: "Conformed Dimensions", back: "Conformed dimensions are standardized dimension tables shared consistently across multiple data marts to enable enterprise rollup reporting."},
-            {chapter: 8, front: "Slowly Changing Dimensions", back: "Slowly Changing Dimensions (SCD) handle how to manage attribute changes over time (e.g., customer address updates using Type 1, Type 2, or Type 3)."},
-            {chapter: 8, front: "Operational Data Store", back: "An Operational Data Store (ODS) acts as an integrated, near-real-time staging database bridging operational systems and the data warehouse."},
-            {chapter: 8, front: "Semantic Layer", back: "A semantic layer translates complex database schemas into business-friendly terms and pre-calculated metric hierarchies for self-service BI."},
-            {chapter: 8, front: "Data Warehouse Performance Tuning", back: "Performance tuning utilizes partitioning, indexing, materialized views, and column-store formats to accelerate analytical queries."},
-            {chapter: 8, front: "Self-Service BI Governance", back: "Self-Service BI governance empowers business users to build custom reports while preventing 'spreadsheet hell' and metric discrepancies."},
-            {chapter: 8, front: "Cloud Data Warehouse Scaling", back: "Cloud data warehouses (e.g., Snowflake, BigQuery) decouple storage and compute scaling to handle massive analytical concurrency."},
-            {chapter: 8, front: "Metadata Reporting Integration", back: "Integrating data lineage metadata into BI reports allows users to trace metric calculations back to original operational sources."},
-            {chapter: 8, front: "BI Usage Analytics", back: "BI usage analytics track report adoption rates, query performance loads, and dashboard viewership to optimize reporting investments."},
-            {chapter: 8, front: " Conflicting Executive Metric Definitions", back: "  The CEO's dashboard shows $10M in revenue while the CFO's report shows $9.5M due to different underlying query logic. Governance establishes a certified semantic layer and enterprise data dictionary."},
-            {chapter: 8, front: " Slowly Changing Dimension Type 2 History Loss", back: "  Overwriting customer region attributes in place destroys historical sales attribution context. The data engineer refactors the dimension into SCD Type 2 to preserve historical validity."},
-            {chapter: 8, front: " Ungoverned Self-Service BI Chaos", back: "  Hundreds of business analysts create conflicting shadow reports in Excel and BI tools, leading to chaotic board meetings. IT institutes self-service BI governance and certified datasets."},
-            {chapter: 8, front: " Data Warehouse Query Timeout", back: "  Complex multi-join analytical queries scan billions of unpartitioned fact table rows, timing out BI dashboards. The DBA implements table partitioning and columnar compression."},
-            {chapter: 8, front: " Kimball vs Inmon Architectural Debate", back: "  An enterprise data team debates whether to build a centralized Inmon 3NF enterprise warehouse or a Kimball dimensional bus architecture, ultimately choosing Kimball for faster business delivery."},
-            {chapter: 8, front: " Disconnected Data Mart Silos", back: "  Separate HR and Sales data marts are built without conformed dimensions, making cross-departmental workforce analytics impossible. Architects introduce conformed time and employee dimensions."},
-            {chapter: 8, front: " Cloud Data Warehouse Compute Congestion", back: "  Heavy ad-hoc data science queries saturate the cloud data warehouse, blocking executive BI dashboards from loading. The admin configures separate compute clusters and workload management queues."},
-            {chapter: 8, front: " Stale Data Refresh Delay", back: "  Analytical reports display yesterday's data when executives require real-time intraday inventory tracking. Engineers upgrade batch DW loads to near-real-time streaming ODS updates."},
-            {chapter: 8, front: " Unused Dashboard Sprawl", back: "  Thousands of custom BI dashboards are built and abandoned, cluttering the portal and wasting storage. BI administration conducts usage analytics audits to archive inactive reports."},
-            {chapter: 8, front: " Lack of Data Lineage Transparency", back: "  Users distrust a complex financial report because they cannot verify how a calculated margin metric was derived. BI architects integrate end-to-end data lineage metadata tools into the reporting portal."},
-
-            // Chapter 9: Document & Content Management
-            {chapter: 9, front: "Core Definition", back: "Document and content management encompasses the capture, storage, indexing, retrieval, and lifecycle control of unstructured information."},
-            {chapter: 9, front: "Unstructured Data", back: "Unstructured data includes files lacking a predefined data model, such as Word documents, PDFs, emails, audio, and video recordings."},
-            {chapter: 9, front: "Document Management System", back: "A Document Management System (DMS) stores, tracks, and manages electronic files and paper document scans."},
-            {chapter: 9, front: "Content Indexing", back: "Content indexing extracts keywords, metadata, and text strings from documents to enable fast search and retrieval."},
-            {chapter: 9, front: "Version Control", back: "Version control tracks document revisions, author edits, and publishing histories to ensure users access the most current file."},
-            {chapter: 9, front: "Retention Schedules", back: "Document retention schedules dictate how long specific types of records must be kept for legal and business compliance."},
-            {chapter: 9, front: "Content Capture", back: "Content capture involves digitizing paper documents via scanning or ingesting digital files from external sources."},
-            {chapter: 9, front: "Access Permissions", back: "Document access permissions restrict file viewing and editing rights based on user roles and security classifications."},
-            {chapter: 9, front: "Content Lifecycle", back: "The content lifecycle manages documents from initial authoring and collaboration through active usage, archiving, and destruction."},
-            {chapter: 9, front: "Taxonomy and Metadata", back: "Taxonomy and metadata structures categorize unstructured content logically to facilitate intuitive browsing and searchability."},
-            {chapter: 9, front: "Enterprise Content Management", back: "Enterprise Content Management (ECM) unifies strategies, tools, and processes to manage all unstructured organizational information."},
-            {chapter: 9, front: "Electronic Discovery", back: "Electronic discovery (e-discovery) involves identifying, collecting, and producing electronically stored information for legal proceedings."},
-            {chapter: 9, front: "Optical Character Recognition", back: "Optical Character Recognition (OCR) converts images of typed or handwritten text into machine-readable searchable text data."},
-            {chapter: 9, front: "Records Management", back: "Records management ensures formal compliance, legal holds, and defensible disposition of official corporate documentation."},
-            {chapter: 9, front: "Digital Asset Management", back: "Digital Asset Management (DAM) specializes in storing, organizing, and licensing rich media files like images, audio, and video."},
-            {chapter: 9, front: "Content Workflows", back: "Content workflows automate document routing for review, modification approvals, and publishing sign-offs."},
-            {chapter: 9, front: "Information Governance", back: "Information governance establishes enterprise policies for managing both structured data and unstructured document content holistically."},
-            {chapter: 9, front: "Archival Storage Policies", back: "Archival policies move inactive documents to low-cost secure storage while preserving legal integrity and retrieval capability."},
-            {chapter: 9, front: "Document Security Classification", back: "Document security classifications tag files as public, internal, confidential, or restricted to prevent data leaks."},
-            {chapter: 9, front: "Content Migration Strategies", back: "Content migration strategies plan the transfer of legacy shared drives and physical file cabinets into modern cloud repositories."},
-            {chapter: 9, front: " Unsearchable Document Graveyard", back: "  An enterprise stores millions of scanned PDF contracts on a shared network drive without metadata indexing or OCR, making document retrieval impossible. Information governance implements an ECM system."},
-            {chapter: 9, front: " Legal Discovery Penalty", back: "  During a lawsuit, a company fails to produce required historical emails because employees deleted files at will without retention policies, resulting in court sanctions. Records management institutes legal holds."},
-            {chapter: 9, front: " Conflicting Document Versions", back: "  Multiple teams edit different copies of a master project proposal simultaneously, sending conflicting versions to the client. The organization implements centralized document version control."},
-            {chapter: 9, front: " Unsecured Confidential HR Files", back: "  Employee personnel files containing social security numbers and salaries are stored in an open shared folder accessible by all staff. IT establishes strict document access permissions and encryption."},
-            {chapter: 9, front: " Paper Archive Digitization", back: "  A law firm's basement is overflowing with decades of paper case files prone to fire and water damage. The firm launches a content capture and OCR digitization project."},
-            {chapter: 9, front: " Manual Invoice Approval Bottleneck", back: "  Paper vendor invoices sit on managers' desks for weeks awaiting manual signature sign-off, delaying payments. The finance department automates document routing via digital content workflows."},
-            {chapter: 9, front: " Ungoverned Shared Drive Sprawl", back: "  Employees store duplicate files and personal photos across unmanaged network shares, consuming terabytes of storage. Information governance institutes a structured taxonomy and cleanup policy."},
-            {chapter: 9, front: " Copyright Breach in Marketing", back: "  Marketing accidentally uses expired-licensing stock photography in a global campaign because asset usage rights were untracked. The company deploys a Digital Asset Management (DAM) system."},
-            {chapter: 9, front: " Expired Record Retention Violation", back: "  An enterprise violates privacy regulations by indefinitely retaining customer loan application documents long after the legal retention window expired. Automated document purging is deployed."},
-            {chapter: 9, front: " Cloud Migration Metadata Loss", back: "  Migrating legacy engineering blueprints to a cloud repository strips away critical folder hierarchy metadata, rendering drawings unfindable. Architects design a robust metadata mapping strategy."},
-
-            // Chapter 10: Reference & Master Data
-            {chapter: 10, front: "Core Definition", back: "Reference and master data management maintains consistent, accurate definitions for core enterprise business entities shared across systems."},
-            {chapter: 10, front: "Master Data", back: "Master data represents core business entities (e.g., Customer, Product, Supplier, Employee) involved in business transactions."},
-            {chapter: 10, front: "Reference Data", back: "Reference data includes any data categorized and used to classify other data, such as country codes, currency types, and postal codes."},
-            {chapter: 10, front: "Golden Record", back: "A golden record is the single, authoritative, consolidated version of master data created by resolving duplicates across systems."},
-            {chapter: 10, front: "Entity Resolution", back: "Entity resolution (or record matching) identifies and merges duplicate records representing the same real-world entity."},
-            {chapter: 10, front: "MDM Hub", back: "An MDM hub serves as the centralized repository and processing engine for managing master data records and cross-references."},
-            {chapter: 10, front: "Data Stewardship Master Role", back: "Master data stewards are business experts responsible for defining, validating, and approving master data attribute changes."},
-            {chapter: 10, front: "Reference Data Maintenance", back: "Reference data maintenance ensures standard code sets are updated promptly when external regulatory or industry standards change."},
-            {chapter: 10, front: "Master Data Governance", back: "Master data governance sets ownership rules, data quality standards, and access policies for core enterprise entities."},
-            {chapter: 10, front: "Enterprise Uniformity", back: "MDM ensures all operational and analytical systems rely on identical, synchronized definitions of key business entities."},
-            {chapter: 10, front: "Survivorship Rules", back: "Survivorship rules dictate which source system's values take precedence when merging conflicting attributes into a golden record."},
-            {chapter: 10, front: "Hierarchies and Relationships", back: "MDM structures complex organizational hierarchies, such as corporate parent-subsidiary relationships and product category roll-ups."},
-            {chapter: 10, front: "Data Matching Algorithms", back: "Data matching algorithms use probabilistic and deterministic logic to detect fuzzy duplicates despite typos or formatting variations."},
-            {chapter: 10, front: "Master Data Integration Styles", back: "MDM deployment styles include registry, co-existence, transactional consolidation, and centralized master maintenance."},
-            {chapter: 10, front: "Cross-Reference Tables", back: "Cross-reference tables link source system primary keys to central enterprise master keys to maintain data lineage."},
-            {chapter: 10, front: "Reference Data Versioning", back: "Reference data versioning tracks code set modifications over time to ensure historical financial reporting accuracy."},
-            {chapter: 10, front: "Data Quality Cleansing", back: "Master data cleansing standardizes names, addresses, and tax IDs against verified postal and government databases."},
-            {chapter: 10, front: "MDM Implementation Roadmap", back: "An MDM roadmap prioritizes high-value domains (like Customer first, then Product) to deliver rapid business return on investment."},
-            {chapter: 10, front: "Downstream Synchronization", back: "Downstream synchronization pushes master record updates out to all subscribed operational applications and analytical data stores."},
-            {chapter: 10, front: "Reference Data Governance", back: "Reference data governance enforces strict change approval workflows so unauthorized users cannot alter official currency or country codes."},
-            {chapter: 10, front: " Customer Duplicate Nightmare", back: "  An enterprise has 5 different customer records for 'Acme Corp' across sales, billing, and support systems, resulting in fragmented billing. The company deploys a Customer MDM hub to create a golden record."},
-            {chapter: 10, front: " Conflicting Survivorship Rules", back: "  When merging customer profiles, the CRM system's phone number overwrites the verified billing phone number due to poor survivorship rules. Data stewards redefine attribute precedence rules."},
-            {chapter: 10, front: " Outdated Reference Code Error", back: "  An international shipping system fails because country currency codes were manually hardcoded and never updated when a nation changed its currency. Reference data management governance is established."},
-            {chapter: 10, front: " Fuzzy Matching Typos", back: "  Customer names entered with slight misspellings ('Jon Smith' vs 'John Smith') bypass strict exact-match queries, creating duplicate accounts. Engineers implement probabilistic fuzzy matching algorithms."},
-            {chapter: 10, front: " Complex Product Hierarchy", back: "  A global retailer struggles to aggregate sales because regional warehouses use different product classification taxonomies. MDM establishes a unified product hierarchy and master catalog."},
-            {chapter: 10, front: " Unsanctioned Reference Data Edits", back: "  Local sales reps modify regional tax rate reference codes in their local app without approval, causing tax compliance failures. Centralized reference data change workflows are enforced."},
-            {chapter: 10, front: " MDM Boiling the Ocean Failure", back: "  An IT team attempts to launch Customer, Product, Supplier, and Asset MDM simultaneously, resulting in project burnout and failure. Management scales back to a prioritized Customer MDM pilot."},
-            {chapter: 10, front: " Downstream Sync Failure", back: "  A golden customer address is updated in the MDM hub, but the change fails to sync to the legacy billing system, causing invoices to ship to old addresses. Integration synchronization is hardened."},
-            {chapter: 10, front: " Unassigned Master Data Ownership", back: "  No business unit claims responsibility for approving new product master records, leaving product launches stalled in limbo. MDM governance assigns formal domain data owners and RACI charts."},
-            {chapter: 10, front: " Historical Reporting Code Drift", back: "  Modifying reference codes in place overwrites historical sales data context, breaking year-over-year financial comparisons. Reference data versioning and effective-dating are implemented."},
-
-            // Chapter 11: Data Warehousing & Big Data (Alt)
-            {chapter: 11, front: "Big Data Characteristics", back: "Big data is characterized by the 3 Vs: Volume, Velocity, and Variety (often expanded to include Veracity and Value)."},
-            {chapter: 11, front: "Data Science Lifecycle", back: "The data science lifecycle involves framing questions, gathering data, exploratory analysis, modeling, evaluation, and deployment."},
-            {chapter: 11, front: "Big Data Volume", back: "Volume refers to the massive scale of generated data, exceeding traditional relational database storage capacities."},
-            {chapter: 11, front: "Big Data Velocity", back: "Velocity measures the high speed at which data streams into organizations, requiring real-time processing capabilities."},
-            {chapter: 11, front: "Big Data Variety", back: "Variety encompasses the diverse formats of unstructured, semi-structured, and structured data sources."},
-            {chapter: 11, front: "Analytic Modeling", back: "Analytic modeling uses statistical algorithms and machine learning to uncover hidden patterns and predict future outcomes."},
-            {chapter: 11, front: "Distributed Computing", back: "Distributed computing frameworks (e.g., Hadoop, Spark) process massive datasets across clustered hardware nodes."},
-            {chapter: 11, front: "Feature Engineering", back: "Feature engineering transforms raw variables into informative features to improve machine learning model prediction accuracy."},
-            {chapter: 11, front: "Data Science Governance", back: "Data science governance ensures model reproducibility, ethical compliance, bias auditing, and secure algorithmic deployment."},
-            {chapter: 11, front: "Visualization Channels", back: "Visualization channels management controls how data science model outputs are communicated through dashboards and reporting apps."},
-            {chapter: 11, front: "Data Lake Architecture", back: "A data lake is a storage repository holding vast amounts of raw, unstructured, and semi-structured data in its native format."},
-            {chapter: 11, front: "Machine Learning Ops", back: "MLOps operationalizes machine learning model deployment, monitoring, retraining, and lifecycle management in production."},
-            {chapter: 11, front: "Exploratory Data Analysis", back: "Exploratory Data Analysis (EDA) investigates raw datasets to summarize main characteristics and discover anomalies using visual statistics."},
-            {chapter: 11, front: "Supervised vs Unsupervised", back: "Supervised learning trains models on labeled historical outcomes, whereas unsupervised learning discovers hidden clusters in unlabeled data."},
-            {chapter: 11, front: "Big Data Modeling", back: "Big data modeling utilizes graph, columnar, or key-value structures optimized for distributed storage and retrieval."},
-            {chapter: 11, front: "Model Overfitting", back: "Overfitting occurs when a machine learning model learns training data noise too closely, failing to generalize to new data."},
-            {chapter: 11, front: "Training and Testing Splits", back: "Splitting data into training, validation, and testing subsets prevents evaluation bias during machine learning development."},
-            {chapter: 11, front: "Algorithmic Bias Audit", back: "Auditing models for bias ensures automated predictions do not discriminate against protected demographic classes."},
-            {chapter: 11, front: "Real-Time Scoring", back: "Real-time model scoring applies trained machine learning algorithms instantly to streaming event data."},
-            {chapter: 11, front: "Data Science Standards", back: "Establishing data science standards ensures code reproducibility, documentation quality, and secure model version control."},
-            {chapter: 11, front: " Predictive Modeling", back: "  A data science team trains a machine learning model on historical customer usage logs to predict customer churn and trigger automated retention offers."},
-            {chapter: 11, front: " Data Swamp Degradation", back: "  An enterprise dumps petabytes of unorganized data into a cloud repository without metadata catalogs or security controls, turning their data lake into an unusable data swamp. Governance implements data cataloging."},
-            {chapter: 11, front: " Model Overfitting Failure", back: "  A stock prediction model achieves 99% accuracy on historical training data but completely fails on live market feeds due to overfitting. The data science team introduces cross-validation and regularization."},
-            {chapter: 11, front: " MLOps Pipeline Automation", back: "  Data scientists deploy machine learning models manually, causing version conflicts and system crashes in production. The team implements an MLOps automated CI/CD deployment pipeline."},
-            {chapter: 11, front: " Unsupervised Customer Segmentation", back: "  A retail firm has millions of untagged customer transaction records with no predefined classes. Data scientists use k-means clustering (unsupervised learning) to discover distinct buyer personas."},
-            {chapter: 11, front: " High-Velocity IoT Streaming", back: "  Thousands of industrial IoT sensors stream high-velocity temperature telemetry data every millisecond. Traditional relational databases crash under the load; engineers deploy a distributed stream processing framework."},
-            {chapter: 11, front: " Algorithmic Discrimination Scandal", back: "  An AI hiring tool automatically rejects female applicant resumes because it was trained on historically biased corporate hiring logs. The data science team performs an ethical bias audit and re-engineers training features."},
-            {chapter: 11, front: " Feature Engineering Breakthrough", back: "  A fraud detection model yields poor predictive power until data scientists engineer a new composite feature calculating 'distance from home vs transaction velocity', dramatically boosting accuracy."},
-            {chapter: 11, front: " Model Drift Degradation", back: "  A credit risk model trained before an economic recession begins issuing faulty approvals because consumer behavior shifted. The MLOps team detects model drift and triggers automated retraining."},
-            {chapter: 11, front: " Reproducibility Crisis", back: "  A data scientist leaves the company, and nobody can reproduce their machine learning results because code, parameters, and training datasets were unversioned. Management enforces strict data science standards."},
-
-            // Chapter 12: Metadata Management
-            {chapter: 12, front: "Core Definition", back: "Metadata management governs information that describes other data, facilitating data discovery, understanding, and lineage tracking."},
-            {chapter: 12, front: "Technical Metadata", back: "Technical metadata describes system-level implementation details, such as database schemas, table names, data types, and column constraints."},
-            {chapter: 12, front: "Business Metadata", back: "Business metadata adds human-readable context, including business definitions, ownership roles, glossary terms, and compliance tags."},
-            {chapter: 12, front: "Operational Metadata", back: "Operational metadata tracks runtime execution details, such as ETL job run times, success statuses, record counts, and error logs."},
-            {chapter: 12, front: "Metadata Repository", back: "A metadata repository is a centralized storage system designed to collect, integrate, and manage enterprise metadata assets."},
-            {chapter: 12, front: "Data Lineage", back: "Data lineage documents the end-to-end lifecycle path of data as it flows, transforms, and moves across enterprise systems."},
-            {chapter: 12, front: "Enterprise Data Dictionary", back: "An enterprise data dictionary provides an authoritative reference catalog defining all database objects and attributes."},
-            {chapter: 12, front: "Metadata Standards", back: "Metadata standards establish uniform naming conventions, documentation requirements, and tagging rules across systems."},
-            {chapter: 12, front: "Metadata Governance", back: "Metadata governance ensures metadata is systematically captured, maintained, kept accurate, and aligned with policies."},
-            {chapter: 12, front: "Discovery and Search", back: "Metadata management powers enterprise search engines, allowing analysts to discover available data assets and understand contents quickly."},
-            {chapter: 12, front: "Automated Metadata Harvesting", back: "Automated harvesting tools crawl databases, ETL pipelines, and BI tools to extract up-to-date technical metadata without manual entry."},
-            {chapter: 12, front: "Impact Analysis", back: "Impact analysis uses metadata lineage relationships to simulate how proposed database changes will affect downstream reports and models."},
-            {chapter: 12, front: "Active vs Passive Metadata", back: "Passive metadata is stored for reference, whereas active metadata is analyzed dynamically by AI engines to automate data operations."},
-            {chapter: 12, front: "Enterprise Data Catalog", back: "An enterprise data catalog provides a user-friendly, searchable inventory of data assets complete with ratings, lineage, and glossary links."},
-            {chapter: 12, front: "Semantic Integration", back: "Semantic integration links technical schema objects directly to business glossary definitions for unified context."},
-            {chapter: 12, front: "Regulatory Lineage Tracking", back: "Regulatory lineage mapping proves compliance by demonstrating exact data origins and transformations for audited reports."},
-            {chapter: 12, front: "Metadata Quality Assurance", back: "Metadata quality assurance checks for missing descriptions, orphaned schema objects, and outdated documentation."},
-            {chapter: 12, front: "Schema Versioning", back: "Metadata repositories track schema modifications over time to prevent breaking changes during system upgrades."},
-            {chapter: 12, front: "Multi-Repository Synchronization", back: "Synchronizing metadata across multi-cloud and on-premise repositories maintains a single source of truth for data definitions."},
-            {chapter: 12, front: "Metadata Metrics", back: "Metadata metrics track catalog adoption rates, documentation completeness scores, and asset tagging coverage."},
-            {chapter: 12, front: " Undocumented Legacy Black Box", back: "  An enterprise inherits an undocumented legacy database where nobody knows what database tables do. The data team deploys automated metadata harvesting and cataloging tools."},
-            {chapter: 12, front: " Downstream Report Outage Impact", back: "  A developer alters a column data type in a source table, unknowingly breaking 50 downstream executive BI dashboards. Architecture implements metadata impact analysis before schema changes."},
-            {chapter: 12, front: " Regulatory Lineage Audit Failure", back: "  Auditors demand end-to-end data lineage proof for a regulatory financial report, but manual documentation is nonexistent. The firm implements an automated data lineage and metadata repository."},
-            {chapter: 12, front: " Data Hoarding and Discovery Failure", back: "  Analysts spend days searching for existing customer datasets, accidentally recreating duplicate data silos because they cannot find what already exists. An enterprise data catalog is deployed."},
-            {chapter: 12, front: " Outdated Glossary Definitions", back: "  Technical database column descriptions conflict with official business glossary definitions, causing reporting confusion. Metadata governance enforces semantic integration and sync."},
-            {chapter: 12, front: " Manual Documentation Maintenance Fatigue", back: "  Requiring data engineers to manually document every table in a wiki results in abandoned, out-of-date documentation. Management invests in automated metadata harvesting tools."},
-            {chapter: 12, front: " Orphaned Table Accumulation", back: "  Thousands of temporary staging tables clutter database schemas with no metadata indicating ownership or purpose. Metadata quality audits flag and purge unowned objects."},
-            {chapter: 12, front: " Multi-Cloud Metadata Fragmentation", back: "  Using multiple cloud providers leaves technical metadata split across isolated cloud catalogs, blinding data teams. A unified multi-repository metadata sync is established."},
-            {chapter: 12, front: " Missing Operational Job Logging", back: "  When ETL pipelines fail during the night, engineers lack operational metadata on execution time and error codes to debug quickly. Enhanced operational logging is integrated."},
-            {chapter: 12, front: " Unassigned Metadata Ownership", back: "  New database schemas are deployed without assigning business metadata owners, leaving descriptions blank. Governance mandates ownership assignment as a release gate."},
-
-            // Chapter 13: Data Quality
-            {chapter: 13, front: "Core Definition", back: "Data quality management ensures that data is accurate, complete, reliable, and fit for its intended operational and analytical uses."},
-            {chapter: 13, front: "Accuracy Dimension", back: "Accuracy measures the degree to which data correctly reflects the real-world objects or events it represents."},
-            {chapter: 13, front: "Completeness Dimension", back: "Completeness ensures that all required data values and attributes are present without missing information."},
-            {chapter: 13, front: "Consistency Dimension", back: "Consistency verifies that data values are uniform and free of contradiction across different systems and repositories."},
-            {chapter: 13, front: "Timeliness Dimension", back: "Timeliness measures whether data is available and up-to-date when required for business operations or decision-making."},
-            {chapter: 13, front: "Validity Dimension", back: "Validity confirms that data values conform to defined syntax, format, range, and business rule constraints."},
-            {chapter: 13, front: "Data Profiling", back: "Data profiling analyzes dataset content, structure, and quality using statistical techniques to discover anomalies and patterns."},
-            {chapter: 13, front: "Data Quality Rules", back: "Data quality rules establish programmatic thresholds and validation checks to test whether data meets fitness-for-use criteria."},
-            {chapter: 13, front: "Data Quality Governance", back: "Data quality governance defines accountability, remediation workflows, and quality metric standards across business domains."},
-            {chapter: 13, front: "Continuous Improvement", back: "Continuous data quality improvement cycles monitor defect trends and refine validation rules to prevent recurring errors."},
-            {chapter: 13, front: "Data Cleansing", back: "Data cleansing programmatically corrects, standardizes, and removes corrupt, duplicate, or invalid records from datasets."},
-            {chapter: 13, front: "Root Cause Analysis", back: "Root cause analysis investigates where and why data defects originate to fix upstream system entry flaws rather than just patching symptoms."},
-            {chapter: 13, front: "Data Quality Scorecards", back: "Data quality scorecards track dimensional metrics (accuracy, completeness, validity) across enterprise domains over time."},
-            {chapter: 13, front: "Automated Quality Monitoring", back: "Automated quality monitoring tools scan production pipelines continuously and alert engineers immediately when error rates spike."},
-            {chapter: 13, front: "Uniqueness Dimension", back: "Uniqueness ensures that records do not contain unintended duplicate entries or redundant primary key violations."},
-            {chapter: 13, front: "Data Quality Issue Escalation", back: "Issue escalation workflows route detected quality defects to designated data stewards for review and remediation sign-off."},
-            {chapter: 13, front: "Fitness for Use Assessment", back: "Fitness for use evaluates whether data quality levels satisfy the specific functional requirements of a given business project."},
-            {chapter: 13, front: "Reference Data Validation", back: "Reference data validation checks incoming transactional attributes against authorized master code sets to prevent invalid inputs."},
-            {chapter: 13, front: "Data Quality Tool Integration", back: "Integrating data quality checks into ETL pipelines prevents bad data from ever entering downstream operational databases."},
-            {chapter: 13, front: "Cost of Poor Data Quality", back: "Calculating the cost of poor data quality quantifies financial losses stemming from operational errors, regulatory fines, and lost sales."},
-            {chapter: 13, front: " High Cost of Dirty Data", back: "  An enterprise ships thousands of marketing mailers to invalid, misspelled addresses, wasting millions of dollars. Management institutes a data quality profiling and cleansing program."},
-            {chapter: 13, front: " Upstream Root Cause Correction", back: "  Data engineers repeatedly patch downstream missing phone number errors manually every night. The data quality team performs root cause analysis and forces validation rules at the front-end CRM entry form."},
-            {chapter: 13, front: " Automated Quality Alert Spike", back: "  A software bug causes incoming transaction amounts to load as negative values, corrupting financial reporting. Automated data quality monitoring detects the anomaly and halts the pipeline."},
-            {chapter: 13, front: " Missing Completeness Validation", back: "  Customer sign-up forms allow blank email entries, rendering digital marketing campaigns ineffective. Data quality rules enforce mandatory completeness checks."},
-            {chapter: 13, front: " Regulatory Fine for Inaccurate Reporting", back: "  Regulatory reports contain inaccurate asset valuations due to un-profiled source data defects, resulting in government fines. The firm implements data quality scorecards and audits."},
-            {chapter: 13, front: " Conflicting Data Quality Ownership", back: "  When invalid product weights are discovered in the inventory database, IT and Sales blame each other with no clear accountability. Data governance assigns formal data quality stewards."},
-            {chapter: 13, front: " Timeliness Lag in Supply Chain", back: "  Inventory tracking data arrives 48 hours late into the warehouse system, causing stockouts. Engineers optimize data pipeline timeliness to support real-time operations."},
-            {chapter: 13, front: " Unvalidated Spreadsheet Uploads", back: "  Business users upload unvalidated Excel spreadsheets directly into the financial ledger, injecting duplicate and malformed records. IT mandates automated data quality staging gates."},
-            {chapter: 13, front: " Uniqueness Constraint Violation", back: "  Customer identification numbers are duplicated in the database due to concurrent inserts without primary key locks. Uniqueness checks and cleansing rules are applied."},
-            {chapter: 13, front: " Measuring ROI of Data Quality", back: "  To secure executive budget for data quality tools, the data governance team calculates the financial cost of poor data quality, proving a 300% projected return on investment."},
-
-            // Chapter 14: Data Integration & Big Data
-            {chapter: 14, front: "Big Data Characteristics", back: "Big data is characterized by the 3 Vs: Volume, Velocity, and Variety (often expanded to include Veracity and Value)."},
-            {chapter: 14, front: "Data Science Lifecycle", back: "The data science lifecycle involves framing questions, gathering data, exploratory analysis, modeling, evaluation, and deployment."},
-            {chapter: 14, front: "Big Data Volume", back: "Volume refers to the massive scale of generated data, exceeding traditional relational database storage capacities."},
-            {chapter: 14, front: "Big Data Velocity", back: "Velocity measures the high speed at which data streams into organizations, requiring real-time processing capabilities."},
-            {chapter: 14, front: "Big Data Variety", back: "Variety encompasses the diverse formats of unstructured, semi-structured, and structured data sources."},
-            {chapter: 14, front: "Analytic Modeling", back: "Analytic modeling uses statistical algorithms and machine learning to uncover hidden patterns and predict future outcomes."},
-            {chapter: 14, front: "Distributed Computing", back: "Distributed computing frameworks (e.g., Hadoop, Spark) process massive datasets across clustered hardware nodes."},
-            {chapter: 14, front: "Feature Engineering", back: "Feature engineering transforms raw variables into informative features to improve machine learning model prediction accuracy."},
-            {chapter: 14, front: "Data Science Governance", back: "Data science governance ensures model reproducibility, ethical compliance, bias auditing, and secure algorithmic deployment."},
-            {chapter: 14, front: "Visualization Channels", back: "Visualization channels management controls how data science model outputs are communicated through dashboards and reporting apps."},
-            {chapter: 14, front: "Data Lake Architecture", back: "A data lake is a storage repository holding vast amounts of raw, unstructured, and semi-structured data in its native format."},
-            {chapter: 14, front: "Machine Learning Ops", back: "MLOps operationalizes machine learning model deployment, monitoring, retraining, and lifecycle management in production."},
-            {chapter: 14, front: "Exploratory Data Analysis", back: "Exploratory Data Analysis (EDA) investigates raw datasets to summarize main characteristics and discover anomalies using visual statistics."},
-            {chapter: 14, front: "Supervised vs Unsupervised", back: "Supervised learning trains models on labeled historical outcomes, whereas unsupervised learning discovers hidden clusters in unlabeled data."},
-            {chapter: 14, front: "Big Data Modeling", back: "Big data modeling utilizes graph, columnar, or key-value structures optimized for distributed storage and retrieval."},
-            {chapter: 14, front: "Model Overfitting", back: "Overfitting occurs when a machine learning model learns training data noise too closely, failing to generalize to new data."},
-            {chapter: 14, front: "Training and Testing Splits", back: "Splitting data into training, validation, and testing subsets prevents evaluation bias during machine learning development."},
-            {chapter: 14, front: "Algorithmic Bias Audit", back: "Auditing models for bias ensures automated predictions do not discriminate against protected demographic classes."},
-            {chapter: 14, front: "Real-Time Scoring", back: "Real-time model scoring applies trained machine learning algorithms instantly to streaming event data."},
-            {chapter: 14, front: "Data Science Standards", back: "Establishing data science standards ensures code reproducibility, documentation quality, and secure model version control."},
-            {chapter: 14, front: " Predictive Modeling", back: "  A data science team trains a machine learning model on historical customer usage logs to predict customer churn and trigger automated retention offers."},
-            {chapter: 14, front: " Data Swamp Degradation", back: "  An enterprise dumps petabytes of unorganized data into a cloud repository without metadata catalogs or security controls, turning their data lake into an unusable data swamp. Governance implements data cataloging."},
-            {chapter: 14, front: " Model Overfitting Failure", back: "  A stock prediction model achieves 99% accuracy on historical training data but completely fails on live market feeds due to overfitting. The data science team introduces cross-validation and regularization."},
-            {chapter: 14, front: " MLOps Pipeline Automation", back: "  Data scientists deploy machine learning models manually, causing version conflicts and system crashes in production. The team implements an MLOps automated CI/CD deployment pipeline."},
-            {chapter: 14, front: " Unsupervised Customer Segmentation", back: "  A retail firm has millions of untagged customer transaction records with no predefined classes. Data scientists use k-means clustering (unsupervised learning) to discover distinct buyer personas."},
-            {chapter: 14, front: " High-Velocity IoT Streaming", back: "  Thousands of industrial IoT sensors stream high-velocity temperature telemetry data every millisecond. Traditional relational databases crash under the load; engineers deploy a distributed stream processing framework."},
-            {chapter: 14, front: " Algorithmic Discrimination Scandal", back: "  An AI hiring tool automatically rejects female applicant resumes because it was trained on historically biased corporate hiring logs. The data science team performs an ethical bias audit and re-engineers training features."},
-            {chapter: 14, front: " Feature Engineering Breakthrough", back: "  A fraud detection model yields poor predictive power until data scientists engineer a new composite feature calculating 'distance from home vs transaction velocity', dramatically boosting accuracy."},
-            {chapter: 14, front: " Model Drift Degradation", back: "  A credit risk model trained before an economic recession begins issuing faulty approvals because consumer behavior shifted. The MLOps team detects model drift and triggers automated retraining."},
-            {chapter: 14, front: " Reproducibility Crisis", back: "  A data scientist leaves the company, and nobody can reproduce their machine learning results because code, parameters, and training datasets were unversioned. Management enforces strict data science standards."},
-
-            // Chapter 15: Data Ethics
-            {chapter: 15, front: "Core Definition", back: "Data handling ethics refers to the moral principles and guidelines governing the collection, use, sharing, and disposal of data."},
-            {chapter: 15, front: "FIPPs Framework", back: "Fair Information Practice Principles (FIPPs) provide a baseline framework for privacy, notice, choice, and access regarding personal data."},
-            {chapter: 15, front: "Transparency Goal", back: "Transparency ensures that individuals are fully informed about how their personal data is harvested and processed."},
-            {chapter: 15, front: "Privacy by Design", back: "Privacy by Design is an engineering framework that embeds privacy considerations into the foundational design of systems and products."},
-            {chapter: 15, front: "Informed Consent", back: "Informed consent requires that data subjects clearly understand and explicitly agree to the specific processing of their data."},
-            {chapter: 15, front: "Social Responsibility", back: "Social responsibility in data ethics mandates that organizations evaluate the broader societal impacts of their data algorithms and products."},
-            {chapter: 15, front: "Accountability Principle", back: "Accountability holds organizations legally and ethically responsible for complying with established data protection and handling policies."},
-            {chapter: 15, front: "Data Stewardship Ethics", back: "Ethical data stewardship requires treating data assets with care, protecting privacy, and preventing misuse or malicious exploitation."},
-            {chapter: 15, front: "Regulatory Baseline", back: "Data ethics extends beyond minimal legal compliance to include moral imperatives for treating individuals and data subjects fairly."},
-            {chapter: 15, front: "Ethical Risk Model", back: "An ethical risk model helps organizations systematically evaluate potential moral hazards before deploying new data products or tracking mechanisms."},
-            {chapter: 15, front: "Algorithmic Bias", back: "Algorithmic bias occurs when automated decisions systematically disadvantage certain groups due to flawed training data or human assumptions."},
-            {chapter: 15, front: "Data Minimization", back: "Data minimization is the ethical principle of collecting only the data strictly necessary to fulfill a specific, declared business purpose."},
-            {chapter: 15, front: "Purpose Limitation", back: "Purpose limitation restricts the use of collected data exclusively to the objectives explicitly stated to the data subject at collection time."},
-            {chapter: 15, front: "Misleading Visualizations", back: "Unethical data handling includes creating misleading visualizations that intentionally distort data distributions or trends to manipulate stakeholders."},
-            {chapter: 15, front: "Obfuscation and Redaction", back: "Obfuscation and redaction are techniques used to obscure or remove sensitive identifiers to protect privacy during data integration."},
-            {chapter: 15, front: "Discriminatory Targeting", back: "Discriminatory targeting uses behavioral data profiles to systematically exclude vulnerable demographics from financial or employment opportunities."},
-            {chapter: 15, front: "Secondary Usage Risks", back: "Secondary usage risks arise when data collected for a benign purpose is repurposed or sold without explicit re-consent from the data subject."},
-            {chapter: 15, front: "Surveillance Capitalism", back: "Surveillance capitalism represents a market-driven model where private human experience is harvested as behavioral data for targeted behavioral modification."},
-            {chapter: 15, front: "Ethical Culture Strategy", back: "Establishing an ethical data culture requires reviewing current practices, identifying risk factors, and training employees on responsible handling."},
-            {chapter: 15, front: "Algorithmic Transparency", back: "Algorithmic transparency requires that automated decision-making processes can be explained and audited for fairness and explainability."},
-            {chapter: 15, front: " Unauthorized Tracking", back: "  A retail firm tracks customer browsing habits across third-party websites without explicit consent or notification, violating core data handling ethics and privacy expectations."},
-            {chapter: 15, front: " Biased Credit Model", back: "  A machine learning credit-scoring algorithm systematically denies loans to applicants from specific zip codes due to historical training data bias. The data team must conduct an ethical audit and retrain the model."},
-            {chapter: 15, front: " Over-Collection Violation", back: "  A health mobile application collects precise GPS coordinates and contact lists when users only need to track daily water intake. This violates the core ethical principle of data minimization."},
-            {chapter: 15, front: " Misleading Chart Manipulation", back: "  An executive dashboard truncates the Y-axis on a revenue performance graph to exaggerate quarterly growth by 500%, creating an intentionally deceptive visual representation for investors."},
-            {chapter: 15, front: " Secondary Sale Breach", back: "  A marketing company aggregates user profile logs for customer service optimization and then sells those raw logs to third-party data brokers without user notification, breaching purpose limitation policies."},
-            {chapter: 15, front: " Unsanctioned Profiling", back: "  An insurance company buys lifestyle and dietary purchase histories from grocery stores to dynamically raise health insurance premiums on individuals, crossing ethical boundaries regarding privacy and fairness."},
-            {chapter: 15, front: " Redaction Failure", back: "  Before publishing an open data research set on mental health, researchers fail to properly redact unique patient identifiers, leading to accidental re-identification and a severe ethical breach."},
-            {chapter: 15, front: " Opaque Black Box", back: "  A government agency deploys a 'black box' AI model to allocate social welfare benefits without any mechanism for citizens to appeal or understand why their application was rejected, failing accountability and transparency standards."},
-            {chapter: 15, front: " Ethical Risk Assessment", back: "  Prior to launching a new facial recognition initiative in public transit stations, the compliance board mandates a comprehensive ethical risk and societal impact assessment."},
-            {chapter: 15, front: " Consent Bypass", back: "  A software vendor bundles complex legal opt-in terms into a 50-page EULA written in legalese, effectively bypassing genuine informed consent from users."},
-        
-        ]; // Populated with dataset items
-
-        // LocalStorage State Management helpers
-        const STORAGE_KEY_MASTERY = 'cdmp_mastery_data_v1';
-        const STORAGE_KEY_BOOKMARKS = 'cdmp_bookmarks_v1';
-
-        function getMasteryStore() {
-            try { return JSON.parse(localStorage.getItem(STORAGE_KEY_MASTERY)) || {}; } catch(e) { return {}; }
-        }
-        function saveMasteryStore(store) {
-            localStorage.setItem(STORAGE_KEY_MASTERY, JSON.stringify(store));
-        }
-        function getBookmarksStore() {
-            try { return JSON.parse(localStorage.getItem(STORAGE_KEY_BOOKMARKS)) || []; } catch(e) { return []; }
-        }
-        function saveBookmarksStore(store) {
-            localStorage.setItem(STORAGE_KEY_BOOKMARKS, JSON.stringify(store));
-        }
-
+        let allData = [];
         let currentViewData = [];
-        let quizHistory = [];
-        let userAnswers = {}; 
-        let quizOptionsCache = {}; 
-        let flaggedQuestions = new Set(); 
         let currentIndex = 0;
-        let timerInterval = null, idleInterval = null, secondsElapsed = 0, idleTime = 0;
-        const IDLE_LIMIT = 600; 
-
-        let reviewModeActive = false; 
-        let reviewHistoryIndex = 0;  
+        let bookmarks = new Set(JSON.parse(localStorage.getItem('cdmp_bookmarks') || '[]'));
+        
+        // Quiz/Exam State variables
+        let quizHistory = [];
+        let userAnswers = {};
+        let flaggedQuestions = new Set();
+        let timerInterval = null;
+        let secondsElapsed = 0;
+        let reviewModeActive = false;
         let latestIncorrectList = [];
+        let reviewHistoryIndex = 0;
+        let quizOptionsCache = {};
 
         const el = {
-            filter: document.getElementById('chapter-filter'),
-            flashView: document.getElementById('flashcard-container'),
-            quizView: document.getElementById('quiz-container'),
-            card: document.getElementById('main-card'),
-            frontFace: document.getElementById('card-front-face'),
-            backFace: document.getElementById('card-back-face'),
-            front: document.getElementById('front-text'),
-            back: document.getElementById('back-text'),
-            chLabel: document.getElementById('card-chapter-label'),
-            counter: document.getElementById('counter'),
-            studyBtn: document.getElementById('study-mode-btn'),
-            quizBtn: document.getElementById('quiz-mode-btn'),
-            examBtn: document.getElementById('exam-mode-btn'),
-            bookmarksBtn: document.getElementById('bookmarks-mode-btn'),
-            studyTagIndicator: document.getElementById('study-tag-indicator'),
+            flashView: document.getElementById('flashcard-view'),
+            quizView: document.getElementById('quiz-view'),
+            card: document.getElementById('flashcard-element'),
+            cardInner: document.getElementById('card-inner'),
+            frontText: document.getElementById('card-front-text'),
+            backText: document.getElementById('card-back-text'),
+            chapterBadge: document.getElementById('card-chapter-badge'),
             bookmarkCardBtn: document.getElementById('bookmark-card-btn'),
-            bookmarkBtnText: document.getElementById('bookmark-btn-text'),
-            quizProgress: document.getElementById('quiz-progress'),
-            completionBar: document.getElementById('completion-progress-bar'),
-            completionBarContainer: document.getElementById('completion-bar-container'),
-            navigatorContainer: document.getElementById('navigator-container'),
-            navigatorGrid: document.getElementById('question-navigator-grid'),
+            currentCardNum: document.getElementById('current-card-num'),
+            totalCardNum: document.getElementById('total-card-num'),
+            filter: document.getElementById('chapter-filter'),
+            studyBtn: document.getElementById('study-btn'),
+            quizBtn: document.getElementById('quiz-btn'),
+            examBtn: document.getElementById('exam-btn'),
+            bookmarksBtn: document.getElementById('bookmarks-btn'),
+            quizHeaderBar: document.getElementById('quiz-header-bar'),
+            timerDisplay: document.getElementById('timer-display'),
+            quizProgressText: document.getElementById('quiz-progress-text'),
+            flagBtn: document.getElementById('flag-btn'),
+            quizEarlySubmit: document.getElementById('quiz-early-submit'),
+            quizTitle: document.getElementById('quiz-title'),
+            quizChapterBadge: document.getElementById('quiz-chapter-badge'),
             quizQuestion: document.getElementById('quiz-question'),
             quizOptions: document.getElementById('quiz-options'),
-            quizFeedback: document.getElementById('quiz-feedback'),
-            quizPrev: document.getElementById('quiz-prev-btn'),
-            quizSkip: document.getElementById('quiz-skip-btn'),
-            quizNext: document.getElementById('quiz-next-btn'),
-            quizEarlySubmit: document.getElementById('quiz-early-submit-btn'),
-            flagBtn: document.getElementById('flag-btn'),
-            timerDisplay: document.getElementById('timer-display'),
-            timerBadge: document.getElementById('timer-badge'),
-            quizHeaderBar: document.getElementById('quiz-header-bar'),
-            questionCardWrapper: document.getElementById('question-card-wrapper'),
-            questionBadgeLabel: document.getElementById('question-badge-label'),
-            quizActionBar: document.getElementById('quiz-action-bar'),
-            darkModeToggle: document.getElementById('dark-mode-toggle'),
-            analyticsModalBtn: document.getElementById('analytics-modal-btn'),
+            completionBarContainer: document.getElementById('completion-bar-container'),
+            flaggedIndicator: document.getElementById('flagged-indicator'),
+            navigatorContainer: document.getElementById('navigator-container'),
+            quizPrev: document.getElementById('quiz-prev'),
+            quizNext: document.getElementById('quiz-next'),
+            quizSkip: document.getElementById('quiz-skip'),
             analyticsModal: document.getElementById('analytics-modal'),
+            analyticsModalBtn: document.getElementById('analytics-modal-btn'),
             closeAnalytics: document.getElementById('close-analytics'),
             analyticsContent: document.getElementById('analytics-content')
         };
 
-        // Dark Mode Initialization
-        if (localStorage.getItem('cdmp_dark_mode') === 'true') {
-            document.documentElement.classList.add('dark');
-            el.darkModeToggle.innerText = '☀️';
-        }
-        el.darkModeToggle.onclick = () => {
-            document.documentElement.classList.toggle('dark');
-            const isDark = document.documentElement.classList.contains('dark');
-            localStorage.setItem('cdmp_dark_mode', isDark);
-            el.darkModeToggle.innerText = isDark ? '☀️' : '🌙';
-        };
+        // Fetch questions from external questions.json file
+        fetch('questions.json')
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                allData = data;
+                prepareStudyQueue();
+                renderCard();
+            })
+            .catch(error => {
+                console.error('Error loading questions.json:', error);
+                el.frontText.innerText = "Error: Could not load questions.json. Make sure it is in the same directory and served via a local server.";
+            });
 
-        function isSpecialChapter(chNum) {
-            return [9, 11, 14, 15].includes(parseInt(chNum));
+        function getMasteryStore() {
+            return JSON.parse(localStorage.getItem('cdmp_mastery') || '{}');
         }
 
-        function getChapterWeightLabel(chNum) {
-            const num = parseInt(chNum);
-            const coreHighWeight = [2, 4, 5, 6, 7, 8, 10, 12, 13];
-            if (coreHighWeight.includes(num)) {
-                return { label: "High Exam Weight (Core)", badgeClass: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300 border-red-200 dark:border-red-800" };
+        function saveMasteryStore(store) {
+            localStorage.setItem('cdmp_mastery', JSON.stringify(store));
+        }
+
+        function getChapterWeightLabel(ch) {
+            const weights = {
+                2: { label: "High (11%)", badgeClass: "bg-red-500/10 text-red-400 border-red-500/20" },
+                3: { label: "Low (2%)", badgeClass: "bg-slate-800 text-slate-400 border-slate-700" },
+                4: { label: "Medium (6%)", badgeClass: "bg-amber-500/10 text-amber-400 border-amber-500/20" },
+                5: { label: "High (10%)", badgeClass: "bg-red-500/10 text-red-400 border-red-500/20" },
+                6: { label: "Medium (6%)", badgeClass: "bg-amber-500/10 text-amber-400 border-amber-500/20" },
+                7: { label: "High (10%)", badgeClass: "bg-red-500/10 text-red-400 border-red-500/20" },
+                8: { label: "High (10%)", badgeClass: "bg-red-500/10 text-red-400 border-red-500/20" },
+                9: { label: "Low (2%)", badgeClass: "bg-slate-800 text-slate-400 border-slate-700" },
+                10: { label: "Medium (6%)", badgeClass: "bg-amber-500/10 text-amber-400 border-amber-500/20" },
+                11: { label: "High (10%)", badgeClass: "bg-red-500/10 text-red-400 border-red-500/20" },
+                12: { label: "Medium (6%)", badgeClass: "bg-amber-500/10 text-amber-400 border-amber-500/20" },
+                13: { label: "High (11%)", badgeClass: "bg-red-500/10 text-red-400 border-red-500/20" },
+                14: { label: "Low (4%)", badgeClass: "bg-slate-800 text-slate-400 border-slate-700" },
+                15: { label: "Low (6%)", badgeClass: "bg-amber-500/10 text-amber-400 border-amber-500/20" }
+            };
+            return weights[ch] || { label: "Standard", badgeClass: "bg-slate-800 text-slate-400 border-slate-700" };
+        }
+
+        function prepareStudyQueue() {
+            const val = el.filter.value;
+            if (val === 'all') {
+                currentViewData = [...allData];
             } else {
-                return { label: "Lower Exam Weight (Specialized)", badgeClass: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border-amber-200 dark:border-amber-800" };
+                currentViewData = allData.filter(d => d.chapter == val);
             }
-        }
-
-        function updateView() {
-            const f = el.filter.value;
-            currentViewData = f === 'all' ? [...allData] : allData.filter(d => d.chapter == parseInt(f));
             currentIndex = 0;
         }
 
-        // Spaced Repetition Sorting Strategy for Study Mode
-        function prepareStudyQueue() {
-            updateView();
-            const mastery = getMasteryStore();
-            
-            // Separate into Unseen/Unmastered vs Mastered review items
-            let unseenOrFailed = [];
-            let mastered = [];
-
-            currentViewData.forEach(item => {
-                const stat = mastery[item.front];
-                if (!stat || stat.correctStreak === 0) {
-                    unseenOrFailed.push({ item, isReview: false });
-                } else {
-                    mastered.push({ item, isReview: true });
-                }
-            });
-
-            // Shuffle unseen queue
-            unseenOrFailed.sort(() => Math.random() - 0.5);
-            mastered.sort(() => Math.random() - 0.5);
-
-            // Combine: Unseen/Unmastered first. If all finished, repeat mastered items tagged as Review.
-            currentViewData = [...unseenOrFailed, ...mastered];
-        }
-
         function renderCard() {
-            if(currentViewData.length === 0) return;
-            const entry = currentViewData[currentIndex];
-            const d = entry.item;
-            
-            el.card.classList.remove('is-flipped');
-            el.front.innerText = d.front;
-            el.back.innerText = d.back;
-            
-            // Tag indicator for Spaced Repetition status
-            if (entry.isReview) {
-                el.studyTagIndicator.innerText = "🔁 Review Queue (Previously Mastered)";
-                el.studyTagIndicator.className = "text-xs font-bold px-3 py-1 bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300 rounded-full";
-            } else {
-                el.studyTagIndicator.innerText = "✨ New / Unseen Queue";
-                el.studyTagIndicator.className = "text-xs font-bold px-3 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 rounded-full";
+            el.cardInner.classList.remove('rotate-y-180');
+            if (currentViewData.length === 0) {
+                el.frontText.innerText = "No flashcards found for this selection.";
+                el.backText.innerText = "Try selecting a different chapter or resetting filters.";
+                el.chapterBadge.innerText = "Empty";
+                el.currentCardNum.innerText = 0;
+                el.totalCardNum.innerText = 0;
+                return;
             }
 
-            // Check bookmark status
-            const bookmarks = getBookmarksStore();
-            const isBookmarked = bookmarks.some(b => b.front === d.front);
-            el.bookmarkBtnText.innerText = isBookmarked ? "Bookmarked" : "Bookmark Card";
+            const item = currentViewData[currentIndex];
+            el.frontText.innerText = item.front;
+            el.backText.innerText = item.back;
+            el.chapterBadge.innerText = `Chapter ${item.chapter}`;
+            el.currentCardNum.innerText = currentIndex + 1;
+            el.totalCardNum.innerText = currentViewData.length;
 
-            if (isSpecialChapter(d.chapter)) {
-                el.chLabel.innerText = `Ch ${d.chapter} (Specialized)`;
-                el.chLabel.className = "absolute top-4 left-4 text-xs font-bold text-amber-600 uppercase";
-                el.frontFace.className = "card-face card-front bg-amber-50/50 dark:bg-slate-900 rounded-2xl shadow-xl border-t-4 border-amber-500 flex flex-col items-center justify-center p-8 text-center";
-                el.backFace.className = "card-face card-back bg-amber-50 dark:bg-slate-800 rounded-2xl shadow-xl border-t-4 border-amber-600 flex items-center justify-center p-8 text-center";
+            if (bookmarks.has(item.front)) {
+                el.bookmarkCardBtn.innerText = "⭐";
+                el.bookmarkCardBtn.classList.add('text-amber-400');
             } else {
-                el.chLabel.innerText = `Ch ${d.chapter}`;
-                el.chLabel.className = "absolute top-4 left-4 text-xs font-bold text-blue-500 uppercase";
-                el.frontFace.className = "card-face card-front bg-white dark:bg-slate-900 rounded-2xl shadow-xl border-t-4 border-blue-600 flex flex-col items-center justify-center p-8 text-center";
-                el.backFace.className = "card-face card-back bg-blue-50 dark:bg-slate-800 rounded-2xl shadow-xl border-t-4 border-emerald-500 flex items-center justify-center p-8 text-center";
+                el.bookmarkCardBtn.innerText = "☆";
+                el.bookmarkCardBtn.classList.remove('text-amber-400');
             }
-
-            el.counter.innerText = `${currentIndex + 1} / ${currentViewData.length}`;
         }
 
-        el.bookmarkCardBtn.onclick = () => {
-            if(currentViewData.length === 0) return;
-            const currentItem = currentViewData[currentIndex].item;
-            let bookmarks = getBookmarksStore();
-            const idx = bookmarks.findIndex(b => b.front === currentItem.front);
-            if (idx >= 0) {
-                bookmarks.splice(idx, 1);
-                el.bookmarkBtnText.innerText = "Bookmark Card";
+        el.bookmarkCardBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (currentViewData.length === 0) return;
+            const item = currentViewData[currentIndex];
+            if (bookmarks.has(item.front)) {
+                bookmarks.delete(item.front);
             } else {
-                bookmarks.push(currentItem);
-                el.bookmarkBtnText.innerText = "Bookmarked";
+                bookmarks.add(item.front);
             }
-            saveBookmarksStore(bookmarks);
+            localStorage.setItem('cdmp_bookmarks', JSON.stringify([...bookmarks]));
+            renderCard();
         };
 
         function startTimer() {
-            if(timerInterval) clearInterval(timerInterval);
-            if(idleInterval) clearInterval(idleInterval);
-            secondsElapsed = 0; idleTime = 0;
-            el.timerDisplay.innerText = "00:00";
-
+            clearInterval(timerInterval);
+            secondsElapsed = 0;
             timerInterval = setInterval(() => {
                 secondsElapsed++;
                 const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
                 const secs = String(secondsElapsed % 60).padStart(2, '0');
-                el.timerDisplay.innerText = `${mins}:${secs}`;
-            }, 1000);
-
-            idleInterval = setInterval(() => {
-                idleTime++;
-                if (idleTime >= IDLE_LIMIT) { stopTimer(); }
+                el.timerDisplay.innerText = `⏱️ ${mins}:${secs}`;
             }, 1000);
         }
 
         function stopTimer() {
-            if(timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-            if(idleInterval) { clearInterval(idleInterval); idleInterval = null; }
+            clearInterval(timerInterval);
         }
-        function resetIdleTimer() { if (timerInterval) idleTime = 0; }
+
+        function resetIdleTimer() {}
 
         function startQuiz() {
             reviewModeActive = false;
-            el.flashView.classList.add('hidden');
-            el.quizView.classList.remove('hidden');
-            updateView();
-            quizHistory = [...currentViewData].sort(() => Math.random() - 0.5);
-            userAnswers = {}; quizOptionsCache = {}; flaggedQuestions.clear(); currentIndex = 0;
-            startTimer(); showQuestion();
-        }
-
-        function startExamMode() {
-            reviewModeActive = false;
-            el.flashView.classList.add('hidden');
-            el.quizView.classList.remove('hidden');
+            const val = el.filter.value;
+            let pool = val === 'all' ? [...allData] : allData.filter(d => d.chapter == val);
+            if (pool.length < 4) pool = [...allData]; // Ensure enough options
             
-            let weightedPool = [];
-            allData.forEach(item => {
-                let weight = isSpecialChapter(item.chapter) ? 1 : 4;
-                for(let i = 0; i < weight; i++) weightedPool.push(item);
-            });
-            weightedPool.sort(() => Math.random() - 0.5);
-            let uniqueMap = new Map();
-            for(let item of weightedPool) {
-                if(!uniqueMap.has(item.front)) uniqueMap.set(item.front, item);
-                if(uniqueMap.size >= 100) break;
-            }
-            quizHistory = Array.from(uniqueMap.values()).sort(() => Math.random() - 0.5);
-            userAnswers = {}; quizOptionsCache = {}; flaggedQuestions.clear(); currentIndex = 0;
-            startTimer(); showQuestion();
-        }
+            pool.sort(() => Math.random() - 0.5);
+            quizHistory = pool.slice(0, Math.min(10, pool.length));
+            userAnswers = {};
+            flaggedQuestions.clear();
+            quizOptionsCache = {};
+            currentIndex = 0;
 
-        function startBookmarksMode() {
-            const bookmarks = getBookmarksStore();
-            if (bookmarks.length === 0) {
-                alert("You haven't bookmarked any cards yet! Click 'Bookmark Card' while studying to save items here.");
-                return;
-            }
-            reviewModeActive = false;
             el.flashView.classList.add('hidden');
             el.quizView.classList.remove('hidden');
-            quizHistory = bookmarks.map(item => item);
-            userAnswers = {}; quizOptionsCache = {}; flaggedQuestions.clear(); currentIndex = 0;
-            startTimer(); showQuestion();
-        }
-
-        function updateProgressBars() {
-            if (reviewModeActive) return;
-            const total = quizHistory.length;
-            const answeredCount = Object.keys(userAnswers).length;
-            const percent = Math.round((answeredCount / total) * 100);
-            
-            el.completionBar.style.width = `${percent}%`;
-            el.quizProgress.innerText = `Answered: ${answeredCount}/${total} (${percent}%)`;
-
-            el.navigatorGrid.innerHTML = '';
-            quizHistory.forEach((_, idx) => {
-                const box = document.createElement('button');
-                let bgClass = "bg-white dark:bg-slate-800 border-gray-300 dark:border-slate-700 text-gray-700 dark:text-gray-300";
-                if (idx === currentIndex) {
-                    bgClass = "bg-blue-600 border-blue-600 text-white font-bold ring-2 ring-blue-300";
-                } else if (flaggedQuestions.has(idx)) {
-                    bgClass = "bg-amber-400 border-amber-500 text-amber-950 font-bold";
-                } else if (userAnswers[idx] !== undefined) {
-                    bgClass = "bg-emerald-500 border-emerald-600 text-white font-semibold";
-                }
-                box.className = `w-7 h-7 rounded-md border text-xs font-semibold flex items-center justify-center transition hover:scale-105 ${bgClass}`;
-                box.innerText = idx + 1;
-                box.onclick = () => { resetIdleTimer(); currentIndex = idx; showQuestion(); };
-                el.navigatorGrid.appendChild(box);
-            });
-        }
-
-        function showQuestion() {
-            reviewModeActive = false;
             el.quizHeaderBar.classList.remove('hidden');
             el.completionBarContainer.classList.remove('hidden');
             el.navigatorContainer.classList.remove('hidden');
             el.flagBtn.classList.remove('hidden');
-            el.quizPrev.classList.remove('hidden');
             el.quizSkip.classList.remove('hidden');
-            el.quizNext.classList.remove('hidden');
             el.quizEarlySubmit.classList.remove('hidden');
+            el.quizNext.innerText = "Next →";
 
-            const d = quizHistory[currentIndex];
-            const headerTitle = quizHistory.length === 100 ? `100-Question Exam Simulation` : `Chapter Quiz`;
-            document.getElementById('quiz-title').innerText = headerTitle;
-            
-            el.quizQuestion.innerText = `What is the definition of "${d.front}"?`;
-            el.quizFeedback.classList.add('hidden');
-            
+            el.quizTitle.innerText = "Interactive Practice Quiz";
+            startTimer();
+            showQuestion();
+        }
+
+        function startExamMode() {
+            reviewModeActive = false;
+            let pool = [...allData];
+            pool.sort(() => Math.random() - 0.5);
+            quizHistory = pool.slice(0, 20); // 20 Question Simulation
+            userAnswers = {};
+            flaggedQuestions.clear();
+            quizOptionsCache = {};
+            currentIndex = 0;
+
+            el.flashView.classList.add('hidden');
+            el.quizView.classList.remove('hidden');
+            el.quizHeaderBar.classList.remove('hidden');
+            el.completionBarContainer.classList.remove('hidden');
+            el.navigatorContainer.classList.remove('hidden');
+            el.flagBtn.classList.remove('hidden');
+            el.quizSkip.classList.remove('hidden');
+            el.quizEarlySubmit.classList.remove('hidden');
+            el.quizNext.innerText = "Next →";
+
+            el.quizTitle.innerText = "CDMP Exam Simulation (20 Questions)";
+            startTimer();
+            showQuestion();
+        }
+
+        function startBookmarksMode() {
+            reviewModeActive = false;
+            const pool = allData.filter(d => bookmarks.has(d.front));
+            if (pool.length === 0) {
+                alert("You have no bookmarked terms or questions yet! Click the star icon on flashcards to save them.");
+                return;
+            }
+            quizHistory = pool;
+            userAnswers = {};
+            flaggedQuestions.clear();
+            quizOptionsCache = {};
+            currentIndex = 0;
+
+            el.flashView.classList.add('hidden');
+            el.quizView.classList.remove('hidden');
+            el.quizHeaderBar.classList.remove('hidden');
+            el.completionBarContainer.classList.remove('hidden');
+            el.navigatorContainer.classList.remove('hidden');
+            el.flagBtn.classList.remove('hidden');
+            el.quizSkip.classList.remove('hidden');
+            el.quizEarlySubmit.classList.remove('hidden');
+            el.quizNext.innerText = "Next →";
+
+            el.quizTitle.innerText = "Bookmarked Flashcards Review";
+            startTimer();
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const item = quizHistory[currentIndex];
+            el.quizProgressText.innerText = `Question ${currentIndex + 1} of ${quizHistory.length}`;
+            el.quizChapterBadge.innerText = `Chapter ${item.chapter}`;
+            el.quizQuestion.innerText = item.front;
+
             if (flaggedQuestions.has(currentIndex)) {
-                el.flagBtn.innerHTML = `<span>🚩 Flagged</span>`;
-                el.flagBtn.className = "text-xs font-semibold px-3 py-1 bg-amber-500 text-white rounded-lg shadow-sm transition flex items-center gap-1";
+                el.flaggedIndicator.classList.remove('hidden');
+                el.flagBtn.classList.add('bg-amber-500/20', 'border-amber-500/40', 'text-amber-400');
             } else {
-                el.flagBtn.innerHTML = `<span>🚩 Flag for Review</span>`;
-                el.flagBtn.className = "text-xs font-semibold px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 rounded-lg hover:bg-amber-200 transition flex items-center gap-1";
+                el.flaggedIndicator.classList.add('hidden');
+                el.flagBtn.classList.remove('bg-amber-500/20', 'border-amber-500/40', 'text-amber-400');
             }
 
-            el.quizPrev.style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
-            el.quizNext.innerText = currentIndex === quizHistory.length - 1 ? "Submit Exam / Quiz 🎯" : "Next Question →";
-
-            let options;
-            if (quizOptionsCache[currentIndex]) {
-                options = quizOptionsCache[currentIndex];
-            } else {
-                options = [d.back];
-                while(options.length < 4) {
-                    let randomBack = allData[Math.floor(Math.random()*allData.length)].back;
-                    if(!options.includes(randomBack)) options.push(randomBack);
-                }
+            // Options generation with caching
+            if (!quizOptionsCache[currentIndex]) {
+                let distractors = allData.filter(d => d.back !== item.back).map(d => d.back);
+                distractors.sort(() => Math.random() - 0.5);
+                let options = [item.back, ...distractors.slice(0, 3)];
                 options.sort(() => Math.random() - 0.5);
                 quizOptionsCache[currentIndex] = options;
             }
 
+            const currentOptions = quizOptionsCache[currentIndex];
             el.quizOptions.innerHTML = '';
-            options.forEach((opt, idx) => {
-                const letters = ['A', 'B', 'C', 'D'];
+            const letters = ['A', 'B', 'C', 'D'];
+
+            currentOptions.forEach((opt, idx) => {
+                const isSelected = userAnswers[currentIndex] === opt;
                 const btn = document.createElement('button');
-                let isSelected = userAnswers[currentIndex] === opt;
-                let btnStyle = "border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-blue-400 text-gray-700 dark:text-gray-200";
-                let badgeStyle = "bg-gray-100 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-500";
-
-                if (isSelected) {
-                    btnStyle = "border-blue-600 bg-blue-50/80 dark:bg-blue-950/50 text-blue-900 dark:text-blue-200 font-semibold shadow-md";
-                    badgeStyle = "bg-blue-600 text-white";
-                }
-
-                btn.className = `option-btn w-full text-left p-4 rounded-2xl border-2 ${btnStyle} flex items-center gap-4 font-medium shadow-sm`;
+                btn.className = `option-btn w-full text-left p-4 rounded-2xl border-2 transition flex items-center gap-4 font-medium shadow-sm ${
+                    isSelected 
+                        ? 'border-blue-500 bg-blue-500/10 text-blue-200 font-bold shadow-md' 
+                        : 'border-slate-800 bg-slate-900 hover:bg-slate-800/80 text-slate-300'
+                }`;
                 btn.innerHTML = `
-                    <span class="w-8 h-8 rounded-xl ${badgeStyle} border flex items-center justify-center font-bold text-sm shrink-0">${letters[idx]}</span>
+                    <span class="w-8 h-8 rounded-xl ${isSelected ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 border border-slate-700'} flex items-center justify-center font-bold text-sm shrink-0">${letters[idx]}</span>
                     <span class="flex-1">${opt}</span>
                 `;
                 btn.onclick = () => {
-                    resetIdleTimer();
                     userAnswers[currentIndex] = opt;
-                    updateProgressBars();
-                    showQuestion(); 
+                    showQuestion();
                 };
                 el.quizOptions.appendChild(btn);
             });
-            updateProgressBars();
+
+            renderNavigator();
+            el.quizPrev.style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
+            el.quizNext.innerText = currentIndex === quizHistory.length - 1 ? "Finish & Submit 🏁" : "Next →";
+        }
+
+        function renderNavigator() {
+            el.navigatorContainer.innerHTML = '';
+            quizHistory.forEach((_, idx) => {
+                const dot = document.createElement('button');
+                let style = "w-7 h-7 rounded-lg text-xs font-bold border transition flex items-center justify-center ";
+                if (idx === currentIndex) {
+                    style += "border-blue-500 bg-blue-600 text-white shadow-md";
+                } else if (userAnswers[idx]) {
+                    style += "border-emerald-500/40 bg-emerald-500/10 text-emerald-400";
+                } else {
+                    style += "border-slate-800 bg-slate-900 text-slate-500 hover:bg-slate-800";
+                }
+                dot.className = style;
+                dot.innerText = idx + 1;
+                dot.onclick = () => {
+                    currentIndex = idx;
+                    showQuestion();
+                };
+                el.navigatorContainer.appendChild(dot);
+            });
         }
 
         function showWrongQuestionReview(incorrectList, reviewIdx) {
@@ -971,43 +522,32 @@
             el.flagBtn.classList.add('hidden');
             el.quizSkip.classList.add('hidden');
             el.quizEarlySubmit.classList.add('hidden');
+            el.quizPrev.style.visibility = reviewIdx === 0 ? 'hidden' : 'visible';
 
-            document.getElementById('quiz-title').innerText = `Reviewing Incorrect Answer (${reviewIdx + 1} of ${incorrectList.length})`;
-            const weightInfo = getChapterWeightLabel(itemObj.item.chapter);
-            el.questionBadgeLabel.innerHTML = `Chapter ${itemObj.item.chapter} &bull; <span class="px-2 py-0.5 rounded-full border text-[10px] font-bold ${weightInfo.badgeClass}">${weightInfo.label}</span>`;
-            el.quizQuestion.innerText = `What is the definition of "${itemObj.item.front}"?`;
-
-            el.quizFeedback.classList.remove('hidden');
-            el.quizFeedback.className = "mt-6 p-4 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-900 dark:text-red-200 text-sm space-y-1";
-            el.quizFeedback.innerHTML = `
-                <div class="font-bold flex items-center gap-1.5 text-red-700 dark:text-red-400">Your Answer: <span class="font-normal text-red-600 dark:text-red-300">${itemObj.userAns || 'None'}</span></div>
-                <div class="font-bold flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 pt-1">Correct Definition: <span class="font-normal text-emerald-800 dark:text-emerald-300">${itemObj.item.back}</span></div>
+            el.quizTitle.innerText = `Review Incorrect Answer (${reviewIdx + 1} of ${incorrectList.length})`;
+            el.quizChapterBadge.innerText = `Chapter ${itemObj.item.chapter}`;
+            el.quizQuestion.innerHTML = `
+                <div class="text-base text-slate-100 font-bold mb-2">${itemObj.item.front}</div>
+                <div class="text-xs text-slate-400">Chapter weight analysis shows this topic is critical for passing the CDMP exam. Review the correct definition below.</div>
             `;
 
             el.quizOptions.innerHTML = '';
-            let reviewOptions = [itemObj.item.back];
-            while(reviewOptions.length < 4) {
-                let randomBack = allData[Math.floor(Math.random()*allData.length)].back;
-                if(!reviewOptions.includes(randomBack)) reviewOptions.push(randomBack);
-            }
-            reviewOptions.sort(() => Math.random() - 0.5);
-
-            reviewOptions.forEach((opt, idx) => {
+            itemObj.options.forEach((opt, idx) => {
                 const letters = ['A', 'B', 'C', 'D'];
                 const btn = document.createElement('button');
-                btn.disabled = true;
-                let btnStyle = "border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-500 opacity-70";
-                let badgeStyle = "bg-gray-100 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400";
+                let btnStyle = "border-slate-800 bg-slate-900 text-slate-400 opacity-60";
+                let badgeStyle = "bg-slate-800 border-slate-700 text-slate-500";
 
                 if (opt === itemObj.item.back) {
-                    btnStyle = "border-emerald-500 bg-emerald-50/80 dark:bg-emerald-950/50 text-emerald-950 dark:text-emerald-200 font-semibold shadow-sm";
+                    btnStyle = "border-emerald-500 bg-emerald-500/10 text-emerald-200 font-bold shadow-md opacity-100";
                     badgeStyle = "bg-emerald-600 text-white";
-                } else if (opt === itemObj.userAns) {
-                    btnStyle = "border-red-400 bg-red-50/80 dark:bg-red-950/50 text-red-950 dark:text-red-200 font-semibold";
-                    badgeStyle = "bg-red-500 text-white";
+                } else if (opt === itemObj.userAnswer) {
+                    btnStyle = "border-red-500 bg-red-500/10 text-red-200 font-bold shadow-md opacity-100";
+                    badgeStyle = "bg-red-600 text-white";
                 }
 
                 btn.className = `option-btn w-full text-left p-4 rounded-2xl border-2 ${btnStyle} flex items-center gap-4 font-medium shadow-sm cursor-default`;
+                btn.disabled = true;
                 btn.innerHTML = `
                     <span class="w-8 h-8 rounded-xl ${badgeStyle} border flex items-center justify-center font-bold text-sm shrink-0">${letters[idx]}</span>
                     <span class="flex-1">${opt}</span>
@@ -1015,197 +555,237 @@
                 el.quizOptions.appendChild(btn);
             });
 
-            el.quizPrev.style.visibility = reviewIdx === 0 ? 'hidden' : 'visible';
-            el.quizPrev.onclick = () => { if (reviewIdx > 0) showWrongQuestionReview(incorrectList, reviewIdx - 1); };
-            el.quizNext.innerText = reviewIdx === incorrectList.length - 1 ? "Back to Summary 📊" : "Next Wrong Item →";
-            el.quizNext.onclick = () => {
-                if (reviewIdx < incorrectList.length - 1) {
-                    showWrongQuestionReview(incorrectList, reviewIdx + 1);
-                } else {
-                    submitQuizOrExam(); 
-                }
-            };
+            el.quizNext.innerText = reviewIdx === incorrectList.length - 1 ? "Finish Review 🏁" : "Next Incorrect →";
         }
 
-        function submitQuizOrExam() {
+        function submitQuiz() {
             stopTimer();
-            reviewModeActive = false;
             let correctCount = 0;
             let incorrectList = [];
-            let masteryStore = getMasteryStore();
 
             quizHistory.forEach((item, idx) => {
-                const userAns = userAnswers[idx];
-                const isCorrect = (userAns === item.back);
-                
-                // Update persistent Mastery Data Store
-                if (!masteryStore[item.front]) {
-                    masteryStore[item.front] = { correctStreak: 0, totalAttempts: 0, chapter: item.chapter };
+                const userAnswer = userAnswers[idx];
+                const mastery = getMasteryStore();
+                if (!mastery[item.front]) {
+                    mastery[item.front] = { correctStreak: 0, timesTested: 0 };
                 }
-                masteryStore[item.front].totalAttempts++;
-                if (isCorrect) {
+                mastery[item.front].timesTested++;
+
+                if (userAnswer === item.back) {
                     correctCount++;
-                    masteryStore[item.front].correctStreak++;
+                    mastery[item.front].correctStreak++;
                 } else {
-                    masteryStore[item.front].correctStreak = 0; // Reset streak on failure
+                    mastery[item.front].correctStreak = 0;
                     incorrectList.push({
-                        index: idx,
                         item: item,
-                        userAns: userAns,
-                        weightMeta: getChapterWeightLabel(item.chapter)
+                        userAnswer: userAnswer || "No Answer",
+                        options: quizOptionsCache[idx] || [item.back]
                     });
                 }
+                saveMasteryStore(mastery);
             });
-            saveMasteryStore(masteryStore);
-            latestIncorrectList = incorrectList;
 
-            const finalScore = Math.round((correctCount / quizHistory.length) * 100);
-            const finalTimeStr = el.timerDisplay.innerText;
-            
+            latestIncorrectList = incorrectList;
+            const total = quizHistory.length;
+            const percentage = Math.round((correctCount / total) * 100);
+            const passed = percentage >= 70;
+
             el.quizHeaderBar.classList.add('hidden');
             el.completionBarContainer.classList.add('hidden');
             el.navigatorContainer.classList.add('hidden');
             el.flagBtn.classList.add('hidden');
-            el.quizPrev.classList.add('hidden');
+            el.quizPrev.style.visibility = 'hidden';
             el.quizSkip.classList.add('hidden');
-            el.quizNext.classList.add('hidden');
             el.quizEarlySubmit.classList.add('hidden');
-            el.quizFeedback.classList.add('hidden');
+            el.quizNext.style.visibility = 'visible';
 
-            el.quizQuestion.innerText = `Exam Simulation Results Summary`;
-            
-            let incorrectHtml = '';
-            if (incorrectList.length === 0) {
-                incorrectHtml = `<div class="p-4 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 rounded-xl font-bold text-center border border-emerald-200 dark:border-emerald-800">🎉 Perfect Score! No incorrect answers to review.</div>`;
-            } else {
-                incorrectHtml = `
-                    <div class="text-left space-y-3 mt-4">
-                        <div class="flex justify-between items-center">
-                            <h4 class="font-extrabold text-slate-800 dark:text-slate-200 text-base">Incorrect Questions (${incorrectList.length}):</h4>
-                        </div>
-                        <div class="space-y-2 max-h-60 overflow-y-auto pr-1">
-                `;
-                incorrectList.forEach((inc, listIdx) => {
-                    incorrectHtml += `
-                        <button onclick='window.triggerWrongReview(${listIdx})' class="w-full text-left p-3.5 rounded-xl border border-red-200 dark:border-red-900 bg-red-50/40 dark:bg-red-950/20 hover:bg-red-100/60 transition flex flex-col gap-1.5 shadow-sm group">
-                            <div class="flex justify-between items-center w-full">
-                                <span class="text-xs font-bold text-red-700 dark:text-red-400 uppercase">Question #${inc.index + 1} &bull; Chapter ${inc.item.chapter}</span>
-                                <span class="px-2 py-0.5 rounded-full border text-[10px] font-bold ${inc.weightMeta.badgeClass}">${inc.weightMeta.label}</span>
-                            </div>
-                            <div class="text-sm font-semibold text-gray-800 dark:text-gray-200 group-hover:text-blue-600 transition">${inc.item.front}</div>
-                        </button>
-                    `;
-                });
-                incorrectHtml += `</div></div>`;
-            }
-
-            let drillMistakesBtn = incorrectList.length > 0 ? `<button id="drill-mistakes-btn" class="px-6 py-3 bg-purple-600 text-white font-bold rounded-xl shadow-md hover:bg-purple-700 transition">Drill Only My Mistakes 🎯</button>` : '';
-
-            el.quizOptions.innerHTML = `
-                <div class="text-center py-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700 space-y-4">
-                    <div class="text-5xl font-black text-blue-900 dark:text-blue-400">${finalScore}%</div>
-                    <p class="text-gray-700 dark:text-gray-300 font-semibold text-base">You answered ${correctCount} out of ${quizHistory.length} questions correctly.</p>
-                    <div class="flex justify-center gap-3">
-                        <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 rounded-full text-xs font-bold shadow-sm">
-                            Total Time: ${finalTimeStr}
-                        </div>
-                    </div>
-                    ${incorrectHtml}
-                    <div class="pt-4 flex flex-wrap justify-center gap-3">
-                        <button onclick="location.reload()" class="px-6 py-3 bg-blue-600 text-white font-bold rounded-xl shadow-md hover:bg-blue-700 transition">Retake Exam</button>
-                        ${drillMistakesBtn}
-                    </div>
+            el.quizTitle.innerText = `Simulation Results`;
+            el.quizQuestion.innerHTML = `
+                <div class="text-center space-y-3 py-4">
+                    <div class="text-5xl font-black ${passed ? 'text-emerald-400' : 'text-red-400'}">${percentage}%</div>
+                    <div class="text-xl font-bold">You scored ${correctCount} out of ${total} (${passed ? 'PASSED 🎉' : 'NEEDS IMPROVEMENT 📚'})</div>
+                    <p class="text-sm text-slate-400 font-medium">Time elapsed: ${el.timerDisplay.innerText}</p>
                 </div>
             `;
 
+            el.quizOptions.innerHTML = '';
             if (incorrectList.length > 0) {
-                document.getElementById('drill-mistakes-btn').onclick = () => {
-                    quizHistory = latestIncorrectList.map(i => i.item);
-                    userAnswers = {}; quizOptionsCache = {}; flaggedQuestions.clear(); currentIndex = 0;
-                    startTimer(); showQuestion();
+                const reviewPromptBtn = document.createElement('button');
+                reviewPromptBtn.className = "w-full py-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold shadow-lg transition text-center";
+                reviewPromptBtn.innerText = `🔍 Review ${incorrectList.length} Incorrectly Answered Questions`;
+                reviewPromptBtn.onclick = () => {
+                    showWrongQuestionReview(latestIncorrectList, 0);
                 };
+                el.quizOptions.appendChild(reviewPromptBtn);
+            } else {
+                const perfectMsg = document.createElement('div');
+                perfectMsg.className = "text-center p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-300 font-bold";
+                perfectMsg.innerText = "Fantastic job! You answered every question correctly in this set.";
+                el.quizOptions.appendChild(perfectMsg);
             }
+
+            el.quizNext.innerText = "Return to Dashboard 🏠";
+            el.quizNext.onclick = () => {
+                el.quizView.classList.add('hidden');
+                el.flashView.classList.remove('hidden');
+            };
         }
 
-        window.triggerWrongReview = function(listIdx) {
-            showWrongQuestionReview(latestIncorrectList, listIdx);
+        el.quizNext.onclick = () => {
+            resetIdleTimer();
+            if (reviewModeActive) {
+                if (reviewHistoryIndex < latestIncorrectList.length - 1) {
+                    showWrongQuestionReview(latestIncorrectList, reviewHistoryIndex + 1);
+                } else {
+                    el.quizView.classList.add('hidden');
+                    el.flashView.classList.remove('hidden');
+                }
+                return;
+            }
+
+            if (currentIndex === quizHistory.length - 1) {
+                submitQuiz();
+            } else {
+                currentIndex++;
+                showQuestion();
+            }
         };
 
-        // Analytics Modal Population
-        el.analyticsModalBtn.onclick = () => {
-            const mastery = getMasteryStore();
-            let chapterStats = {};
-            
-            allData.forEach(item => {
-                if(!chapterStats[item.chapter]) {
-                    chapterStats[item.chapter] = { total: 0, mastered: 0 };
+        el.quizPrev.onclick = () => {
+            resetIdleTimer();
+            if (reviewModeActive) {
+                if (reviewHistoryIndex > 0) {
+                    showWrongQuestionReview(latestIncorrectList, reviewHistoryIndex - 1);
                 }
-                chapterStats[item.chapter].total++;
-                if (mastery[item.front] && mastery[item.front].correctStreak > 0) {
-                    chapterStats[item.chapter].mastered++;
-                }
-            });
-
-            let html = `<div class="space-y-3">`;
-            Object.keys(chapterStats).sort((a,b)=>a-b).forEach(ch => {
-                const stat = chapterStats[ch];
-                const pct = stat.total > 0 ? Math.round((stat.mastered / stat.total) * 100) : 0;
-                html += `
-                    <div class="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1">
-                        <div class="flex justify-between text-sm font-bold">
-                            <span>Chapter ${ch}</span>
-                            <span class="text-blue-600 dark:text-blue-400">${pct}% Mastered (${stat.mastered}/${stat.total})</span>
-                        </div>
-                        <div class="w-full bg-gray-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
-                            <div class="bg-emerald-500 h-full transition-all" style="width: ${pct}%"></div>
-                        </div>
-                    </div>
-                `;
-            });
-            html += `</div>`;
-            el.analyticsContent.innerHTML = html;
-            el.analyticsModal.classList.remove('hidden');
+                return;
+            }
+            if (currentIndex > 0) {
+                currentIndex--;
+                showQuestion();
+            }
         };
-        el.closeAnalytics.onclick = () => el.analyticsModal.classList.add('hidden');
+
+        el.quizSkip.onclick = () => {
+            resetIdleTimer();
+            if (currentIndex < quizHistory.length - 1) {
+                currentIndex++;
+                showQuestion();
+            }
+        };
+
+        el.quizEarlySubmit.onclick = () => {
+            if (confirm("Are you sure you want to submit your quiz/exam early?")) {
+                submitQuiz();
+            }
+        };
 
         el.flagBtn.onclick = () => {
             resetIdleTimer();
-            if (flaggedQuestions.has(currentIndex)) flaggedQuestions.delete(currentIndex);
-            else flaggedQuestions.add(currentIndex);
+            if (flaggedQuestions.has(currentIndex)) {
+                flaggedQuestions.delete(currentIndex);
+            } else {
+                flaggedQuestions.add(currentIndex);
+            }
             showQuestion();
         };
 
-        el.quizPrev.onclick = () => { resetIdleTimer(); if (currentIndex > 0) { currentIndex--; showQuestion(); } };
-        el.quizSkip.onclick = () => { resetIdleTimer(); if (currentIndex < quizHistory.length - 1) { currentIndex++; showQuestion(); } };
-        el.quizEarlySubmit.onclick = () => { resetIdleTimer(); if (confirm("Submit quiz early?")) submitQuizOrExam(); };
+        el.analyticsModalBtn.onclick = () => {
+            const mastery = getMasteryStore();
+            let totalMastered = 0;
+            let totalStudied = Object.keys(mastery).length;
 
-        el.card.onclick = () => el.card.classList.toggle('is-flipped');
-        document.getElementById('next-btn').onclick = () => { currentIndex = (currentIndex + 1) % currentViewData.length; renderCard(); };
-        document.getElementById('prev-btn').onclick = () => { currentIndex = (currentIndex - 1 + currentViewData.length) % currentViewData.length; renderCard(); };
-        
-        el.studyBtn.onclick = () => { 
+            Object.values(mastery).forEach(stat => {
+                if (stat.correctStreak >= 2) totalMastered++;
+            });
+
+            let chapterStatsHtml = '';
+            for (let i = 2; i <= 15; i++) {
+                const chapterItems = allData.filter(d => d.chapter == i);
+                if (chapterItems.length === 0) continue;
+                
+                let chMastered = 0;
+                chapterItems.forEach(item => {
+                    if (mastery[item.front] && mastery[item.front].correctStreak >= 2) {
+                        chMastered++;
+                    }
+                });
+                const pct = Math.round((chMastered / chapterItems.length) * 100);
+                const weightInfo = getChapterWeightLabel(i);
+
+                chapterStatsHtml += `
+                    <div class="space-y-1.5 p-3 rounded-xl bg-slate-950/50 border border-slate-800">
+                        <div class="flex justify-between items-center text-xs font-bold">
+                            <span class="text-slate-200">Chapter ${i} (${chMastered}/${chapterItems.length})</span>
+                            <span class="px-2 py-0.5 rounded-full border text-[10px] ${weightInfo.badgeClass}">${weightInfo.label}</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                            <div class="bg-blue-600 h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            el.analyticsContent.innerHTML = `
+                <div class="grid grid-cols-2 gap-4 text-center">
+                    <div class="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20">
+                        <div class="text-2xl font-black text-blue-400">${totalMastered}</div>
+                        <div class="text-xs font-bold text-slate-400 mt-1">Mastered Terms</div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
+                        <div class="text-2xl font-black text-emerald-400">${totalStudied}</div>
+                        <div class="text-xs font-bold text-slate-400 mt-1">Terms Practiced</div>
+                    </div>
+                </div>
+                <div class="space-y-2 mt-4">
+                    <h4 class="text-xs font-extrabold uppercase text-slate-400 tracking-wider">Chapter Mastery Breakdown</h4>
+                    <div class="max-h-60 overflow-y-auto space-y-2 pr-1">
+                        ${chapterStatsHtml}
+                    </div>
+                </div>
+            `;
+            el.analyticsModal.classList.remove('hidden');
+        };
+
+        el.closeAnalytics.onclick = () => {
+            el.analyticsModal.classList.add('hidden');
+        };
+
+        el.studyBtn.onclick = () => {
             stopTimer();
-            el.quizView.classList.add('hidden'); 
-            el.flashView.classList.remove('hidden'); 
-            prepareStudyQueue(); 
-            renderCard(); 
-        };
-        
-        el.quizBtn.onclick = startQuiz;
-        el.examBtn.onclick = startExamMode;
-        el.bookmarksBtn.onclick = startBookmarksMode;
-        
-        el.quizNext.onclick = () => {
-            resetIdleTimer();
-            if (currentIndex < quizHistory.length - 1) { currentIndex++; showQuestion(); } else { submitQuizOrExam(); }
+            el.quizView.classList.add('hidden');
+            el.flashView.classList.remove('hidden');
+            prepareStudyQueue();
+            renderCard();
         };
 
-        window.addEventListener('mousemove', resetIdleTimer);
-        window.addEventListener('keypress', resetIdleTimer);
+        el.quizBtn.onclick = () => { startQuiz(); };
+        el.examBtn.onclick = () => { startExamMode(); };
+        el.bookmarksBtn.onclick = () => { startBookmarksMode(); };
 
-        updateView();
-        prepareStudyQueue();
-        renderCard();
+        el.filter.onchange = () => {
+            if (!el.flashView.classList.contains('hidden')) {
+                prepareStudyQueue();
+                renderCard();
+            }
+        };
+
+        document.getElementById('next-btn').onclick = () => {
+            if (currentViewData.length === 0) return;
+            currentIndex = (currentIndex + 1) % currentViewData.length;
+            renderCard();
+        };
+
+        document.getElementById('prev-btn').onclick = () => {
+            if (currentViewData.length === 0) return;
+            currentIndex = (currentIndex - 1 + currentViewData.length) % currentViewData.length;
+            renderCard();
+        };
+
+        el.card.onclick = () => {
+            el.cardInner.classList.toggle('rotate-y-180');
+        };
     </script>
 </body>
 </html>
+
+```
