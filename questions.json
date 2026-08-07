@@ -336,7 +336,6 @@
     "correct": 0,
     "explanation": "Maturity assessments benchmark current capabilities against frameworks like DMM or CMMI to guide organizational data strategy roadmaps."
   },
-
   {
     "id": 25,
     "domain": "Data Governance",
@@ -673,8 +672,7 @@
     "correct": 0,
     "explanation": "Quality management is iterative; continuous monitoring and process improvement ensure defects are prevented upstream."
   },
-
-{
+  {
     "id": 49,
     "domain": "Data Governance",
     "type": "Role & Responsibility",
@@ -786,7 +784,7 @@
     "correct": 0,
     "explanation": "A central metadata repository integrates structural, business, and lineage definitions so users across the enterprise share a common understanding of data assets."
   },
-{
+  {
     "id": 57,
     "domain": "Data Governance",
     "type": "Role & Responsibility",
@@ -898,7 +896,7 @@
     "correct": 0,
     "explanation": "The golden record represents the cleanest, most accurate consolidated view of a master data entity across all integrated enterprise sources."
   },
-{
+  {
     "id": 65,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Role & Responsibility",
@@ -1010,7 +1008,7 @@
     "correct": 0,
     "explanation": "Surrogate keys have no intrinsic business meaning and protect the data model against changes in natural business keys."
   },
-{
+  {
     "id": 73,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
@@ -1738,7 +1736,7 @@
     "correct": 0,
     "explanation": "Referential integrity constraints and foreign keys are formally introduced during the logical modeling phase and refined in physical database design."
   },
-{
+  {
     "id": 125,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
@@ -2102,7 +2100,7 @@
     "correct": 0,
     "explanation": "Supertype/subtype modeling organizes entities with shared commonalities and specialized attributes without redundant data duplication."
   },
-{
+  {
     "id": 151,
     "domain": "Data Storage and Operations",
     "type": "Process & Lifecycle",
@@ -2452,7 +2450,7 @@
     "correct": 0,
     "explanation": "The ARB reviews proposed IT and data projects to ensure they comply with enterprise architecture standards and prevent rogue silos."
   },
-{
+  {
     "id": 176,
     "domain": "Data Modeling and Design",
     "type": "Fact / Exception",
@@ -2802,7 +2800,7 @@
     "correct": 0,
     "explanation": "The executive steering committee holds ultimate organizational authority, providing strategic direction, budget, and policy approval for data governance."
   },
-{
+  {
     "id": 201,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
@@ -3152,7 +3150,7 @@
     "correct": 0,
     "explanation": "The target state blueprint provides a clear architectural vision and destination for the organization's data infrastructure roadmap."
   },
-{
+  {
     "id": 226,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
@@ -3852,7 +3850,7 @@
     "correct": 0,
     "explanation": "Data dictionaries serve technical users with schema details, while business glossaries provide non-technical business definitions and context for enterprise terms."
   },
-{
+  {
     "id": 276,
     "domain": "Data Storage and Operations",
     "type": "Fact / Exception",
@@ -4062,7 +4060,6 @@
     "correct": 0,
     "explanation": "SQLi exploits poor input validation to run unauthorized database commands; parameterized queries neutralize this by separating code from data."
   },
-
   {
     "id": 291,
     "domain": "Data Integration",
@@ -5463,7 +5460,7 @@
     "correct": 0,
     "explanation": "The CDO or executive sponsor provides C-suite leadership, funding, and strategic backing for the governance program."
   },
-{
+  {
     "id": 391,
     "domain": "Data Architecture",
     "type": "Process & Lifecycle",
@@ -6863,7 +6860,7 @@
     "correct": 0,
     "explanation": "Automated harvesting eliminates manual metadata entry by continuously pulling schema changes and lineage into catalogs."
   },
-{
+  {
     "id": 491,
     "domain": "Data Quality",
     "type": "Fact / Exception",
@@ -7563,7 +7560,7 @@
     "correct": 0,
     "explanation": "Reference data categorizes other data via lookup lists, whereas master data represents the core entities transacted upon."
   },
-{
+  {
     "id": 541,
     "domain": "Data Warehousing and Business Intelligence",
     "type": "Fact / Exception",
@@ -7703,7 +7700,7 @@
     "correct": 0,
     "explanation": "Tokenization swaps sensitive data out for random tokens, minimizing risk exposure since the actual data isn't stored in vulnerable application layers."
   },
-{
+  {
     "id": 551,
     "domain": "Data Integration",
     "type": "Fact / Exception",
