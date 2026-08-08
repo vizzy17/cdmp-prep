@@ -1,205 +1,371 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CDMP Master Engine - Passing Engine Suite</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-blue-500 selection:text-white">
 
     <!-- Header Navigation -->
-    <header class="bg-slate-800 border-b border-slate-700 px-6 py-4 flex flex-wrap justify-between items-center">
+    <header class="bg-slate-800 border-b border-slate-700 px-6 py-4 flex flex-wrap justify-between items-center shadow-md">
         <div class="flex items-center space-x-3">
             <span class="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">CDMP Master Engine</span>
             <span class="text-xs bg-slate-700 px-2 py-1 rounded text-slate-300">Passing Engine Suite</span>
         </div>
-        <nav class="flex flex-wrap gap-3 text-sm text-slate-300 mt-2 sm:mt-0">
-            <button class="hover:text-blue-400 transition">📖 DMBoK Glossary</button>
-            <button class="hover:text-blue-400 transition">📊 Analytics</button>
-            <button class="hover:text-blue-400 transition">🗂️ Flashcards</button>
-            <button class="hover:text-blue-400 transition">⚡ Tier Practice</button>
-            <button class="hover:text-blue-400 transition">📝 90-Min Exam</button>
-            <button class="hover:text-blue-400 transition">⭐ Bookmarks</button>
+        <nav class="flex flex-wrap gap-2 text-sm text-slate-300 mt-2 sm:mt-0" id="navTabs">
+            <button onclick="switchTab('practice')" class="nav-btn px-3 py-1.5 rounded bg-blue-600 text-white font-medium transition">⚡ Tier Practice</button>
+            <button onclick="switchTab('exam')" class="nav-btn px-3 py-1.5 rounded hover:bg-slate-700 transition">📝 90-Min Exam</button>
+            <button onclick="switchTab('analytics')" class="nav-btn px-3 py-1.5 rounded hover:bg-slate-700 transition">📊 Analytics</button>
+            <button onclick="switchTab('bookmarks')" class="nav-btn px-3 py-1.5 rounded hover:bg-slate-700 transition">⭐ Bookmarks (<span id="bookmarkCount">0</span>)</button>
+            <button onclick="switchTab('glossary')" class="nav-btn px-3 py-1.5 rounded hover:bg-slate-700 transition">📖 DMBoK Glossary</button>
         </nav>
     </header>
 
     <!-- Main Container -->
-    <main class="flex-grow flex flex-col items-center justify-center p-6">
-        
-        <!-- Filter Selector -->
-        <div class="w-full max-w-2xl mb-6">
-            <label for="tierSelect" class="block text-sm font-medium text-slate-400 mb-2">Strategic Tier/Chapter:</label>
-            <select id="tierSelect" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-slate-100 focus:outline-none focus:border-blue-500">
-                <option value="all">All Tiers & Chapters</option>
-                <option value="Tier 1: Role & Responsibility">Tier 1: Role & Responsibility</option>
-                <option value="Tier 2: Process & Lifecycle">Tier 2: Process & Lifecycle</option>
-                <option value="Tier 3: Distinction & Definitions">Tier 3: Distinction & Definitions</option>
-                <option value="Tier 4: Facts & Numerical Thresholds">Tier 4: Facts & Numerical Thresholds</option>
-                <optgroup label="--- By Chapter ---">
-                    <option value="Chapter 2: Data Governance">Chapter 2: Data Governance</option>
-                    <option value="Chapter 3: Data Handling Ethics">Chapter 3: Data Handling Ethics</option>
-                    <option value="Chapter 4: Data Architecture">Chapter 4: Data Architecture</option>
-                    <option value="Chapter 5: Data Modeling & Design">Chapter 5: Data Modeling & Design</option>
-                    <option value="Chapter 6: Data Storage & Operations">Chapter 6: Data Storage & Operations</option>
-                    <option value="Chapter 7: Data Security">Chapter 7: Data Security</option>
-                    <option value="Chapter 8: Data Integration">Chapter 8: Data Integration</option>
-                    <option value="Chapter 10: Reference & Master Data">Chapter 10: Reference & Master Data</option>
-                    <option value="Chapter 11: Data Warehousing & BI">Chapter 11: Data Warehousing & BI</option>
-                    <option value="Chapter 12: Metadata Management">Chapter 12: Metadata Management</option>
-                    <option value="Chapter 13: Data Quality">Chapter 13: Data Quality</option>
-                </optgroup>
-            </select>
-        </div>
+    <main class="flex-grow flex flex-col items-center justify-start p-6 max-w-4xl mx-auto w-full">
 
-        <!-- Question Card Box -->
-        <div id="cardContainer" class="w-full max-w-2xl bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-xl cursor-pointer transition transform hover:border-slate-600 relative">
-            <div class="flex justify-between items-center mb-4 text-xs text-slate-400">
-                <span id="cardMeta">Chapter / Domain</span>
-                <button id="bookmarkBtn" class="text-slate-500 hover:text-yellow-400 text-lg transition">⭐</button>
-            </div>
-            
-            <!-- Card Text / Content -->
-            <div id="cardContent" class="min-h-[140px] flex items-center justify-center text-center text-lg font-medium text-slate-200">
-                Loading questions...
+        <!-- VIEW 1: PRACTICE & ELIMINATION MODE -->
+        <div id="view-practice" class="w-full space-y-6">
+            <div class="flex flex-wrap gap-4 bg-slate-800 p-4 rounded-xl border border-slate-700 shadow">
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Strategic Tier:</label>
+                    <select id="tierSelect" onchange="filterQuestions()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+                        <option value="all">All Tiers</option>
+                        <option value="Tier 1: Role & Responsibility">Tier 1: Role & Responsibility</option>
+                        <option value="Tier 2: Process & Lifecycle">Tier 2: Process & Lifecycle</option>
+                        <option value="Tier 3: Distinction & Definitions">Tier 3: Distinction & Definitions</option>
+                        <option value="Tier 4: Facts & Numerical Thresholds">Tier 4: Facts & Numerical Thresholds</option>
+                    </select>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Chapter / Domain:</label>
+                    <select id="domainSelect" onchange="filterQuestions()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+                        <option value="all">All Chapters</option>
+                    </select>
+                </div>
             </div>
 
-            <div class="mt-6 text-center text-xs text-slate-500">
-                Click card to flip
+            <!-- Question Card Box -->
+            <div class="w-full bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl relative">
+                <div class="flex justify-between items-center mb-3 text-xs text-slate-400">
+                    <span id="cardMeta">Domain | Tier</span>
+                    <button id="bookmarkBtn" onclick="toggleBookmark()" class="text-slate-500 hover:text-yellow-400 text-lg transition">⭐</button>
+                </div>
+                
+                <div id="questionContainer" class="space-y-4">
+                    <h3 id="questionText" class="text-lg font-semibold text-slate-100">Loading questions...</h3>
+                    <div id="optionsContainer" class="space-y-2"></div>
+                </div>
+
+                <div id="eliminationBox" class="mt-6 hidden bg-slate-900/80 border border-slate-700 rounded-lg p-4 space-y-2 text-sm">
+                    <h4 class="font-bold text-blue-400 flex items-center gap-2">🛡️ DAMA Elimination Breakdown & Logic Analysis</h4>
+                    <p id="eliminationText" class="text-slate-300"></p>
+                </div>
+
+                <div class="mt-6 flex justify-between items-center pt-4 border-t border-slate-700">
+                    <button onclick="prevQuestion()" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg text-sm transition">⬅ Previous</button>
+                    <span class="text-xs text-slate-400">Card <span id="currentIndex">0</span> of <span id="totalQuestions">0</span></span>
+                    <button onclick="nextQuestion()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg text-sm font-medium transition">Next ➡</button>
+                </div>
             </div>
         </div>
 
-        <!-- Progress Counter -->
-        <div class="mt-4 text-sm text-slate-400">
-            Card <span id="currentIndex">0</span> of <span id="totalQuestions">0</span>
+        <!-- VIEW 2: 90-MIN EXAM SIMULATION -->
+        <div id="view-exam" class="w-full space-y-6 hidden">
+            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center space-y-4">
+                <h2 class="text-2xl font-bold text-slate-100">Realistic CDMP Exam Simulation Engine</h2>
+                <p class="text-sm text-slate-400 max-w-xl mx-auto">Simulates the strict official exam environment: 100 Questions in 90 Minutes (54 seconds per question average).</p>
+                <div id="examStartPanel">
+                    <button onclick="startExam()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg transition">🚀 Launch 90-Minute Timed Exam</button>
+                </div>
+                <div id="examActivePanel" class="hidden space-y-6 text-left">
+                    <div class="flex justify-between items-center bg-slate-900 p-4 rounded-lg sticky top-4 border border-slate-700 z-10 shadow">
+                        <span class="font-semibold text-sm">Exam In Progress</span>
+                        <span id="timerDisplay" class="font-mono text-xl text-amber-400 font-bold">90:00</span>
+                        <button onclick="submitExam()" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg text-sm font-bold transition">Finish & Submit</button>
+                    </div>
+                    <div id="examQuestionsContainer" class="space-y-6"></div>
+                </div>
+                <div id="examResultsPanel" class="hidden space-y-4 text-center">
+                    <h3 id="examScoreTitle" class="text-xl font-bold"></h3>
+                    <p id="examScoreDesc" class="text-sm text-slate-300"></p>
+                    <button onclick="resetExam()" class="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-lg text-sm font-medium">Try Again</button>
+                </div>
+            </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="flex gap-4 mt-6">
-            <button id="quizBtn" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-medium transition shadow-lg">Start Tier Practice</button>
-            <button id="examBtn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg font-medium transition shadow-lg">Start 90-Min Exam</button>
+        <!-- VIEW 3: ANALYTICS DASHBOARD -->
+        <div id="view-analytics" class="w-full space-y-4 hidden">
+            <h2 class="text-xl font-bold mb-4">Chapter-by-Chapter Performance Analytics</h2>
+            <div id="analyticsContainer" class="space-y-3"></div>
+        </div>
+
+        <!-- VIEW 4: BOOKMARKS -->
+        <div id="view-bookmarks" class="w-full space-y-4 hidden">
+            <h2 class="text-xl font-bold mb-4">Saved Flashcards & Bookmarks</h2>
+            <div id="bookmarksContainer" class="space-y-3"></div>
+        </div>
+
+        <!-- VIEW 5: GLOSSARY SEARCH -->
+        <div id="view-glossary" class="w-full space-y-4 hidden">
+            <h2 class="text-xl font-bold mb-2">Digital DMBoK Glossary & Keyword Search</h2>
+            <input type="text" id="glossarySearch" oninput="searchGlossary()" placeholder="Search keywords (e.g., Master Data, Lineage, DGO)..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+            <div id="glossaryResults" class="space-y-3"></div>
         </div>
 
     </main>
 
-    <!-- Footer Script / Controller -->
+    <!-- Footer Script / Engine -->
     <script>
         let allQuestions = [];
         let filteredQuestions = [];
-        let currentIdx = 0;
-        let isFlipped = false;
+        let currentIndex = 0;
+        let bookmarks = new Set(JSON.parse(localStorage.getItem('cdmp_bookmarks') || '[]'));
+        let examTimer = null;
+        let examSecondsLeft = 5400;
 
-        const el = {
-            cardContainer: document.getElementById('cardContainer'),
-            cardContent: document.getElementById('cardContent'),
-            cardMeta: document.getElementById('cardMeta'),
-            currentIndex: document.getElementById('currentIndex'),
-            totalQuestions: document.getElementById('totalQuestions'),
-            tierSelect: document.getElementById('tierSelect'),
-            quizBtn: document.getElementById('quizBtn'),
-            examBtn: document.getElementById('examBtn')
-        };
-
-        // Fetch JSON safely with robust property mapping fallback
+        // Fetch JSON data on startup
         fetch('./questions.json')
-            .then(res => {
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                return res.json();
-            })
+            .then(res => res.json())
             .then(data => {
-                // Map fields cleanly to prevent undefined property crashes
-                allQuestions = data.map((q, index) => ({
-                    id: q.id || index,
+                allQuestions = data.map((q, idx) => ({
+                    id: q.id || idx + 1,
                     domain: q.domain || "General",
                     type: q.type || "Standard",
-                    question: q.question || "No question text provided.",
+                    tier: autoTagTier(q),
+                    question: q.question || "",
                     options: q.options || [],
                     correct: q.correct !== undefined ? q.correct : 0,
                     explanation: q.explanation || "No explanation provided."
                 }));
                 
-                filteredQuestions = [...allQuestions];
-                updateFilter();
+                populateDomains();
+                filterQuestions();
+                updateBookmarkCount();
+                buildAnalytics();
             })
             .catch(err => {
-                console.error('Fetch error loading questions.json:', err);
-                el.cardContent.innerText = "Error loading questions.json structure. Check console for formatting issues.";
+                console.error("Error loading questions:", err);
+                document.getElementById('questionText').innerText = "Error loading questions.json structure.";
             });
 
-        function updateFilter() {
-            const selectedVal = el.tierSelect.value;
-            if (selectedVal === 'all') {
-                filteredQuestions = [...allQuestions];
-            } else {
-                filteredQuestions = allQuestions.filter(q => q.domain === selectedVal || q.type === selectedVal);
-            }
-            currentIdx = 0;
-            showQuestion();
+        function autoTagTier(q) {
+            let text = (q.question || "").toLowerCase();
+            if (text.includes("who is") || text.includes("responsible") || text.includes("steward") || text.includes("committee")) return "Tier 1: Role & Responsibility";
+            if (text.includes("not") || text.includes("phase") || text.includes("lifecycle") || text.includes("step")) return "Tier 2: Process & Lifecycle";
+            if (text.includes("difference") || text.includes("distinguish") || text.includes("vs")) return "Tier 3: Distinction & Definitions";
+            return "Tier 4: Facts & Numerical Thresholds";
         }
 
-        function showQuestion() {
-            if (!filteredQuestions || filteredQuestions.length === 0) {
-                el.cardContent.innerText = "No questions available for this filter selection.";
-                el.cardMeta.innerText = "Empty Filter";
-                el.currentIndex.innerText = 0;
-                el.totalQuestions.innerText = 0;
+        function populateDomains() {
+            let domains = [...new Set(allQuestions.map(q => q.domain))].sort();
+            let select = document.getElementById('domainSelect');
+            domains.forEach(d => {
+                let opt = document.createElement('option');
+                opt.value = d;
+                opt.innerText = d;
+                select.appendChild(opt);
+            });
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('[id^="view-"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`view-${tab}`).classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('bg-blue-600', 'text-white', 'font-medium'));
+            event.target.classList.add('bg-blue-600', 'text-white', 'font-medium');
+            if(tab === 'bookmarks') renderBookmarks();
+        }
+
+        function filterQuestions() {
+            let tier = document.getElementById('tierSelect').value;
+            let domain = document.getElementById('domainSelect').value;
+
+            filteredQuestions = allQuestions.filter(q => {
+                return (tier === 'all' || q.tier === tier) && (domain === 'all' || q.domain === domain);
+            });
+
+            currentIndex = 0;
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            if (filteredQuestions.length === 0) {
+                document.getElementById('questionText').innerText = "No questions match this filter criteria.";
+                document.getElementById('optionsContainer').innerHTML = "";
+                document.getElementById('cardMeta').innerText = "Empty Filter";
+                document.getElementById('currentIndex').innerText = 0;
+                document.getElementById('totalQuestions').innerText = 0;
+                document.getElementById('eliminationBox').classList.add('hidden');
                 return;
             }
 
-            if (currentIdx >= filteredQuestions.length) currentIdx = 0;
-            if (currentIdx < 0) currentIdx = filteredQuestions.length - 1;
+            if (currentIndex >= filteredQuestions.length) currentIndex = 0;
+            if (currentIndex < 0) currentIndex = filteredQuestions.length - 1;
 
-            const q = filteredQuestions[currentIdx];
-            isFlipped = false;
+            let q = filteredQuestions[currentIndex];
+            document.getElementById('cardMeta').innerText = `${q.domain} | ${q.tier}`;
+            document.getElementById('currentIndex').innerText = currentIndex + 1;
+            document.getElementById('totalQuestions').innerText = filteredQuestions.length;
+            document.getElementById('questionText').innerText = q.question;
+            document.getElementById('eliminationBox').classList.add('hidden');
 
-            el.cardMeta.innerText = `${q.domain} | ${q.type}`;
-            el.currentIndex.innerText = currentIdx + 1;
-            el.totalQuestions.innerText = filteredQuestions.length;
+            let isBookmarked = bookmarks.has(q.id);
+            let bmBtn = document.getElementById('bookmarkBtn');
+            bmBtn.style.color = isBookmarked ? '#facc15' : '#64748b';
 
-            renderCardFront(q);
-        }
-
-        function renderCardFront(q) {
-            let html = `<div class="w-full text-left"><p class="font-semibold text-base mb-3">${q.question}</p><ul class="space-y-2 text-sm text-slate-300">`;
+            let optContainer = document.getElementById('optionsContainer');
+            optContainer.innerHTML = "";
             q.options.forEach((opt, i) => {
-                html += `<li class="bg-slate-700/50 p-2 rounded">${String.fromCharCode(65 + i)}. ${opt}</li>`;
+                let btn = document.createElement('button');
+                btn.className = "w-full text-left p-3 rounded-lg bg-slate-700/50 hover:bg-slate-700 border border-slate-700 transition text-sm flex items-center gap-3";
+                btn.innerHTML = `<span class="font-bold text-blue-400">${String.fromCharCode(65 + i)}.</span> <span>${opt}</span>`;
+                btn.onclick = () => selectAnswer(i, q, btn);
+                optContainer.appendChild(btn);
             });
-            html += `</ul></div>`;
-            el.cardContent.innerHTML = html;
         }
 
-        function renderCardBack(q) {
-            let html = `<div class="w-full text-left"><p class="text-emerald-400 font-bold mb-2">Correct Answer: Option ${String.fromCharCode(65 + q.correct)}</p><p class="text-sm text-slate-300"><strong class="text-slate-100">Explanation:</strong> ${q.explanation}</p></div>`;
-            el.cardContent.innerHTML = html;
-        }
-
-        // Flip interaction on click
-        el.cardContainer.onclick = () => {
-            if (!filteredQuestions || filteredQuestions.length === 0) return;
-            isFlipped = !isFlipped;
-            const q = filteredQuestions[currentIdx];
-            if (isFlipped) {
-                renderCardBack(q);
-            } else {
-                renderCardFront(q);
+        function selectAnswer(selectedIdx, q, btnElement) {
+            let buttons = document.getElementById('optionsContainer').children;
+            for(let i=0; i<buttons.length; i++) {
+                buttons[i].disabled = true;
+                if(i === q.correct) {
+                    buttons[i].classList.add('bg-emerald-900/60', 'border-emerald-500');
+                } else if(i === selectedIdx) {
+                    buttons[i].classList.add('bg-rose-900/60', 'border-rose-500');
+                }
             }
-        };
 
-        el.tierSelect.onchange = updateFilter;
-
-        function startQuiz() {
-            currentIdx = 0;
-            showQuestion();
+            let eliminationHTML = `<strong>Step 1 (Trap Word Check):</strong> Distractors analyzed.<br><strong>Step 2 (DAMA Philosophy):</strong> Framework prioritizes cross-functional alignment over isolation.<br><strong>Step 3 (Winning Principle):</strong> Option ${String.fromCharCode(65 + q.correct)} is correct.<br><br><em>📖 DMBoK Reference:</em> ${q.explanation}`;
+            document.getElementById('eliminationText').innerHTML = eliminationHTML;
+            document.getElementById('eliminationBox').classList.remove('hidden');
         }
 
-        function startExamMode() {
-            currentIdx = 0;
-            showQuestion();
+        function nextQuestion() { currentIndex++; renderQuestion(); }
+        function prevQuestion() { currentIndex--; renderQuestion(); }
+
+        function toggleBookmark() {
+            let q = filteredQuestions[currentIndex];
+            if(!q) return;
+            if(bookmarks.has(q.id)) {
+                bookmarks.delete(q.id);
+            } else {
+                bookmarks.add(q.id);
+            }
+            localStorage.setItem('cdmp_bookmarks', JSON.stringify([...bookmarks]));
+            updateBookmarkCount();
+            renderQuestion();
         }
 
-        el.quizBtn.onclick = startQuiz;
-        el.examBtn.onclick = startExamMode;
+        function updateBookmarkCount() {
+            document.getElementById('bookmarkCount').innerText = bookmarks.size;
+        }
+
+        function renderBookmarks() {
+            let container = document.getElementById('bookmarksContainer');
+            container.innerHTML = "";
+            let bq = allQuestions.filter(q => bookmarks.has(q.id));
+            if(bq.length === 0) {
+                container.innerHTML = `<p class="text-slate-400">No bookmarks saved yet.</p>`;
+                return;
+            }
+            bq.forEach((q, idx) => {
+                let div = document.createElement('div');
+                div.className = "bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2";
+                div.innerHTML = `<p class="text-xs text-blue-400 font-semibold">${q.domain}</p><p class="font-medium">${q.question}</p><p class="text-xs text-emerald-400">Correct: ${q.options[q.correct]}</p>`;
+                container.appendChild(div);
+            });
+        }
+
+        function buildAnalytics() {
+            let container = document.getElementById('analyticsContainer');
+            let domains = [...new Set(allQuestions.map(q => q.domain))];
+            container.innerHTML = "";
+            domains.forEach(d => {
+                let count = allQuestions.filter(q => q.domain === d).length;
+                let div = document.createElement('div');
+                div.className = "bg-slate-800 p-4 rounded-xl border border-slate-700 flex justify-between items-center";
+                div.innerHTML = `<div><h4 class="font-semibold">${d}</h4><p class="text-xs text-slate-400">${count} total questions available</p></div><span class="text-sm font-bold text-blue-400">Chapter Ready</span>`;
+                container.appendChild(div);
+            });
+        }
+
+        function searchGlossary() {
+            let query = document.getElementById('glossarySearch').value.toLowerCase();
+            let container = document.getElementById('glossaryResults');
+            container.innerHTML = "";
+            if(!query) return;
+            let results = allQuestions.filter(q => q.question.toLowerCase().includes(query) || q.explanation.toLowerCase().includes(query));
+            results.forEach(r => {
+                let div = document.createElement('div');
+                div.className = "bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-1";
+                div.innerHTML = `<span class="text-xs text-blue-400">${r.domain}</span><p class="font-medium text-sm">${r.question}</p><p class="text-xs text-slate-300">💡 ${r.explanation}</p>`;
+                container.appendChild(div);
+            });
+        }
+
+        function startExam() {
+            document.getElementById('examStartPanel').classList.add('hidden');
+            document.getElementById('examActivePanel').classList.remove('hidden');
+            examSecondsLeft = 5400;
+            
+            let examPool = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, 100);
+            let container = document.getElementById('examQuestionsContainer');
+            container.innerHTML = "";
+            
+            examPool.forEach((q, idx) => {
+                let div = document.createElement('div');
+                div.className = "bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2 exam-item";
+                div.dataset.correct = q.correct;
+                div.dataset.id = q.id;
+                
+                let optsHtml = "";
+                q.options.forEach((opt, i) => {
+                    optsHtml += `<label class="block text-sm p-2 rounded hover:bg-slate-700/50 cursor-pointer"><input type="radio" name="ex_${q.id}" value="${i}" class="mr-2"> ${String.fromCharCode(65+i)}. ${opt}</label>`;
+                });
+                div.innerHTML = `<p class="font-semibold text-sm">Q${idx+1}: ${q.question}</p><div class="space-y-1">${optsHtml}</div>`;
+                container.appendChild(div);
+            });
+
+            examTimer = setInterval(() => {
+                examSecondsLeft--;
+                let m = Math.floor(examSecondsLeft / 60);
+                let s = examSecondsLeft % 60;
+                document.getElementById('timerDisplay').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                if(examSecondsLeft <= 0) submitExam();
+            }, 1000);
+        }
+
+        function submitExam() {
+            clearInterval(examTimer);
+            document.getElementById('examActivePanel').classList.add('hidden');
+            document.getElementById('examResultsPanel').classList.remove('hidden');
+            
+            let items = document.querySelectorAll('.exam-item');
+            let correct = 0;
+            items.forEach(item => {
+                let selected = item.querySelector('input[type="radio"]:checked');
+                if(selected && parseInt(selected.value) === parseInt(item.dataset.correct)) {
+                    correct++;
+                }
+            });
+
+            let pct = (correct / items.length) * 100;
+            document.getElementById('examScoreTitle').innerText = `Exam Results: ${pct.toFixed(1)}% (${correct}/${items.length})` ;
+            document.getElementById('examScoreDesc').innerText = pct >= 70 ? "🎉 Pass! You cleared the 70% CDMP certification threshold!" : "❌ Below Passing Threshold (70%). Review your weak areas.";
+        }
+
+        function resetExam() {
+            document.getElementById('examResultsPanel').classList.add('hidden');
+            document.getElementById('examStartPanel').classList.remove('hidden');
+        }
     </script>
 </body>
 </html>
