@@ -25,11 +25,27 @@ if "initialized" not in st.session_state:
   st.session_state.exam_user_answers = {}
 
 
-# Intelligent Auto-Tagging & Logic Engine for Raw Questions
+# Intelligent Auto-Tagging & Option Shuffling Engine
 def auto_tag_question(q, idx):
   q_text = q.get("question", "")
   q_type = q.get("type", "Standard")
   domain = q.get("domain", "General")
+  options = q.get("options", [])
+  correct_idx = q.get("correct", 0)
+
+  # Shuffle options randomly while tracking the correct answer's new index
+  if options and 0 <= correct_idx < len(options):
+    correct_text = options[correct_idx]
+    indexed_options = list(enumerate(options))
+    random.shuffle(indexed_options)
+    
+    shuffled_options = [opt for _, opt in indexed_options]
+    new_correct_idx = [
+        new_i for new_i, (old_i, _) in enumerate(indexed_options) if old_i == correct_idx
+    ][0]
+  else:
+    shuffled_options = options
+    new_correct_idx = correct_idx
 
   lower_text = q_text.lower()
   if (
@@ -57,8 +73,8 @@ def auto_tag_question(q, idx):
       "type": q_type,
       "tier": tier,
       "question": q_text,
-      "options": q.get("options", []),
-      "correct": q.get("correct", 0),
+      "options": shuffled_options,
+      "correct": new_correct_idx,
       "explanation": q.get("explanation", "No explanation provided."),
   }
 
@@ -275,7 +291,6 @@ elif nav_mode == "📝 90-Min Exam Simulation":
       st.session_state.exam_user_answers = {}
       st.rerun()
   else:
-    # Calculate remaining time cleanly without causing UI redraw loops
     elapsed = time.time() - st.session_state.exam_start_time
     remaining = max(0, 5400 - int(elapsed))
     mins, secs = divmod(remaining, 60)
