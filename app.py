@@ -107,7 +107,7 @@ def load_questions():
 all_questions = load_questions()
 
 
-# Helper: Dynamic Elimination & Trap Word Breakdown Generator (Fixed NameError)
+# Helper: Dynamic Elimination & Trap Word Breakdown Generator
 def generate_elimination_breakdown(q):
   options = q["options"]
   correct_idx = q["correct"]
@@ -256,7 +256,7 @@ if nav_mode == "⚡ Tier & Chapter Practice":
         st.rerun()
 
 
-# --- VIEW 2: 90-MIN EXAM SIMULATION (Live Countdown Fixed) ---
+# --- VIEW 2: 90-MIN EXAM SIMULATION (Stable & Flicker-Free) ---
 elif nav_mode == "📝 90-Min Exam Simulation":
   st.header("📝 Realistic CDMP Exam Simulation Engine")
   st.markdown(
@@ -275,21 +275,18 @@ elif nav_mode == "📝 90-Min Exam Simulation":
       st.session_state.exam_user_answers = {}
       st.rerun()
   else:
-    # Live Countdown Fragment to refresh every second without full resets
-    @st.fragment
-    def render_timer():
-      elapsed = time.time() - st.session_state.exam_start_time
-      remaining = max(0, 5400 - int(elapsed))
-      mins, secs = divmod(remaining, 60)
-      st.sidebar.markdown(f"### ⏱️ Time Remaining: {mins:02d}:{secs:02d}")
-      if remaining == 0 and not st.session_state.exam_submitted:
-        st.session_state.exam_submitted = True
-        st.rerun()
-      time.sleep(1)
+    # Calculate remaining time cleanly without causing UI redraw loops
+    elapsed = time.time() - st.session_state.exam_start_time
+    remaining = max(0, 5400 - int(elapsed))
+    mins, secs = divmod(remaining, 60)
+    
+    st.sidebar.markdown(f"### ⏱️ Time Remaining: {mins:02d}:{secs:02d}")
+
+    if remaining == 0 and not st.session_state.exam_submitted:
+      st.session_state.exam_submitted = True
       st.rerun()
 
     if not st.session_state.exam_submitted:
-      render_timer()
       with st.form("exam_form"):
         exam_preds = {}
         for idx, eq in enumerate(st.session_state.exam_questions):
