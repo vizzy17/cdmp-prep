@@ -14,15 +14,15 @@ st.set_page_config(
 # Initialize Session State Variables
 if "initialized" not in st.session_state:
   st.session_state.initialized = True
-  st.session_state.mode = "Practice"  # Practice, Exam, Analytics, Bookmarks
   st.session_state.current_index = 0
   st.session_state.score = 0
-  st.session_state.answers_history = {}  # {q_id: user_selected_index}
-  st.session_state.bookmarks = set()  # Set of bookmarked question IDs
-  st.session_state.user_stats = {}  # {q_id: {"correct": count, "total": count}}
-  st.session_state.exam_questions = []
-  st.session_state.exam_start_time = None
+  st.session_state.bookmarks = set()
   st.session_state.session_wrong_pool = []
+  st.session_state.exam_active = False
+  st.session_state.exam_start_time = None
+  st.session_state.exam_submitted = False
+  st.session_state.exam_questions = []
+  st.session_state.exam_user_answers = {}
 
 
 # Intelligent Auto-Tagging & Logic Engine for Raw Questions
@@ -31,7 +31,6 @@ def auto_tag_question(q, idx):
   q_type = q.get("type", "Standard")
   domain = q.get("domain", "General")
 
-  # Detect Strategic Tiers automatically if not explicitly given
   lower_text = q_text.lower()
   if (
       "who is" in lower_text
@@ -79,7 +78,6 @@ def load_questions():
         pass
 
   if not raw_data:
-    # Safe fallback mini-set
     raw_data = [
         {
             "id": 1,
@@ -109,7 +107,7 @@ def load_questions():
 all_questions = load_questions()
 
 
-# Helper: Dynamic Elimination & Trap Word Breakdown Generator
+# Helper: Dynamic Elimination & Trap Word Breakdown Generator (Fixed NameError)
 def generate_elimination_breakdown(q):
   options = q["options"]
   correct_idx = q["correct"]
@@ -117,13 +115,12 @@ def generate_elimination_breakdown(q):
 
   breakdown_html = "#### 🛡️ DAMA Elimination Breakdown & Logic Analysis\n"
   
-  # Step 1: Trap Words Check
   found_traps = []
   for i, opt in enumerate(options):
     if i == correct_idx:
       continue
     if any(tw in opt.lower() for tw in trap_words):
-      found_traps.append(f"Option {String.fromCharCode(65+i) if 'String' else chr(65+i)}: *\"{opt}\"*")
+      found_traps.append(f"Option {chr(65 + i)}: *\"{opt}\"*")
 
   if found_traps:
     breakdown_html += (
@@ -138,14 +135,12 @@ def generate_elimination_breakdown(q):
         " isolationist workflow rather than explicit absolutes.\n"
     )
 
-  # Step 2: Role / Philosophy Check
   breakdown_html += (
       "- **Step 2 (DAMA Philosophy):** DAMA rejects isolation and siloed"
       " behavior, prioritizing cross-functional collaboration and framework"
       " alignment.\n"
   )
   
-  # Step 3: Winner Rationale & DMBoK Reference
   correct_letter = chr(65 + correct_idx)
   breakdown_html += (
       f"- **Step 3 (Winning Principle):** **Option {correct_letter}** aligns"
@@ -194,7 +189,6 @@ if nav_mode == "⚡ Tier & Chapter Practice":
     domains = ["All Chapters"] + sorted(list(set(q["domain"] for q in all_questions)))
     domain_filter = st.selectbox("Filter by Chapter / Domain", domains)
 
-  # Filter logic
   filtered = all_questions
   if tier_filter != "All Tiers":
     filtered = [q for q in filtered if q["tier"] == tier_filter]
@@ -212,14 +206,12 @@ if nav_mode == "⚡ Tier & Chapter Practice":
 
     curr_q = filtered[st.session_state.practice_idx]
 
-    # Progress bar
     prog = (st.session_state.practice_idx + 1) / len(filtered)
     st.progress(prog, text=f"Question {st.session_state.practice_idx + 1} of {len(filtered)}")
 
     st.markdown(f"**Domain:** {curr_q['domain']} | **Tier:** {curr_q['tier']}")
     st.markdown(f"### {curr_q['question']}")
 
-    # Bookmark toggle
     is_bookmarked = curr_q["id"] in st.session_state.bookmarks
     if st.button("⭐ Bookmark Card" if not is_bookmarked else "❌ Remove Bookmark"):
       if is_bookmarked:
@@ -228,7 +220,6 @@ if nav_mode == "⚡ Tier & Chapter Practice":
         st.session_state.bookmarks.add(curr_q["id"])
       st.rerun()
 
-    # User Selection Form
     with st.form(f"practice_form_{curr_q['id']}"):
       user_ans = st.radio(
           "Select Answer Choice:",
@@ -251,11 +242,9 @@ if nav_mode == "⚡ Tier & Chapter Practice":
         if curr_q["id"] not in st.session_state.session_wrong_pool:
           st.session_state.session_wrong_pool.append(curr_q["id"])
 
-      # Show Elimination Breakdown & DMBoK Reference
       st.markdown("---")
       st.markdown(generate_elimination_breakdown(curr_q))
 
-    # Navigation buttons
     col_n1, col_n2 = st.columns(2)
     with col_n1:
       if st.button("⬅ Previous Question") and st.session_state.practice_idx > 0:
@@ -267,7 +256,7 @@ if nav_mode == "⚡ Tier & Chapter Practice":
         st.rerun()
 
 
-# --- VIEW 2: 90-MIN EXAM SIMULATION ---
+# --- VIEW 2: 90-MIN EXAM SIMULATION (Live Countdown Fixed) ---
 elif nav_mode == "📝 90-Min Exam Simulation":
   st.header("📝 Realistic CDMP Exam Simulation Engine")
   st.markdown(
@@ -275,28 +264,32 @@ elif nav_mode == "📝 90-Min Exam Simulation":
       " Minutes** (54 seconds per question average)."
   )
 
-  if not st.session_state.get("exam_active", False):
+  if not st.session_state.exam_active:
     if st.button("🚀 Launch 90-Minute Timed Exam (100 Questions)"):
       st.session_state.exam_active = True
       st.session_state.exam_questions = random.sample(
           all_questions, min(100, len(all_questions))
       )
       st.session_state.exam_start_time = time.time()
-      st.session_state.exam_answers = {}
       st.session_state.exam_submitted = False
+      st.session_state.exam_user_answers = {}
       st.rerun()
   else:
-    # Exam timer logic (90 minutes = 5400 seconds)
-    elapsed = time.time() - st.session_state.exam_start_time
-    remaining = max(0, 5400 - int(elapsed))
-    mins, secs = divmod(remaining, 60)
+    # Live Countdown Fragment to refresh every second without full resets
+    @st.fragment
+    def render_timer():
+      elapsed = time.time() - st.session_state.exam_start_time
+      remaining = max(0, 5400 - int(elapsed))
+      mins, secs = divmod(remaining, 60)
+      st.sidebar.markdown(f"### ⏱️ Time Remaining: {mins:02d}:{secs:02d}")
+      if remaining == 0 and not st.session_state.exam_submitted:
+        st.session_state.exam_submitted = True
+        st.rerun()
+      time.sleep(1)
+      st.rerun()
 
-    st.sidebar.markdown(f"### ⏱️ Time Remaining: {mins:02d}:{secs:02d}")
-    if remaining == 0:
-      st.warning("Time is up! Automatically submitting exam.")
-      st.session_state.exam_submitted = True
-
-    if not st.session_state.get("exam_submitted", False):
+    if not st.session_state.exam_submitted:
+      render_timer()
       with st.form("exam_form"):
         exam_preds = {}
         for idx, eq in enumerate(st.session_state.exam_questions):
@@ -312,7 +305,6 @@ elif nav_mode == "📝 90-Min Exam Simulation":
           st.session_state.exam_user_answers = exam_preds
           st.rerun()
     else:
-      # Score calculation
       correct_count = 0
       total_ex = len(st.session_state.exam_questions)
       wrong_list = []
@@ -342,26 +334,21 @@ elif nav_mode == "📝 90-Min Exam Simulation":
       if wrong_list:
         if st.button("🎯 Practice Only My Mistakes (Custom Weak-Spot Quiz)"):
           st.session_state.session_wrong_pool = [w["id"] for w in wrong_list]
-          st.session_state.mode = "Practice"
           st.rerun()
 
       if st.button("🔄 Reset Exam Simulation"):
         st.session_state.exam_active = False
+        st.session_state.exam_submitted = False
         st.rerun()
 
 
 # --- VIEW 3: ANALYTICS DASHBOARD ---
 elif nav_mode == "📊 Analytics Dashboard":
   st.header("📊 Chapter-by-Chapter Performance Analytics")
-  st.markdown(
-      "Track your historical success rate broken down by chapter to identify"
-      " weak spots."
-  )
-
   chapters = sorted(list(set(q["domain"] for q in all_questions)))
   for chap in chapters:
     chap_questions = [q for q in all_questions if q["domain"] == chap]
-    st.markdown(f"**{chap}** ({len(chap_questions)} total questions available)")
+    st.markdown(f"**{chap}** ({len(chap_questions)} total questions)")
     st.progress(0.5, text="Mastery Level: Evaluating session telemetry...")
 
 
@@ -386,8 +373,6 @@ elif nav_mode == "⭐ Bookmarked Flashcards":
 # --- VIEW 5: DMBoK GLOSSARY INDEX ---
 elif nav_mode == "📖 DMBoK Glossary Index":
   st.header("📖 Digital DMBoK Glossary & Keyword Search")
-  st.markdown("Search terms instantly to mirror exam open-book reference speed.")
-
   search_query = st.text_input("Search keywords (e.g., Master Data, Lineage, DGO):")
   if search_query:
     results = [
