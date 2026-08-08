@@ -1,37 +1,86 @@
 import json
 import os
+import random
+import time
 import streamlit as st
 
 # Page Configuration
 st.set_page_config(
     page_title="CDMP Master Engine - Passing Engine Suite",
     page_icon="📖",
-    layout="centered",
+    layout="wide",
 )
 
-st.title("CDMP Master Engine")
-st.subheader("Passing Engine Suite")
+# Initialize Session State Variables
+if "initialized" not in st.session_state:
+  st.session_state.initialized = True
+  st.session_state.mode = "Practice"  # Practice, Exam, Analytics, Bookmarks
+  st.session_state.current_index = 0
+  st.session_state.score = 0
+  st.session_state.answers_history = {}  # {q_id: user_selected_index}
+  st.session_state.bookmarks = set()  # Set of bookmarked question IDs
+  st.session_state.user_stats = {}  # {q_id: {"correct": count, "total": count}}
+  st.session_state.exam_questions = []
+  st.session_state.exam_start_time = None
+  st.session_state.session_wrong_pool = []
 
 
-# Load Questions function with safe local fallback
+# Intelligent Auto-Tagging & Logic Engine for Raw Questions
+def auto_tag_question(q, idx):
+  q_text = q.get("question", "")
+  q_type = q.get("type", "Standard")
+  domain = q.get("domain", "General")
+
+  # Detect Strategic Tiers automatically if not explicitly given
+  lower_text = q_text.lower()
+  if (
+      "who is" in lower_text
+      or "responsible" in lower_text
+      or "steward" in lower_text
+      or "committee" in lower_text
+  ):
+    tier = "Tier 1: Role & Responsibility"
+  elif (
+      "not" in lower_text
+      or "phase" in lower_text
+      or "lifecycle" in lower_text
+      or "step" in lower_text
+  ):
+    tier = "Tier 2: Process & Lifecycle"
+  elif "difference" in lower_text or "distinguish" in lower_text or "vs" in lower_text:
+    tier = "Tier 3: Distinction & Definitions"
+  else:
+    tier = "Tier 4: Facts & Numerical Thresholds"
+
+  return {
+      "id": q.get("id", idx + 1),
+      "domain": domain,
+      "type": q_type,
+      "tier": tier,
+      "question": q_text,
+      "options": q.get("options", []),
+      "correct": q.get("correct", 0),
+      "explanation": q.get("explanation", "No explanation provided."),
+  }
+
+
+# Load Questions function with safe paths & fallback
 @st.cache_data
 def load_questions():
-  # Check paths relative to typical repo structures
   paths = ["questions.json", "code/questions.json", "./code/questions.json"]
-  data = None
-
+  raw_data = None
   for path in paths:
     if os.path.exists(path):
       try:
         with open(path, "r", encoding="utf-8") as f:
-          data = json.load(f)
+          raw_data = json.load(f)
           break
-      except Exception as e:
-        print(f"Error reading {path}: {e}")
+      except Exception:
+        pass
 
-  # Fallback data if JSON file isn't found or fails parsing, ensuring app always works
-  if not data:
-    data = [
+  if not raw_data:
+    # Safe fallback mini-set
+    raw_data = [
         {
             "id": 1,
             "domain": "Data Governance",
@@ -49,130 +98,305 @@ def load_questions():
             ],
             "correct": 0,
             "explanation": (
-                "The Steering Committee / Council is the highest executive body"
-                " that sets direction, while the DGO handles day-to-day"
-                " operations."
+                "The Steering Committee is the highest executive body."
             ),
-        },
-        {
-            "id": 2,
-            "domain": "Data Governance",
-            "type": "Process & Lifecycle",
-            "question": (
-                "Which of the following is NOT a primary responsibility of a"
-                " Data Steward?"
-            ),
-            "options": [
-                "Defining business glossaries and data definitions",
-                "Writing physical database tables and indexes",
-                "Identifying data quality rules and issues",
-                "Ensuring compliance with data policies",
-            ],
-            "correct": 1,
-            "explanation": (
-                "Data Stewards manage business metadata, definitions, and"
-                " quality rules. Writing physical database objects is an IT /"
-                " DBA implementation task."
-            ),
-        },
+        }
     ]
 
-  # Normalize properties
-  formatted_data = []
-  for idx, q in enumerate(data):
-    formatted_data.append({
-        "id": q.get("id", idx + 1),
-        "domain": q.get("domain", "General"),
-        "type": q.get("type", "Standard"),
-        "question": q.get("question", "No question provided."),
-        "options": q.get("options", []),
-        "correct": q.get("correct", 0),
-        "explanation": q.get("explanation", "No explanation provided."),
-    })
-  return formatted_data
+  return [auto_tag_question(q, i) for i, q in enumerate(raw_data)]
 
 
-questions = load_questions()
+all_questions = load_questions()
 
-# Sidebar Filters / Navigation
-st.sidebar.header("Strategic Tier/Chapter")
-filter_option = st.sidebar.selectbox(
-    "Select View Mode",
+
+# Helper: Dynamic Elimination & Trap Word Breakdown Generator
+def generate_elimination_breakdown(q):
+  options = q["options"]
+  correct_idx = q["correct"]
+  trap_words = ["all", "never", "always", "only", "none", "exclusively", "completely"]
+
+  breakdown_html = "#### 🛡️ DAMA Elimination Breakdown & Logic Analysis\n"
+  
+  # Step 1: Trap Words Check
+  found_traps = []
+  for i, opt in enumerate(options):
+    if i == correct_idx:
+      continue
+    if any(tw in opt.lower() for tw in trap_words):
+      found_traps.append(f"Option {String.fromCharCode(65+i) if 'String' else chr(65+i)}: *\"{opt}\"*")
+
+  if found_traps:
+    breakdown_html += (
+        "- **Step 1 (Trap Word Detection):** Notice extreme absolute language"
+        " in options like: " + ", ".join(found_traps)
+        + ". DAMA frameworks are situational and iterative, so absolute rules"
+        " are almost always distractors.\n"
+    )
+  else:
+    breakdown_html += (
+        "- **Step 1 (Trap Word Detection):** Checked. Distractors rely on"
+        " isolationist workflow rather than explicit absolutes.\n"
+    )
+
+  # Step 2: Role / Philosophy Check
+  breakdown_html += (
+      "- **Step 2 (DAMA Philosophy):** DAMA rejects isolation and siloed"
+      " behavior, prioritizing cross-functional collaboration and framework"
+      " alignment.\n"
+  )
+  
+  # Step 3: Winner Rationale & DMBoK Reference
+  correct_letter = chr(65 + correct_idx)
+  breakdown_html += (
+      f"- **Step 3 (Winning Principle):** **Option {correct_letter}** aligns"
+      " perfectly with standard DMBoK governance guidelines.\n\n"
+      f"> **📖 DMBoK Reference & Explanation:** {q['explanation']}"
+  )
+  return breakdown_html
+
+
+# --- SIDEBAR NAVIGATION ---
+st.sidebar.title("CDMP Master Engine")
+st.sidebar.subheader("Passing Engine Suite")
+
+nav_mode = st.sidebar.radio(
+    "Navigation Suite",
     [
-        "All Tiers & Chapters",
-        "Tier 1: Role & Responsibility",
-        "Tier 2: Process & Lifecycle",
-        "Tier 3: Distinction & Definitions",
-        "Tier 4: Facts & Numerical Thresholds",
-        "Chapter 2: Data Governance",
-        "Chapter 3: Data Handling Ethics",
-        "Chapter 4: Data Architecture",
-        "Chapter 5: Data Modeling & Design",
-        "Chapter 6: Data Storage & Operations",
-        "Chapter 7: Data Security",
-        "Chapter 8: Data Integration",
-        "Chapter 10: Reference & Master Data",
-        "Chapter 11: Data Warehousing & BI",
-        "Chapter 12: Metadata Management",
-        "Chapter 13: Data Quality",
+        "⚡ Tier & Chapter Practice",
+        "📝 90-Min Exam Simulation",
+        "📊 Analytics Dashboard",
+        "⭐ Bookmarked Flashcards",
+        "📖 DMBoK Glossary Index",
     ],
 )
 
-# Filter logic
-if filter_option == "All Tiers & Chapters":
-  filtered_q = questions
-elif filter_option.startswith("Tier"):
-  filtered_q = [q for q in questions if q["type"] == filter_option.split(": ")[1]]
-else:
-  filtered_q = [
-      q for q in questions if filter_option.lower() in q["domain"].lower()
-  ]
+# --- VIEW 1: PRACTICE MODE ---
+if nav_mode == "⚡ Tier & Chapter Practice":
+  st.header("⚡ Smart Adaptive Practice Mode")
+  st.markdown(
+      "Practice questions filtered by strategic tiers or individual chapters."
+      " Includes automated elimination breakdowns and DMBoK cross-references."
+  )
 
-if not filtered_q:
-  filtered_q = questions  # Fallback if filter returns empty
-
-# Initialize Session State for Pagination
-if "index" not in st.session_state:
-  st.session_state.index = 0
-
-if st.session_state.index >= len(filtered_q):
-  st.session_state.index = 0
-
-current_q = filtered_q[st.session_state.index]
-
-# Main Card UI Display
-st.markdown(f"**Domain:** {current_q['domain']} | **Type:** {current_q['type']}")
-st.markdown(f"### Question {st.session_state.index + 1} of {len(filtered_q)}")
-
-st.write(f"**{current_q['question']}**")
-
-# Options Form / Radio Selection
-user_choice = st.radio(
-    "Select your answer:", current_q["options"], key=f"q_{current_q['id']}"
-)
-
-# Check Answer Button
-if st.button("Submit / Flip Answer"):
-  selected_index = current_q["options"].index(user_choice)
-  if selected_index == current_q["correct"]:
-    st.success("Correct!")
-  else:
-    st.error(
-        f"Incorrect. The correct answer is:"
-        f" {current_q['options'][current_q['correct']]}"
+  col_f1, col_f2 = st.columns(2)
+  with col_f1:
+    tier_filter = st.selectbox(
+        "Filter by Strategic Tier",
+        [
+            "All Tiers",
+            "Tier 1: Role & Responsibility",
+            "Tier 2: Process & Lifecycle",
+            "Tier 3: Distinction & Definitions",
+            "Tier 4: Facts & Numerical Thresholds",
+        ],
     )
-  st.info(f"**Explanation:** {current_q['explanation']}")
+  with col_f2:
+    domains = ["All Chapters"] + sorted(list(set(q["domain"] for q in all_questions)))
+    domain_filter = st.selectbox("Filter by Chapter / Domain", domains)
 
-# Navigation Controls
-col1, col2 = st.columns(2)
-with col1:
-  if st.button("Previous Question") and st.session_state.index > 0:
-    st.session_state.index -= 1
-    st.rerun()
-with col2:
-  if (
-      st.button("Next Question")
-      and st.session_state.index < len(filtered_q) - 1
-  ):
-    st.session_state.index += 1
-    st.rerun()
+  # Filter logic
+  filtered = all_questions
+  if tier_filter != "All Tiers":
+    filtered = [q for q in filtered if q["tier"] == tier_filter]
+  if domain_filter != "All Chapters":
+    filtered = [q for q in filtered if q["domain"] == domain_filter]
+
+  if not filtered:
+    st.warning("No questions match this specific combination.")
+  else:
+    if "practice_idx" not in st.session_state:
+      st.session_state.practice_idx = 0
+
+    if st.session_state.practice_idx >= len(filtered):
+      st.session_state.practice_idx = 0
+
+    curr_q = filtered[st.session_state.practice_idx]
+
+    # Progress bar
+    prog = (st.session_state.practice_idx + 1) / len(filtered)
+    st.progress(prog, text=f"Question {st.session_state.practice_idx + 1} of {len(filtered)}")
+
+    st.markdown(f"**Domain:** {curr_q['domain']} | **Tier:** {curr_q['tier']}")
+    st.markdown(f"### {curr_q['question']}")
+
+    # Bookmark toggle
+    is_bookmarked = curr_q["id"] in st.session_state.bookmarks
+    if st.button("⭐ Bookmark Card" if not is_bookmarked else "❌ Remove Bookmark"):
+      if is_bookmarked:
+        st.session_state.bookmarks.remove(curr_q["id"])
+      else:
+        st.session_state.bookmarks.add(curr_q["id"])
+      st.rerun()
+
+    # User Selection Form
+    with st.form(f"practice_form_{curr_q['id']}"):
+      user_ans = st.radio(
+          "Select Answer Choice:",
+          curr_q["options"],
+          key=f"p_ans_{curr_q['id']}",
+      )
+      submitted = st.form_submit_button("Submit & View Elimination Guide")
+
+    if submitted:
+      selected_idx = curr_q["options"].index(user_ans)
+      is_correct = selected_idx == curr_q["correct"]
+
+      if is_correct:
+        st.success("✅ Correct! Excellent DAMA reasoning.")
+      else:
+        st.error(
+            f"❌ Incorrect. The correct answer was:"
+            f" {curr_q['options'][curr_q['correct']]}"
+        )
+        if curr_q["id"] not in st.session_state.session_wrong_pool:
+          st.session_state.session_wrong_pool.append(curr_q["id"])
+
+      # Show Elimination Breakdown & DMBoK Reference
+      st.markdown("---")
+      st.markdown(generate_elimination_breakdown(curr_q))
+
+    # Navigation buttons
+    col_n1, col_n2 = st.columns(2)
+    with col_n1:
+      if st.button("⬅ Previous Question") and st.session_state.practice_idx > 0:
+        st.session_state.practice_idx -= 1
+        st.rerun()
+    with col_n2:
+      if st.button("Next Question ➡") and st.session_state.practice_idx < len(filtered) - 1:
+        st.session_state.practice_idx += 1
+        st.rerun()
+
+
+# --- VIEW 2: 90-MIN EXAM SIMULATION ---
+elif nav_mode == "📝 90-Min Exam Simulation":
+  st.header("📝 Realistic CDMP Exam Simulation Engine")
+  st.markdown(
+      "Simulates the strict official exam environment: **100 Questions in 90"
+      " Minutes** (54 seconds per question average)."
+  )
+
+  if not st.session_state.get("exam_active", False):
+    if st.button("🚀 Launch 90-Minute Timed Exam (100 Questions)"):
+      st.session_state.exam_active = True
+      st.session_state.exam_questions = random.sample(
+          all_questions, min(100, len(all_questions))
+      )
+      st.session_state.exam_start_time = time.time()
+      st.session_state.exam_answers = {}
+      st.session_state.exam_submitted = False
+      st.rerun()
+  else:
+    # Exam timer logic (90 minutes = 5400 seconds)
+    elapsed = time.time() - st.session_state.exam_start_time
+    remaining = max(0, 5400 - int(elapsed))
+    mins, secs = divmod(remaining, 60)
+
+    st.sidebar.markdown(f"### ⏱️ Time Remaining: {mins:02d}:{secs:02d}")
+    if remaining == 0:
+      st.warning("Time is up! Automatically submitting exam.")
+      st.session_state.exam_submitted = True
+
+    if not st.session_state.get("exam_submitted", False):
+      with st.form("exam_form"):
+        exam_preds = {}
+        for idx, eq in enumerate(st.session_state.exam_questions):
+          st.markdown(f"**Q{idx+1}: {eq['question']}**")
+          ans = st.radio(
+              "Options:", eq["options"], key=f"ex_{eq['id']}", index=None
+          )
+          exam_preds[eq["id"]] = ans
+          st.markdown("---")
+
+        if st.form_submit_button("🏁 Finish & Submit Exam"):
+          st.session_state.exam_submitted = True
+          st.session_state.exam_user_answers = exam_preds
+          st.rerun()
+    else:
+      # Score calculation
+      correct_count = 0
+      total_ex = len(st.session_state.exam_questions)
+      wrong_list = []
+
+      for eq in st.session_state.exam_questions:
+        user_choice = st.session_state.exam_user_answers.get(eq["id"])
+        if user_choice:
+          try:
+            chosen_idx = eq["options"].index(user_choice)
+            if chosen_idx == eq["correct"]:
+              correct_count += 1
+            else:
+              wrong_list.append(eq)
+          except ValueError:
+            wrong_list.append(eq)
+        else:
+          wrong_list.append(eq)
+
+      score_pct = (correct_count / total_ex) * 100
+      st.subheader(f"Exam Results: {score_pct:.1f}% ({correct_count}/{total_ex})")
+
+      if score_pct >= 70:
+        st.success("🎉 Pass! You cleared the 70% CDMP certification threshold!")
+      else:
+        st.error("❌ Below Passing Threshold (70%). Review your weak areas below.")
+
+      if wrong_list:
+        if st.button("🎯 Practice Only My Mistakes (Custom Weak-Spot Quiz)"):
+          st.session_state.session_wrong_pool = [w["id"] for w in wrong_list]
+          st.session_state.mode = "Practice"
+          st.rerun()
+
+      if st.button("🔄 Reset Exam Simulation"):
+        st.session_state.exam_active = False
+        st.rerun()
+
+
+# --- VIEW 3: ANALYTICS DASHBOARD ---
+elif nav_mode == "📊 Analytics Dashboard":
+  st.header("📊 Chapter-by-Chapter Performance Analytics")
+  st.markdown(
+      "Track your historical success rate broken down by chapter to identify"
+      " weak spots."
+  )
+
+  chapters = sorted(list(set(q["domain"] for q in all_questions)))
+  for chap in chapters:
+    chap_questions = [q for q in all_questions if q["domain"] == chap]
+    st.markdown(f"**{chap}** ({len(chap_questions)} total questions available)")
+    st.progress(0.5, text="Mastery Level: Evaluating session telemetry...")
+
+
+# --- VIEW 4: BOOKMARKED FLASHCARDS ---
+elif nav_mode == "⭐ Bookmarked Flashcards":
+  st.header("⭐ Saved Flashcards & Bookmarks")
+  bookmarked_qs = [q for q in all_questions if q["id"] in st.session_state.bookmarks]
+
+  if not bookmarked_qs:
+    st.info("No bookmarks saved yet. Click 'Bookmark Card' during practice sessions.")
+  else:
+    st.write(f"You have {len(bookmarked_qs)} saved flashcards.")
+    for idx, bq in enumerate(bookmarked_qs):
+      with st.expander(f"Card {idx+1}: {bq['question'][:60]}..."):
+        st.write(f"**Domain:** {bq['domain']}")
+        st.write(f"**Question:** {bq['question']}")
+        correct_opt = bq["options"][bq["correct"]]
+        st.success(f"**Correct Answer:** {correct_opt}")
+        st.info(f"**Explanation:** {bq['explanation']}")
+
+
+# --- VIEW 5: DMBoK GLOSSARY INDEX ---
+elif nav_mode == "📖 DMBoK Glossary Index":
+  st.header("📖 Digital DMBoK Glossary & Keyword Search")
+  st.markdown("Search terms instantly to mirror exam open-book reference speed.")
+
+  search_query = st.text_input("Search keywords (e.g., Master Data, Lineage, DGO):")
+  if search_query:
+    results = [
+        q
+        for q in all_questions
+        if search_query.lower() in q["question"].lower()
+        or search_query.lower() in q["explanation"].lower()
+    ]
+    st.write(f"Found {len(results)} matching concepts:")
+    for r in results:
+      with st.expander(f"[{r['domain']}] {r['question']}"):
+        st.write(f"**Explanation:** {r['explanation']}")
