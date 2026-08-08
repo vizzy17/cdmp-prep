@@ -132,20 +132,35 @@
         let examTimer = null;
         let examSecondsLeft = 5400;
 
-        // Fetch JSON data on startup
+        // Fetch JSON data and shuffle options dynamically on startup
         fetch('./questions.json')
             .then(res => res.json())
             .then(data => {
-                allQuestions = data.map((q, idx) => ({
-                    id: q.id || idx + 1,
-                    domain: q.domain || "General",
-                    type: q.type || "Standard",
-                    tier: autoTagTier(q),
-                    question: q.question || "",
-                    options: q.options || [],
-                    correct: q.correct !== undefined ? q.correct : 0,
-                    explanation: q.explanation || "No explanation provided."
-                }));
+                allQuestions = data.map((q, idx) => {
+                    let rawOptions = q.options || [];
+                    let originalCorrect = q.correct !== undefined ? q.correct : 0;
+                    
+                    // Pair options with original index, then shuffle
+                    let paired = rawOptions.map((opt, i) => ({ opt, i }));
+                    for (let i = paired.length - 1; i > 0; i--) {
+                        let j = Math.floor(Math.random() * (i + 1));
+                        [paired[i], paired[j]] = [paired[j], paired[i]];
+                    }
+
+                    let shuffledOptions = paired.map(p => p.opt);
+                    let newCorrect = paired.findIndex(p => p.i === originalCorrect);
+
+                    return {
+                        id: q.id || idx + 1,
+                        domain: q.domain || "General",
+                        type: q.type || "Standard",
+                        tier: autoTagTier(q),
+                        question: q.question || "",
+                        options: shuffledOptions,
+                        correct: newCorrect !== -1 ? newCorrect : 0,
+                        explanation: q.explanation || "No explanation provided."
+                    };
+                });
                 
                 populateDomains();
                 filterQuestions();
