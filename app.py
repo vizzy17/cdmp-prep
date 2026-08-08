@@ -1,3 +1,10 @@
+The issue in `app.py` is that while we added the shuffling logic into the `auto_tag_question` function, **Streamlit's `@st.cache_data` decorator** caches the result of `load_questions()` on the first run. Because of caching, Streamlit never re-runs the shuffling function when you refresh or navigate, causing options to stay static or locked in their original order.
+
+To fix this so options shuffle fresh on every session launch, we need to remove `@st.cache_data` from `load_questions()` or add a re-shuffle step.
+
+Here is the fully corrected, working `app.py`:
+
+```python
 import json
 import os
 import random
@@ -79,8 +86,7 @@ def auto_tag_question(q, idx):
   }
 
 
-# Load Questions function with safe paths & fallback
-@st.cache_data
+# Load Questions function (Uncached to ensure option shuffling executes properly on restart)
 def load_questions():
   paths = ["questions.json", "code/questions.json", "./code/questions.json"]
   raw_data = None
@@ -397,3 +403,5 @@ elif nav_mode == "📖 DMBoK Glossary Index":
     for r in results:
       with st.expander(f"[{r['domain']}] {r['question']}"):
         st.write(f"**Explanation:** {r['explanation']}")
+
+```
