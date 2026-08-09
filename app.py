@@ -28,9 +28,7 @@ def auto_tag_question(q, idx):
   options = q.get("options", [])
   correct_idx = q.get("correct", 0)
 
-  # Shuffle options safely
   if options and 0 <= correct_idx < len(options):
-    correct_text = options[correct_idx]
     indexed_options = list(enumerate(options))
     random.shuffle(indexed_options)
     shuffled_options = [opt for _, opt in indexed_options]
@@ -41,7 +39,6 @@ def auto_tag_question(q, idx):
     shuffled_options = options
     new_correct_idx = correct_idx
 
-  # Priority Batch Tagging (Isolating DAMA Official Core vs Batches)
   raw_source = str(q.get("source", q.get("batch", "Standard"))).lower()
   lower_text = q_text.lower()
 
@@ -52,7 +49,6 @@ def auto_tag_question(q, idx):
   else:
     source_batch = "Legacy Bank Batch"
 
-  # Strategic Tiers
   if "who is" in lower_text or "responsible" in lower_text or "steward" in lower_text or "committee" in lower_text:
     tier = "Tier 1: Role & Responsibility"
   elif "not" in lower_text or "phase" in lower_text or "lifecycle" in lower_text or "step" in lower_text:
@@ -62,9 +58,13 @@ def auto_tag_question(q, idx):
   else:
     tier = "Tier 4: Facts & Numerical Thresholds"
 
+  # Clean domain names to eliminate duplicates caused by whitespace or minor casing differences
+  raw_domain = q.get("domain", "General Data Management")
+  clean_domain = " ".join(raw_domain.strip().title().split())
+
   return {
       "id": q.get("id", idx + 1),
-      "domain": q.get("domain", "General Data Management"),
+      "domain": clean_domain,
       "source_batch": source_batch,
       "tier": tier,
       "question": q_text,
@@ -102,11 +102,11 @@ def load_questions():
 
 all_questions = load_questions()
 
-# Sidebar Navigation
+# Safe Navigation Check (Prompt user if leaving active mock exam)
 st.sidebar.title("CDMP Master Engine")
 st.sidebar.subheader("Passing Engine Suite")
 
-nav_mode = st.sidebar.radio(
+requested_nav = st.sidebar.radio(
     "Navigation Suite",
     [
         "⚡ Tier & Batch Practice",
@@ -117,35 +117,48 @@ nav_mode = st.sidebar.radio(
     ],
 )
 
+if st.session_state.exam_active and not st.session_state.exam_submitted and requested_nav != "📝 90-Min Exam Simulation":
+  st.sidebar.warning("⚠️ Active Exam Session Running!")
+  if st.sidebar.button("🚨 End Exam & Switch View"):
+    st.session_state.exam_active = False
+    st.session_state.exam_start_time = None
+    st.session_state.exam_submitted = False
+    st.rerun()
+  else:
+    nav_mode = "📝 90-Min Exam Simulation"
+else:
+  nav_mode = requested_nav
+
+
 if nav_mode == "⚡ Tier & Batch Practice":
   st.header("⚡ Smart Adaptive Practice Mode (DAMA Priority Focus)")
-  st.markdown("Filter questions by **Official DAMA Priority batches**, strategic tiers, or specific chapters.")
+  st.markdown("Filter questions by **Official DAMA Priority batches**, strategic tiers, or specific chapters. Modifying filters instantly refreshes the active pool.")
 
   col_f1, col_f2, col_f3 = st.columns(3)
   with col_f1:
     batch_filter = st.selectbox(
         "Source / Priority Filter",
-        [
-            "All Batches",
-            "⭐ Official DAMA-Core Priority",
-            "New DMF PRA Batch",
-            "Legacy Bank Batch",
-        ],
+        ["All Batches", "⭐ Official DAMA-Core Priority", "New DMF PRA Batch", "Legacy Bank Batch"],
+        key="sb_batch",
+        on_change=lambda: st.session_state.update({"practice_idx": 0})
     )
   with col_f2:
     tier_filter = st.selectbox(
         "Strategic Tier",
-        [
-            "All Tiers",
-            "Tier 1: Role & Responsibility",
-            "Tier 2: Process & Lifecycle",
-            "Tier 3: Distinction & Definitions",
-            "Tier 4: Facts & Numerical Thresholds",
-        ],
+        ["All Tiers", "Tier 1: Role & Responsibility", "Tier 2: Process & Lifecycle", "Tier 3: Distinction & Definitions", "Tier 4: Facts & Numerical Thresholds"],
+        key="sb_tier",
+        on_change=lambda: st.session_state.update({"practice_idx": 0})
     )
   with col_f3:
-    domains = ["All Chapters"] + sorted(list(set(q["domain"] for q in all_questions)))
-    domain_filter = st.selectbox("Chapter / Domain", domains)
+    # Use sorted unique deduplicated list
+    unique_domains = sorted(list(set(q["domain"] for q in all_questions)))
+    domains = ["All Chapters"] + unique_domains
+    domain_filter = st.selectbox(
+        "Chapter / Domain",
+        domains,
+        key="sb_domain",
+        on_change=lambda: st.session_state.update({"practice_idx": 0})
+    )
 
   filtered = all_questions
   if batch_filter != "All Batches":
@@ -155,7 +168,7 @@ if nav_mode == "⚡ Tier & Batch Practice":
   if domain_filter != "All Chapters":
     filtered = [q for q in filtered if q["domain"] == domain_filter]
 
-  st.info(f"Active Pool Size: **{len(filtered)} questions** available matching criteria.")
+  st.info(f"Active Pool Size: **{len(filtered)} questions** loaded matching current filters.")
 
   if not filtered:
     st.warning("No questions match this specific filter selection.")
@@ -224,6 +237,11 @@ elif nav_mode == "📝 90-Min Exam Simulation":
       st.rerun()
 
     if not st.session_state.exam_submitted:
+      if st.button("🛑 Abort & Discard Exam Session"):
+        st.session_state.exam_active = False
+        st.session_state.exam_start_time = None
+        st.rerun()
+
       with st.form("exam_form"):
         exam_preds = {}
         for idx, eq in enumerate(st.session_state.exam_questions):
@@ -246,6 +264,7 @@ elif nav_mode == "📝 90-Min Exam Simulation":
       if st.button("🔄 Reset Exam Simulation"):
         st.session_state.exam_active = False
         st.session_state.exam_submitted = False
+        st.session_state.exam_start_time = None
         st.rerun()
 
 elif nav_mode == "📊 Analytics Dashboard":
