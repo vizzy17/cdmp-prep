@@ -75,6 +75,7 @@
                     <div id="optionsContainer" class="space-y-2 pt-2"></div>
                 </div>
 
+                <!-- Restored DAMA Elimination Analysis Box -->
                 <div id="eliminationBox" class="mt-4 hidden bg-slate-900/80 border border-slate-700 rounded-lg p-4 space-y-2 text-sm">
                     <h4 class="font-bold text-blue-400">🛡️ DAMA Elimination Analysis</h4>
                     <p id="eliminationText" class="text-slate-300"></p>
@@ -299,6 +300,7 @@
                         if(j === q.correct) buttons[j].classList.add('bg-emerald-900/60', 'border-emerald-500');
                         else if(j === i) buttons[j].classList.add('bg-rose-900/60', 'border-rose-500');
                     }
+                    // Restored DAMA Elimination Analysis rendering upon selection
                     document.getElementById('eliminationText').innerHTML = `<strong>Winning Choice:</strong> Option ${String.fromCharCode(65 + q.correct)}<br><br><em>💡 DMBoK Explanation:</em> ${q.explanation}`;
                     document.getElementById('eliminationBox').classList.remove('hidden');
                 };
@@ -422,7 +424,6 @@
                 
                 timerDisplay.innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
                 
-                // Visual warning state alerts when time runs low (< 5 minutes)
                 if (examSecondsLeft <= 300) {
                     timerDisplay.className = "font-mono text-xl text-rose-500 font-bold animate-pulse";
                     headerBar.classList.add('border-rose-500', 'bg-rose-950/40');
