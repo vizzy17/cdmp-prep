@@ -123,7 +123,7 @@
 
     </main>
 
-    <!-- Footer Script / Engine -->
+    <!-- Footer Script / Engine (Updated path to code/questions.json) -->
     <script>
         let allQuestions = [];
         let filteredQuestions = [];
@@ -132,15 +132,14 @@
         let examTimer = null;
         let examSecondsLeft = 5400;
 
-        // Fetch JSON data and shuffle options dynamically on startup
-        fetch('./questions.json')
+        // Fetch JSON data from code directory structure
+        fetch('./code/questions.json')
             .then(res => res.json())
             .then(data => {
                 allQuestions = data.map((q, idx) => {
                     let rawOptions = q.options || [];
                     let originalCorrect = q.correct !== undefined ? q.correct : 0;
                     
-                    // Pair options with original index, then shuffle
                     let paired = rawOptions.map((opt, i) => ({ opt, i }));
                     for (let i = paired.length - 1; i > 0; i--) {
                         let j = Math.floor(Math.random() * (i + 1));
@@ -169,7 +168,7 @@
             })
             .catch(err => {
                 console.error("Error loading questions:", err);
-                document.getElementById('questionText').innerText = "Error loading questions.json structure.";
+                document.getElementById('questionText').innerText = "Error loading code/questions.json structure.";
             });
 
         function autoTagTier(q) {
