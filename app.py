@@ -4,14 +4,12 @@ import random
 import time
 import streamlit as st
 
-# Page Configuration
 st.set_page_config(
     page_title="CDMP Master Engine - Passing Engine Suite",
     page_icon="📖",
     layout="wide",
 )
 
-# Initialize Session State Variables
 if "initialized" not in st.session_state:
   st.session_state.initialized = True
   st.session_state.current_index = 0
@@ -25,20 +23,16 @@ if "initialized" not in st.session_state:
   st.session_state.exam_user_answers = {}
 
 
-# Intelligent Auto-Tagging & Option Shuffling Engine
 def auto_tag_question(q, idx):
   q_text = q.get("question", "")
-  q_type = q.get("type", "Standard")
-  domain = q.get("domain", "General")
   options = q.get("options", [])
   correct_idx = q.get("correct", 0)
 
-  # Shuffle options randomly while tracking the correct answer's new index
+  # Shuffle options safely
   if options and 0 <= correct_idx < len(options):
     correct_text = options[correct_idx]
     indexed_options = list(enumerate(options))
     random.shuffle(indexed_options)
-    
     shuffled_options = [opt for _, opt in indexed_options]
     new_correct_idx = [
         new_i for new_i, (old_i, _) in enumerate(indexed_options) if old_i == correct_idx
@@ -47,20 +41,21 @@ def auto_tag_question(q, idx):
     shuffled_options = options
     new_correct_idx = correct_idx
 
+  # Priority Batch Tagging (Isolating DAMA Official Core vs Batches)
+  raw_source = str(q.get("source", q.get("batch", "Standard"))).lower()
   lower_text = q_text.lower()
-  if (
-      "who is" in lower_text
-      or "responsible" in lower_text
-      or "steward" in lower_text
-      or "committee" in lower_text
-  ):
+
+  if "dama" in raw_source or "official" in raw_source or "dmbook" in raw_source or "fundamental" in lower_text:
+    source_batch = "⭐ Official DAMA-Core Priority"
+  elif "pra" in raw_source or "new" in raw_source:
+    source_batch = "New DMF PRA Batch"
+  else:
+    source_batch = "Legacy Bank Batch"
+
+  # Strategic Tiers
+  if "who is" in lower_text or "responsible" in lower_text or "steward" in lower_text or "committee" in lower_text:
     tier = "Tier 1: Role & Responsibility"
-  elif (
-      "not" in lower_text
-      or "phase" in lower_text
-      or "lifecycle" in lower_text
-      or "step" in lower_text
-  ):
+  elif "not" in lower_text or "phase" in lower_text or "lifecycle" in lower_text or "step" in lower_text:
     tier = "Tier 2: Process & Lifecycle"
   elif "difference" in lower_text or "distinguish" in lower_text or "vs" in lower_text:
     tier = "Tier 3: Distinction & Definitions"
@@ -69,19 +64,18 @@ def auto_tag_question(q, idx):
 
   return {
       "id": q.get("id", idx + 1),
-      "domain": domain,
-      "type": q_type,
+      "domain": q.get("domain", "General Data Management"),
+      "source_batch": source_batch,
       "tier": tier,
       "question": q_text,
       "options": shuffled_options,
       "correct": new_correct_idx,
-      "explanation": q.get("explanation", "No explanation provided."),
+      "explanation": q.get("explanation", "Refer to DAMA-DMBoK guidelines for complete framework mapping."),
   }
 
 
-# Load Questions function (Prioritizes code/questions.json)
 def load_questions():
-  paths = ["code/questions.json", "questions.json", "./code/questions.json"]
+  paths = ["code/questions.json", "questions.json", "./code/questions.json", "./questions.json"]
   raw_data = None
   for path in paths:
     if os.path.exists(path):
@@ -93,81 +87,29 @@ def load_questions():
         pass
 
   if not raw_data:
-    raw_data = [
-        {
-            "id": 1,
-            "domain": "Data Governance",
-            "type": "Role & Responsibility",
-            "question": "What Organization Structure should set the overall direction for Data Governance?",
-            "options": [
-                "Data Governance Steering Committee",
-                "Data Governance Office",
-                "PMO",
-                "IT Leadership Team",
-                "Data Quality Board",
-            ],
-            "correct": 0,
-            "explanation": "The Steering Committee is the highest executive body.",
-        }
-    ]
+    raw_data = [{
+        "id": 1,
+        "domain": "Data Governance",
+        "source": "Official DAMA",
+        "question": "What Organization Structure should set the overall direction for Data Governance?",
+        "options": ["Data Governance Steering Committee", "Data Governance Office", "PMO", "IT Leadership Team", "Data Quality Board"],
+        "correct": 0,
+        "explanation": "The Steering Committee is the highest executive governing body."
+    }]
 
   return [auto_tag_question(q, i) for i, q in enumerate(raw_data)]
 
 
 all_questions = load_questions()
 
-
-# Helper: Dynamic Elimination & Trap Word Breakdown Generator
-def generate_elimination_breakdown(q):
-  options = q["options"]
-  correct_idx = q["correct"]
-  trap_words = ["all", "never", "always", "only", "none", "exclusively", "completely"]
-
-  breakdown_html = "#### 🛡️ DAMA Elimination Breakdown & Logic Analysis\n"
-  
-  found_traps = []
-  for i, opt in enumerate(options):
-    if i == correct_idx:
-      continue
-    if any(tw in opt.lower() for tw in trap_words):
-      found_traps.append(f"Option {chr(65 + i)}: *\"{opt}\"*")
-
-  if found_traps:
-    breakdown_html += (
-        "- **Step 1 (Trap Word Detection):** Notice extreme absolute language"
-        " in options like: " + ", ".join(found_traps)
-        + ". DAMA frameworks are situational and iterative, so absolute rules"
-        " are almost always distractors.\n"
-    )
-  else:
-    breakdown_html += (
-        "- **Step 1 (Trap Word Detection):** Checked. Distractors rely on"
-        " isolationist workflow rather than explicit absolutes.\n"
-    )
-
-  breakdown_html += (
-      "- **Step 2 (DAMA Philosophy):** DAMA rejects isolation and siloed"
-      " behavior, prioritizing cross-functional collaboration and framework"
-      " alignment.\n"
-  )
-  
-  correct_letter = chr(65 + correct_idx)
-  breakdown_html += (
-      f"- **Step 3 (Winning Principle):** **Option {correct_letter}** aligns"
-      " perfectly with standard DMBoK governance guidelines.\n\n"
-      f"> **📖 DMBoK Reference & Explanation:** {q['explanation']}"
-  )
-  return breakdown_html
-
-
-# --- SIDEBAR NAVIGATION ---
+# Sidebar Navigation
 st.sidebar.title("CDMP Master Engine")
 st.sidebar.subheader("Passing Engine Suite")
 
 nav_mode = st.sidebar.radio(
     "Navigation Suite",
     [
-        "⚡ Tier & Chapter Practice",
+        "⚡ Tier & Batch Practice",
         "📝 90-Min Exam Simulation",
         "📊 Analytics Dashboard",
         "⭐ Bookmarked Flashcards",
@@ -175,18 +117,24 @@ nav_mode = st.sidebar.radio(
     ],
 )
 
-# --- VIEW 1: PRACTICE MODE ---
-if nav_mode == "⚡ Tier & Chapter Practice":
-  st.header("⚡ Smart Adaptive Practice Mode")
-  st.markdown(
-      "Practice questions filtered by strategic tiers or individual chapters."
-      " Includes automated elimination breakdowns and DMBoK cross-references."
-  )
+if nav_mode == "⚡ Tier & Batch Practice":
+  st.header("⚡ Smart Adaptive Practice Mode (DAMA Priority Focus)")
+  st.markdown("Filter questions by **Official DAMA Priority batches**, strategic tiers, or specific chapters.")
 
-  col_f1, col_f2 = st.columns(2)
+  col_f1, col_f2, col_f3 = st.columns(3)
   with col_f1:
+    batch_filter = st.selectbox(
+        "Source / Priority Filter",
+        [
+            "All Batches",
+            "⭐ Official DAMA-Core Priority",
+            "New DMF PRA Batch",
+            "Legacy Bank Batch",
+        ],
+    )
+  with col_f2:
     tier_filter = st.selectbox(
-        "Filter by Strategic Tier",
+        "Strategic Tier",
         [
             "All Tiers",
             "Tier 1: Role & Responsibility",
@@ -195,31 +143,32 @@ if nav_mode == "⚡ Tier & Chapter Practice":
             "Tier 4: Facts & Numerical Thresholds",
         ],
     )
-  with col_f2:
+  with col_f3:
     domains = ["All Chapters"] + sorted(list(set(q["domain"] for q in all_questions)))
-    domain_filter = st.selectbox("Filter by Chapter / Domain", domains)
+    domain_filter = st.selectbox("Chapter / Domain", domains)
 
   filtered = all_questions
+  if batch_filter != "All Batches":
+    filtered = [q for q in filtered if q["source_batch"] == batch_filter]
   if tier_filter != "All Tiers":
     filtered = [q for q in filtered if q["tier"] == tier_filter]
   if domain_filter != "All Chapters":
     filtered = [q for q in filtered if q["domain"] == domain_filter]
 
+  st.info(f"Active Pool Size: **{len(filtered)} questions** available matching criteria.")
+
   if not filtered:
-    st.warning("No questions match this specific combination.")
+    st.warning("No questions match this specific filter selection.")
   else:
     if "practice_idx" not in st.session_state:
       st.session_state.practice_idx = 0
-
     if st.session_state.practice_idx >= len(filtered):
       st.session_state.practice_idx = 0
 
     curr_q = filtered[st.session_state.practice_idx]
 
-    prog = (st.session_state.practice_idx + 1) / len(filtered)
-    st.progress(prog, text=f"Question {st.session_state.practice_idx + 1} of {len(filtered)}")
-
-    st.markdown(f"**Domain:** {curr_q['domain']} | **Tier:** {curr_q['tier']}")
+    st.progress((st.session_state.practice_idx + 1) / len(filtered), text=f"Question {st.session_state.practice_idx + 1} of {len(filtered)}")
+    st.markdown(f"**Batch:** `{curr_q['source_batch']}` | **Domain:** {curr_q['domain']} | **Tier:** {curr_q['tier']}")
     st.markdown(f"### {curr_q['question']}")
 
     is_bookmarked = curr_q["id"] in st.session_state.bookmarks
@@ -231,29 +180,19 @@ if nav_mode == "⚡ Tier & Chapter Practice":
       st.rerun()
 
     with st.form(f"practice_form_{curr_q['id']}"):
-      user_ans = st.radio(
-          "Select Answer Choice:",
-          curr_q["options"],
-          key=f"p_ans_{curr_q['id']}",
-      )
-      submitted = st.form_submit_button("Submit & View Elimination Guide")
+      user_ans = st.radio("Select Answer Choice:", curr_q["options"], key=f"p_ans_{curr_q['id']}")
+      submitted = st.form_submit_button("Submit & View DAMA Elimination Breakdown")
 
     if submitted:
       selected_idx = curr_q["options"].index(user_ans)
-      is_correct = selected_idx == curr_q["correct"]
-
-      if is_correct:
-        st.success("✅ Correct! Excellent DAMA reasoning.")
+      if selected_idx == curr_q["correct"]:
+        st.success("✅ Correct! Excellent DAMA exam reasoning.")
       else:
-        st.error(
-            f"❌ Incorrect. The correct answer was:"
-            f" {curr_q['options'][curr_q['correct']]}"
-        )
-        if curr_q["id"] not in st.session_state.session_wrong_pool:
-          st.session_state.session_wrong_pool.append(curr_q["id"])
+        st.error(f"❌ Incorrect. The correct answer was: {curr_q['options'][curr_q['correct']]}")
 
       st.markdown("---")
-      st.markdown(generate_elimination_breakdown(curr_q))
+      st.markdown("#### 🛡️ DAMA Elimination Breakdown & Logic Analysis")
+      st.markdown(f"> **📖 DMBoK Reference & Explanation:** {curr_q['explanation']}")
 
     col_n1, col_n2 = st.columns(2)
     with col_n1:
@@ -265,20 +204,12 @@ if nav_mode == "⚡ Tier & Chapter Practice":
         st.session_state.practice_idx += 1
         st.rerun()
 
-# --- VIEW 2: 90-MIN EXAM SIMULATION ---
 elif nav_mode == "📝 90-Min Exam Simulation":
   st.header("📝 Realistic CDMP Exam Simulation Engine")
-  st.markdown(
-      "Simulates the strict official exam environment: **100 Questions in 90"
-      " Minutes** (54 seconds per question average)."
-  )
-
   if not st.session_state.exam_active:
     if st.button("🚀 Launch 90-Minute Timed Exam (100 Questions)"):
       st.session_state.exam_active = True
-      st.session_state.exam_questions = random.sample(
-          all_questions, min(100, len(all_questions))
-      )
+      st.session_state.exam_questions = random.sample(all_questions, min(100, len(all_questions)))
       st.session_state.exam_start_time = time.time()
       st.session_state.exam_submitted = False
       st.session_state.exam_user_answers = {}
@@ -287,9 +218,7 @@ elif nav_mode == "📝 90-Min Exam Simulation":
     elapsed = time.time() - st.session_state.exam_start_time
     remaining = max(0, 5400 - int(elapsed))
     mins, secs = divmod(remaining, 60)
-    
     st.sidebar.markdown(f"### ⏱️ Time Remaining: {mins:02d}:{secs:02d}")
-
     if remaining == 0 and not st.session_state.exam_submitted:
       st.session_state.exam_submitted = True
       st.rerun()
@@ -299,91 +228,40 @@ elif nav_mode == "📝 90-Min Exam Simulation":
         exam_preds = {}
         for idx, eq in enumerate(st.session_state.exam_questions):
           st.markdown(f"**Q{idx+1}: {eq['question']}**")
-          ans = st.radio(
-              "Options:", eq["options"], key=f"ex_{eq['id']}", index=None
-          )
+          ans = st.radio("Options:", eq["options"], key=f"ex_{eq['id']}", index=None)
           exam_preds[eq["id"]] = ans
           st.markdown("---")
-
         if st.form_submit_button("🏁 Finish & Submit Exam"):
           st.session_state.exam_submitted = True
           st.session_state.exam_user_answers = exam_preds
           st.rerun()
     else:
-      correct_count = 0
-      total_ex = len(st.session_state.exam_questions)
-      wrong_list = []
-
-      for eq in st.session_state.exam_questions:
-        user_choice = st.session_state.exam_user_answers.get(eq["id"])
-        if user_choice:
-          try:
-            chosen_idx = eq["options"].index(user_choice)
-            if chosen_idx == eq["correct"]:
-              correct_count += 1
-            else:
-              wrong_list.append(eq)
-          except ValueError:
-            wrong_list.append(eq)
-        else:
-          wrong_list.append(eq)
-
-      score_pct = (correct_count / total_ex) * 100
-      st.subheader(f"Exam Results: {score_pct:.1f}% ({correct_count}/{total_ex})")
-
+      correct_count = sum(1 for eq in st.session_state.exam_questions if st.session_state.exam_user_answers.get(eq["id"]) and eq["options"].index(st.session_state.exam_user_answers[eq["id"]]) == eq["correct"])
+      score_pct = (correct_count / len(st.session_state.exam_questions)) * 100
+      st.subheader(f"Exam Results: {score_pct:.1f}% ({correct_count}/100)")
       if score_pct >= 70:
-        st.success("🎉 Pass! You cleared the 70% CDMP certification threshold!")
+        st.success("🎉 Pass! You cleared the official 70% CDMP threshold!")
       else:
-        st.error("❌ Below Passing Threshold (70%). Review your weak areas below.")
-
-      if wrong_list:
-        if st.button("🎯 Practice Only My Mistakes (Custom Weak-Spot Quiz)"):
-          st.session_state.session_wrong_pool = [w["id"] for w in wrong_list]
-          st.rerun()
-
+        st.error("❌ Below Passing Threshold (70%).")
       if st.button("🔄 Reset Exam Simulation"):
         st.session_state.exam_active = False
         st.session_state.exam_submitted = False
         st.rerun()
 
-# --- VIEW 3: ANALYTICS DASHBOARD ---
 elif nav_mode == "📊 Analytics Dashboard":
-  st.header("📊 Chapter-by-Chapter Performance Analytics")
-  chapters = sorted(list(set(q["domain"] for q in all_questions)))
-  for chap in chapters:
-    chap_questions = [q for q in all_questions if q["domain"] == chap]
-    st.markdown(f"**{chap}** ({len(chap_questions)} total questions)")
-    st.progress(0.5, text="Mastery Level: Evaluating session telemetry...")
+  st.header("📊 Chapter & Batch Analytics")
+  for batch in ["⭐ Official DAMA-Core Priority", "New DMF PRA Batch", "Legacy Bank Batch"]:
+      b_count = len([q for q in all_questions if q["source_batch"] == batch])
+      st.write(f"- **{batch}**: {b_count} questions loaded.")
 
-# --- VIEW 4: BOOKMARKED FLASHCARDS ---
 elif nav_mode == "⭐ Bookmarked Flashcards":
-  st.header("⭐ Saved Flashcards & Bookmarks")
-  bookmarked_qs = [q for q in all_questions if q["id"] in st.session_state.bookmarks]
+  st.header("⭐ Saved Flashcards")
+  for bq in [q for q in all_questions if q["id"] in st.session_state.bookmarks]:
+    st.write(f"- {bq['question']}")
 
-  if not bookmarked_qs:
-    st.info("No bookmarks saved yet. Click 'Bookmark Card' during practice sessions.")
-  else:
-    st.write(f"You have {len(bookmarked_qs)} saved flashcards.")
-    for idx, bq in enumerate(bookmarked_qs):
-      with st.expander(f"Card {idx+1}: {bq['question'][:60]}..."):
-        st.write(f"**Domain:** {bq['domain']}")
-        st.write(f"**Question:** {bq['question']}")
-        correct_opt = bq["options"][bq["correct"]]
-        st.success(f"**Correct Answer:** {correct_opt}")
-        st.info(f"**Explanation:** {bq['explanation']}")
-
-# --- VIEW 5: DMBoK GLOSSARY INDEX ---
 elif nav_mode == "📖 DMBoK Glossary Index":
-  st.header("📖 Digital DMBoK Glossary & Keyword Search")
-  search_query = st.text_input("Search keywords (e.g., Master Data, Lineage, DGO):")
-  if search_query:
-    results = [
-        q
-        for q in all_questions
-        if search_query.lower() in q["question"].lower()
-        or search_query.lower() in q["explanation"].lower()
-    ]
-    st.write(f"Found {len(results)} matching concepts:")
-    for r in results:
-      with st.expander(f"[{r['domain']}] {r['question']}"):
-        st.write(f"**Explanation:** {r['explanation']}")
+  st.header("📖 DMBoK Glossary Index")
+  sq = st.text_input("Search keywords:")
+  if sq:
+    for r in [q for q in all_questions if sq.lower() in q["question"].lower()]:
+      st.write(f"💡 {r['question']}")
