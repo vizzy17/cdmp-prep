@@ -15,14 +15,17 @@
             <span class="text-xs bg-slate-700 px-2 py-1 rounded text-slate-300">DAMA Priority Suite</span>
         </div>
         <nav class="flex flex-wrap gap-2 text-sm text-slate-300 mt-2 sm:mt-0">
-            <button onclick="switchTab('practice')" class="nav-btn px-3 py-1.5 rounded bg-blue-600 text-white font-medium transition">⚡ Practice</button>
-            <button onclick="switchTab('exam')" class="nav-btn px-3 py-1.5 rounded hover:bg-slate-700 transition">📝 Exam Sim</button>
-            <button onclick="switchTab('analytics')" class="nav-btn px-3 py-1.5 rounded hover:bg-slate-700 transition">📊 Analytics</button>
-            <button onclick="switchTab('bookmarks')" class="nav-btn px-3 py-1.5 rounded hover:bg-slate-700 transition">⭐ Bookmarks (<span id="bookmarkCount">0</span>)</button>
+            <button onclick="requestTabSwitch('practice')" class="nav-btn px-3 py-1.5 rounded bg-blue-600 text-white font-medium transition" data-tab="practice">⚡ Practice</button>
+            <button onclick="requestTabSwitch('exam')" class="nav-btn px-3 py-1.5 rounded hover:bg-slate-700 transition" data-tab="exam">📝 Exam Sim</button>
+            <button onclick="requestTabSwitch('analytics')" class="nav-btn px-3 py-1.5 rounded hover:bg-slate-700 transition" data-tab="analytics">📊 Analytics</button>
+            <button onclick="requestTabSwitch('bookmarks')" class="nav-btn px-3 py-1.5 rounded hover:bg-slate-700 transition" data-tab="bookmarks">⭐ Bookmarks (<span id="bookmarkCount">0</span>)</button>
+            <button onclick="requestTabSwitch('glossary')" class="nav-btn px-3 py-1.5 rounded hover:bg-slate-700 transition" data-tab="glossary">📖 Glossary</button>
         </nav>
     </header>
 
     <main class="flex-grow flex flex-col items-center justify-start p-6 max-w-4xl mx-auto w-full">
+        
+        <!-- VIEW 1: PRACTICE -->
         <div id="view-practice" class="w-full space-y-6">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-800 p-4 rounded-xl border border-slate-700 shadow">
                 <div>
@@ -73,23 +76,52 @@
             </div>
         </div>
 
+        <!-- VIEW 2: EXAM SIMULATION -->
         <div id="view-exam" class="w-full space-y-6 hidden">
             <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center space-y-4">
-                <h2 class="text-2xl font-bold">CDMP Exam Simulation</h2>
-                <button onclick="startExam()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-bold">🚀 Start 90-Min Exam (100 Qs)</button>
-                <div id="examActiveContainer" class="text-left space-y-4 hidden"></div>
+                <h2 class="text-2xl font-bold">Realistic CDMP Exam Simulation Engine</h2>
+                <p class="text-sm text-slate-400 max-w-xl mx-auto">100 Questions in 90 Minutes. Strict official CDMP testing environment.</p>
+                <div id="examStartPanel">
+                    <button onclick="startExam()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg transition">🚀 Launch 90-Minute Timed Exam</button>
+                </div>
+                <div id="examActivePanel" class="hidden space-y-6 text-left">
+                    <div class="flex justify-between items-center bg-slate-900 p-4 rounded-lg sticky top-4 border border-slate-700 z-10 shadow">
+                        <span class="font-semibold text-sm">Exam In Progress</span>
+                        <span id="timerDisplay" class="font-mono text-xl text-amber-400 font-bold">90:00</span>
+                        <div class="space-x-2">
+                            <button onclick="abortExam()" class="bg-rose-700 hover:bg-rose-600 px-3 py-1.5 rounded text-xs font-bold transition">Abort</button>
+                            <button onclick="submitExam()" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded text-sm font-bold transition">Submit Exam</button>
+                        </div>
+                    </div>
+                    <div id="examQuestionsContainer" class="space-y-6"></div>
+                </div>
+                <div id="examResultsPanel" class="hidden space-y-4 text-center">
+                    <h3 id="examScoreTitle" class="text-xl font-bold"></h3>
+                    <p id="examScoreDesc" class="text-sm text-slate-300"></p>
+                    <button onclick="resetExam()" class="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-lg text-sm font-medium">Try Again</button>
+                </div>
             </div>
         </div>
 
+        <!-- VIEW 3: ANALYTICS -->
         <div id="view-analytics" class="w-full space-y-4 hidden">
-            <h2 class="text-xl font-bold">Analytics & Repositories</h2>
-            <div id="analyticsContent" class="space-y-2 text-sm text-slate-300"></div>
+            <h2 class="text-xl font-bold mb-4">Chapter & Batch Analytics</h2>
+            <div id="analyticsContainer" class="space-y-3"></div>
         </div>
 
+        <!-- VIEW 4: BOOKMARKS -->
         <div id="view-bookmarks" class="w-full space-y-4 hidden">
-            <h2 class="text-xl font-bold">Saved Bookmarks</h2>
+            <h2 class="text-xl font-bold mb-4">Saved Flashcards & Bookmarks</h2>
             <div id="bookmarksContainer" class="space-y-3"></div>
         </div>
+
+        <!-- VIEW 5: GLOSSARY -->
+        <div id="view-glossary" class="w-full space-y-4 hidden">
+            <h2 class="text-xl font-bold mb-2">Digital DMBoK Glossary & Keyword Search</h2>
+            <input type="text" id="glossarySearch" oninput="searchGlossary()" placeholder="Search keywords (e.g., Master Data, Lineage)..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-slate-100">
+            <div id="glossaryResults" class="space-y-3"></div>
+        </div>
+
     </main>
 
     <script>
@@ -97,8 +129,10 @@
         let filteredQuestions = [];
         let currentIndex = 0;
         let bookmarks = new Set(JSON.parse(localStorage.getItem('cdmp_bookmarks') || '[]'));
+        let examTimer = null;
+        let examSecondsLeft = 5400;
+        let examActive = false;
 
-        // Dual path fetch fallback for absolute reliability on GitHub Pages
         async function loadData() {
             const paths = ['./code/questions.json', './questions.json', 'code/questions.json', 'questions.json'];
             let data = null;
@@ -113,7 +147,7 @@
             }
 
             if (!data) {
-                document.getElementById('questionText').innerText = "Error: Could not locate questions.json in repository path.";
+                document.getElementById('questionText').innerText = "Error: Could not locate questions.json path.";
                 return;
             }
 
@@ -144,9 +178,12 @@
                 else if (text.includes("not") || text.includes("phase") || text.includes("lifecycle") || text.includes("step")) tier = "Tier 2: Process & Lifecycle";
                 else if (text.includes("difference") || text.includes("distinguish") || text.includes("vs")) tier = "Tier 3: Distinction & Definitions";
 
+                let rawDomain = q.domain || "General Data Management";
+                let cleanDomain = rawDomain.trim().replace(/\w\S*/g, (w) => w.replace(/^\w/, (c) => c.toUpperCase()));
+
                 return {
                     id: q.id || idx + 1,
-                    domain: q.domain || "General Data Management",
+                    domain: cleanDomain,
                     source_batch: batch,
                     tier: tier,
                     question: q.question || "",
@@ -159,6 +196,7 @@
             populateDropdowns();
             filterQuestions();
             updateBookmarkCount();
+            buildAnalytics();
         }
 
         loadData();
@@ -166,6 +204,7 @@
         function populateDropdowns() {
             let domains = [...new Set(allQuestions.map(q => q.domain))].sort();
             let domainSelect = document.getElementById('domainSelect');
+            domainSelect.innerHTML = '<option value="all">All Chapters</option>';
             domains.forEach(d => {
                 let opt = document.createElement('option');
                 opt.value = d;
@@ -174,11 +213,26 @@
             });
         }
 
+        function requestTabSwitch(tab) {
+            if (examActive && tab !== 'exam') {
+                if (!confirm("⚠️ Active Exam Session Running! Do you want to abort the exam and switch views?")) {
+                    return;
+                }
+                abortExam();
+            }
+            switchTab(tab);
+        }
+
         function switchTab(tab) {
-            ['practice', 'exam', 'analytics', 'bookmarks'].forEach(t => {
+            ['practice', 'exam', 'analytics', 'bookmarks', 'glossary'].forEach(t => {
                 document.getElementById(`view-${t}`).classList.add('hidden');
             });
             document.getElementById(`view-${tab}`).classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white', 'font-medium');
+                if(btn.dataset.tab === tab) btn.classList.add('bg-blue-600', 'text-white', 'font-medium');
+            });
+            if(tab === 'bookmarks') renderBookmarks();
         }
 
         function filterQuestions() {
@@ -254,8 +308,112 @@
             document.getElementById('bookmarkCount').innerText = bookmarks.size;
         }
 
+        function renderBookmarks() {
+            let container = document.getElementById('bookmarksContainer');
+            container.innerHTML = "";
+            let bq = allQuestions.filter(q => bookmarks.has(q.id));
+            if(bq.length === 0) {
+                container.innerHTML = `<p class="text-slate-400">No bookmarks saved yet.</p>`;
+                return;
+            }
+            bq.forEach((q) => {
+                let div = document.createElement('div');
+                div.className = "bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-1";
+                div.innerHTML = `<p class="text-xs text-blue-400 font-semibold">${q.domain}</p><p class="font-medium text-sm">${q.question}</p>`;
+                container.appendChild(div);
+            });
+        }
+
+        function buildAnalytics() {
+            let container = document.getElementById('analyticsContainer');
+            container.innerHTML = "";
+            let batches = ["⭐ Official DAMA-Core Priority", "New DMF PRA Batch", "Legacy Bank Batch"];
+            batches.forEach(b => {
+                let count = allQuestions.filter(q => q.source_batch === b).length;
+                let div = document.createElement('div');
+                div.className = "bg-slate-800 p-4 rounded-xl border border-slate-700 flex justify-between items-center";
+                div.innerHTML = `<div><h4 class="font-semibold">${b}</h4><p class="text-xs text-slate-400">${count} total questions available</p></div><span class="text-sm font-bold text-blue-400">Ready</span>`;
+                container.appendChild(div);
+            });
+        }
+
+        function searchGlossary() {
+            let query = document.getElementById('glossarySearch').value.toLowerCase();
+            let container = document.getElementById('glossaryResults');
+            container.innerHTML = "";
+            if(!query) return;
+            let results = allQuestions.filter(q => q.question.toLowerCase().includes(query) || q.explanation.toLowerCase().includes(query));
+            results.forEach(r => {
+                let div = document.createElement('div');
+                div.className = "bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-1";
+                div.innerHTML = `<span class="text-xs text-blue-400">${r.domain}</span><p class="font-medium text-sm">${r.question}</p><p class="text-xs text-slate-300">💡 ${r.explanation}</p>`;
+                container.appendChild(div);
+            });
+        }
+
         function startExam() {
-            alert("Exam Simulation Mode active. Use Streamlit or full view suite for timed 100-question execution.");
+            document.getElementById('examStartPanel').classList.add('hidden');
+            document.getElementById('examActivePanel').classList.remove('hidden');
+            examSecondsLeft = 5400;
+            examActive = true;
+            
+            let examPool = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, 100);
+            let container = document.getElementById('examQuestionsContainer');
+            container.innerHTML = "";
+            
+            examPool.forEach((q, idx) => {
+                let div = document.createElement('div');
+                div.className = "bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2 exam-item";
+                div.dataset.correct = q.correct;
+                div.dataset.id = q.id;
+                
+                let optsHtml = "";
+                q.options.forEach((opt, i) => {
+                    optsHtml += `<label class="block text-sm p-2 rounded hover:bg-slate-700/50 cursor-pointer"><input type="radio" name="ex_${q.id}" value="${i}" class="mr-2"> ${String.fromCharCode(65+i)}. ${opt}</label>`;
+                });
+                div.innerHTML = `<p class="font-semibold text-sm">Q${idx+1}: ${q.question}</p><div class="space-y-1">${optsHtml}</div>`;
+                container.appendChild(div);
+            });
+
+            examTimer = setInterval(() => {
+                examSecondsLeft--;
+                let m = Math.floor(examSecondsLeft / 60);
+                let s = examSecondsLeft % 60;
+                document.getElementById('timerDisplay').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                if(examSecondsLeft <= 0) submitExam();
+            }, 1000);
+        }
+
+        function abortExam() {
+            clearInterval(examTimer);
+            examActive = false;
+            document.getElementById('examActivePanel').classList.add('hidden');
+            document.getElementById('examStartPanel').classList.remove('hidden');
+        }
+
+        function submitExam() {
+            clearInterval(examTimer);
+            examActive = false;
+            document.getElementById('examActivePanel').classList.add('hidden');
+            document.getElementById('examResultsPanel').classList.remove('hidden');
+            
+            let items = document.querySelectorAll('.exam-item');
+            let correct = 0;
+            items.forEach(item => {
+                let selected = item.querySelector('input[type="radio"]:checked');
+                if(selected && parseInt(selected.value) === parseInt(item.dataset.correct)) {
+                    correct++;
+                }
+            });
+
+            let pct = (correct / items.length) * 100;
+            document.getElementById('examScoreTitle').innerText = `Exam Results: ${pct.toFixed(1)}% (${correct}/${items.length})`;
+            document.getElementById('examScoreDesc').innerText = pct >= 70 ? "🎉 Pass! You cleared the 70% CDMP certification threshold!" : "❌ Below Passing Threshold (70%). Review your weak areas.";
+        }
+
+        function resetExam() {
+            document.getElementById('examResultsPanel').classList.add('hidden');
+            document.getElementById('examStartPanel').classList.remove('hidden');
         }
     </script>
 </body>
