@@ -15,7 +15,7 @@ if "initialized" not in st.session_state:
   st.session_state.current_index = 0
   st.session_state.score = 0
   st.session_state.bookmarks = set()
-  st.session_state.confidence_ratings = {}  # Tracks confidence per question ID
+  st.session_state.confidence_ratings = {}
   st.session_state.exam_active = False
   st.session_state.exam_start_time = None
   st.session_state.exam_submitted = False
@@ -101,7 +101,6 @@ def load_questions():
 
 all_questions = load_questions()
 
-# Safe Navigation Check
 st.sidebar.title("CDMP Master Engine")
 st.sidebar.subheader("Passing Engine Suite")
 
@@ -211,6 +210,7 @@ if nav_mode == "⚡ Tier & Batch Practice":
       else:
         st.error(f"❌ Incorrect. The correct answer was: {curr_q['options'][curr_q['correct']]}")
 
+      # Restored DAMA Elimination Analysis & Breakdown Block
       st.markdown("---")
       st.markdown("#### 🛡️ DAMA Elimination Breakdown & Logic Analysis")
       st.markdown(f"> **📖 DMBoK Reference & Explanation:** {curr_q['explanation']}")
@@ -240,7 +240,6 @@ elif nav_mode == "📝 90-Min Exam Simulation":
     remaining = max(0, 5400 - int(elapsed))
     mins, secs = divmod(remaining, 60)
     
-    # Visual Alert styling if under 5 minutes remaining
     timer_color = "red" if remaining < 300 else ("orange" if remaining < 900 else "green")
     st.sidebar.markdown(f"### ⏱️ Time Remaining: :{timer_color}[{mins:02d}:{secs:02d}]")
     if remaining < 300:
