@@ -15,7 +15,7 @@ if "initialized" not in st.session_state:
   st.session_state.current_index = 0
   st.session_state.score = 0
   st.session_state.bookmarks = set()
-  st.session_state.session_wrong_pool = []
+  st.session_state.confidence_ratings = {}  # Tracks confidence per question ID
   st.session_state.exam_active = False
   st.session_state.exam_start_time = None
   st.session_state.exam_submitted = False
@@ -58,7 +58,6 @@ def auto_tag_question(q, idx):
   else:
     tier = "Tier 4: Facts & Numerical Thresholds"
 
-  # Clean domain names to eliminate duplicates caused by whitespace or minor casing differences
   raw_domain = q.get("domain", "General Data Management")
   clean_domain = " ".join(raw_domain.strip().title().split())
 
@@ -102,7 +101,7 @@ def load_questions():
 
 all_questions = load_questions()
 
-# Safe Navigation Check (Prompt user if leaving active mock exam)
+# Safe Navigation Check
 st.sidebar.title("CDMP Master Engine")
 st.sidebar.subheader("Passing Engine Suite")
 
@@ -150,7 +149,6 @@ if nav_mode == "⚡ Tier & Batch Practice":
         on_change=lambda: st.session_state.update({"practice_idx": 0})
     )
   with col_f3:
-    # Use sorted unique deduplicated list
     unique_domains = sorted(list(set(q["domain"] for q in all_questions)))
     domains = ["All Chapters"] + unique_domains
     domain_filter = st.selectbox(
@@ -184,6 +182,16 @@ if nav_mode == "⚡ Tier & Batch Practice":
     st.markdown(f"**Batch:** `{curr_q['source_batch']}` | **Domain:** {curr_q['domain']} | **Tier:** {curr_q['tier']}")
     st.markdown(f"### {curr_q['question']}")
 
+    # Confidence Tracker Widget
+    current_conf = st.session_state.confidence_ratings.get(curr_q["id"], "Unrated")
+    conf_choice = st.radio(
+        "🎯 Rate Your Confidence for this Question:",
+        ["Unrated", "🔥 High Confidence", "⚡ Medium Confidence", "🎲 Guessing"],
+        horizontal=True,
+        key=f"conf_{curr_q['id']}"
+    )
+    st.session_state.confidence_ratings[curr_q["id"]] = conf_choice
+
     is_bookmarked = curr_q["id"] in st.session_state.bookmarks
     if st.button("⭐ Bookmark Card" if not is_bookmarked else "❌ Remove Bookmark"):
       if is_bookmarked:
@@ -199,7 +207,7 @@ if nav_mode == "⚡ Tier & Batch Practice":
     if submitted:
       selected_idx = curr_q["options"].index(user_ans)
       if selected_idx == curr_q["correct"]:
-        st.success("✅ Correct! Excellent DAMA exam reasoning.")
+        st.success(f"✅ Correct! (Your confidence was recorded as: {conf_choice})")
       else:
         st.error(f"❌ Incorrect. The correct answer was: {curr_q['options'][curr_q['correct']]}")
 
@@ -231,7 +239,13 @@ elif nav_mode == "📝 90-Min Exam Simulation":
     elapsed = time.time() - st.session_state.exam_start_time
     remaining = max(0, 5400 - int(elapsed))
     mins, secs = divmod(remaining, 60)
-    st.sidebar.markdown(f"### ⏱️ Time Remaining: {mins:02d}:{secs:02d}")
+    
+    # Visual Alert styling if under 5 minutes remaining
+    timer_color = "red" if remaining < 300 else ("orange" if remaining < 900 else "green")
+    st.sidebar.markdown(f"### ⏱️ Time Remaining: :{timer_color}[{mins:02d}:{secs:02d}]")
+    if remaining < 300:
+      st.sidebar.error("⚠️ Less than 5 minutes remaining! Finalize your answers.")
+
     if remaining == 0 and not st.session_state.exam_submitted:
       st.session_state.exam_submitted = True
       st.rerun()
@@ -274,9 +288,10 @@ elif nav_mode == "📊 Analytics Dashboard":
       st.write(f"- **{batch}**: {b_count} questions loaded.")
 
 elif nav_mode == "⭐ Bookmarked Flashcards":
-  st.header("⭐ Saved Flashcards")
+  st.header("⭐ Saved Flashcards & Weak Spots")
   for bq in [q for q in all_questions if q["id"] in st.session_state.bookmarks]:
-    st.write(f"- {bq['question']}")
+    conf = st.session_state.confidence_ratings.get(bq["id"], "Unrated")
+    st.write(f"- **[{conf}]** {bq['question']}")
 
 elif nav_mode == "📖 DMBoK Glossary Index":
   st.header("📖 DMBoK Glossary Index")
