@@ -1,4 +1,3 @@
-
 import json
 import os
 import random
@@ -80,9 +79,9 @@ def auto_tag_question(q, idx):
   }
 
 
-# Load Questions function (Uncached to ensure option shuffling executes properly on restart)
+# Load Questions function (Prioritizes code/questions.json)
 def load_questions():
-  paths = ["questions.json", "code/questions.json", "./code/questions.json"]
+  paths = ["code/questions.json", "questions.json", "./code/questions.json"]
   raw_data = None
   for path in paths:
     if os.path.exists(path):
@@ -99,10 +98,7 @@ def load_questions():
             "id": 1,
             "domain": "Data Governance",
             "type": "Role & Responsibility",
-            "question": (
-                "What Organization Structure should set the overall direction"
-                " for Data Governance?"
-            ),
+            "question": "What Organization Structure should set the overall direction for Data Governance?",
             "options": [
                 "Data Governance Steering Committee",
                 "Data Governance Office",
@@ -111,9 +107,7 @@ def load_questions():
                 "Data Quality Board",
             ],
             "correct": 0,
-            "explanation": (
-                "The Steering Committee is the highest executive body."
-            ),
+            "explanation": "The Steering Committee is the highest executive body.",
         }
     ]
 
@@ -271,8 +265,7 @@ if nav_mode == "⚡ Tier & Chapter Practice":
         st.session_state.practice_idx += 1
         st.rerun()
 
-
-# --- VIEW 2: 90-MIN EXAM SIMULATION (Stable & Flicker-Free) ---
+# --- VIEW 2: 90-MIN EXAM SIMULATION ---
 elif nav_mode == "📝 90-Min Exam Simulation":
   st.header("📝 Realistic CDMP Exam Simulation Engine")
   st.markdown(
@@ -353,7 +346,6 @@ elif nav_mode == "📝 90-Min Exam Simulation":
         st.session_state.exam_submitted = False
         st.rerun()
 
-
 # --- VIEW 3: ANALYTICS DASHBOARD ---
 elif nav_mode == "📊 Analytics Dashboard":
   st.header("📊 Chapter-by-Chapter Performance Analytics")
@@ -362,7 +354,6 @@ elif nav_mode == "📊 Analytics Dashboard":
     chap_questions = [q for q in all_questions if q["domain"] == chap]
     st.markdown(f"**{chap}** ({len(chap_questions)} total questions)")
     st.progress(0.5, text="Mastery Level: Evaluating session telemetry...")
-
 
 # --- VIEW 4: BOOKMARKED FLASHCARDS ---
 elif nav_mode == "⭐ Bookmarked Flashcards":
@@ -381,7 +372,6 @@ elif nav_mode == "⭐ Bookmarked Flashcards":
         st.success(f"**Correct Answer:** {correct_opt}")
         st.info(f"**Explanation:** {bq['explanation']}")
 
-
 # --- VIEW 5: DMBoK GLOSSARY INDEX ---
 elif nav_mode == "📖 DMBoK Glossary Index":
   st.header("📖 Digital DMBoK Glossary & Keyword Search")
@@ -397,4 +387,3 @@ elif nav_mode == "📖 DMBoK Glossary Index":
     for r in results:
       with st.expander(f"[{r['domain']}] {r['question']}"):
         st.write(f"**Explanation:** {r['explanation']}")
-
