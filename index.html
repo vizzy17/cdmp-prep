@@ -4,40 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CDMP Master Engine - Passing Engine Suite</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-        }
-    </script>
+    <script>tailwind.config = { darkMode: 'class' }</script>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-blue-500 selection:text-white">
 
-    <!-- Header Navigation -->
     <header class="bg-slate-800 border-b border-slate-700 px-6 py-4 flex flex-wrap justify-between items-center shadow-md">
         <div class="flex items-center space-x-3">
             <span class="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">CDMP Master Engine</span>
-            <span class="text-xs bg-slate-700 px-2 py-1 rounded text-slate-300">Passing Engine Suite</span>
+            <span class="text-xs bg-slate-700 px-2 py-1 rounded text-slate-300">DAMA Priority Suite</span>
         </div>
-        <nav class="flex flex-wrap gap-2 text-sm text-slate-300 mt-2 sm:mt-0" id="navTabs">
-            <button onclick="switchTab('practice')" class="nav-btn px-3 py-1.5 rounded bg-blue-600 text-white font-medium transition">⚡ Tier Practice</button>
-            <button onclick="switchTab('exam')" class="nav-btn px-3 py-1.5 rounded hover:bg-slate-700 transition">📝 90-Min Exam</button>
+        <nav class="flex flex-wrap gap-2 text-sm text-slate-300 mt-2 sm:mt-0">
+            <button onclick="switchTab('practice')" class="nav-btn px-3 py-1.5 rounded bg-blue-600 text-white font-medium transition">⚡ Practice</button>
+            <button onclick="switchTab('exam')" class="nav-btn px-3 py-1.5 rounded hover:bg-slate-700 transition">📝 Exam Sim</button>
             <button onclick="switchTab('analytics')" class="nav-btn px-3 py-1.5 rounded hover:bg-slate-700 transition">📊 Analytics</button>
             <button onclick="switchTab('bookmarks')" class="nav-btn px-3 py-1.5 rounded hover:bg-slate-700 transition">⭐ Bookmarks (<span id="bookmarkCount">0</span>)</button>
-            <button onclick="switchTab('glossary')" class="nav-btn px-3 py-1.5 rounded hover:bg-slate-700 transition">📖 DMBoK Glossary</button>
         </nav>
     </header>
 
-    <!-- Main Container -->
     <main class="flex-grow flex flex-col items-center justify-start p-6 max-w-4xl mx-auto w-full">
-
-        <!-- VIEW 1: PRACTICE & ELIMINATION MODE -->
         <div id="view-practice" class="w-full space-y-6">
-            <div class="flex flex-wrap gap-4 bg-slate-800 p-4 rounded-xl border border-slate-700 shadow">
-                <div class="flex-1 min-w-[200px]">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-800 p-4 rounded-xl border border-slate-700 shadow">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Source Priority:</label>
+                    <select id="batchSelect" onchange="filterQuestions()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100">
+                        <option value="all">All Batches</option>
+                        <option value="⭐ Official DAMA-Core Priority">⭐ Official DAMA-Core Priority</option>
+                        <option value="New DMF PRA Batch">New DMF PRA Batch</option>
+                        <option value="Legacy Bank Batch">Legacy Bank Batch</option>
+                    </select>
+                </div>
+                <div>
                     <label class="block text-xs font-semibold text-slate-400 mb-1">Strategic Tier:</label>
-                    <select id="tierSelect" onchange="filterQuestions()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+                    <select id="tierSelect" onchange="filterQuestions()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100">
                         <option value="all">All Tiers</option>
                         <option value="Tier 1: Role & Responsibility">Tier 1: Role & Responsibility</option>
                         <option value="Tier 2: Process & Lifecycle">Tier 2: Process & Lifecycle</option>
@@ -45,31 +44,27 @@
                         <option value="Tier 4: Facts & Numerical Thresholds">Tier 4: Facts & Numerical Thresholds</option>
                     </select>
                 </div>
-                <div class="flex-1 min-w-[200px]">
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Chapter / Domain:</label>
-                    <select id="domainSelect" onchange="filterQuestions()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Chapter:</label>
+                    <select id="domainSelect" onchange="filterQuestions()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100">
                         <option value="all">All Chapters</option>
                     </select>
                 </div>
             </div>
 
-            <!-- Question Card Box -->
             <div class="w-full bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl relative">
                 <div class="flex justify-between items-center mb-3 text-xs text-slate-400">
-                    <span id="cardMeta">Domain | Tier</span>
+                    <span id="cardMeta">Batch | Domain | Tier</span>
                     <button id="bookmarkBtn" onclick="toggleBookmark()" class="text-slate-500 hover:text-yellow-400 text-lg transition">⭐</button>
                 </div>
-                
                 <div id="questionContainer" class="space-y-4">
-                    <h3 id="questionText" class="text-lg font-semibold text-slate-100">Loading questions...</h3>
+                    <h3 id="questionText" class="text-lg font-semibold text-slate-100">Loading master question repository...</h3>
                     <div id="optionsContainer" class="space-y-2"></div>
                 </div>
-
                 <div id="eliminationBox" class="mt-6 hidden bg-slate-900/80 border border-slate-700 rounded-lg p-4 space-y-2 text-sm">
-                    <h4 class="font-bold text-blue-400 flex items-center gap-2">🛡️ DAMA Elimination Breakdown & Logic Analysis</h4>
+                    <h4 class="font-bold text-blue-400">🛡️ DAMA Elimination Analysis</h4>
                     <p id="eliminationText" class="text-slate-300"></p>
                 </div>
-
                 <div class="mt-6 flex justify-between items-center pt-4 border-t border-slate-700">
                     <button onclick="prevQuestion()" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg text-sm transition">⬅ Previous</button>
                     <span class="text-xs text-slate-400">Card <span id="currentIndex">0</span> of <span id="totalQuestions">0</span></span>
@@ -78,132 +73,123 @@
             </div>
         </div>
 
-        <!-- VIEW 2: 90-MIN EXAM SIMULATION -->
         <div id="view-exam" class="w-full space-y-6 hidden">
             <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center space-y-4">
-                <h2 class="text-2xl font-bold text-slate-100">Realistic CDMP Exam Simulation Engine</h2>
-                <p class="text-sm text-slate-400 max-w-xl mx-auto">Simulates the strict official exam environment: 100 Questions in 90 Minutes (54 seconds per question average).</p>
-                <div id="examStartPanel">
-                    <button onclick="startExam()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg transition">🚀 Launch 90-Minute Timed Exam</button>
-                </div>
-                <div id="examActivePanel" class="hidden space-y-6 text-left">
-                    <div class="flex justify-between items-center bg-slate-900 p-4 rounded-lg sticky top-4 border border-slate-700 z-10 shadow">
-                        <span class="font-semibold text-sm">Exam In Progress</span>
-                        <span id="timerDisplay" class="font-mono text-xl text-amber-400 font-bold">90:00</span>
-                        <button onclick="submitExam()" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg text-sm font-bold transition">Finish & Submit</button>
-                    </div>
-                    <div id="examQuestionsContainer" class="space-y-6"></div>
-                </div>
-                <div id="examResultsPanel" class="hidden space-y-4 text-center">
-                    <h3 id="examScoreTitle" class="text-xl font-bold"></h3>
-                    <p id="examScoreDesc" class="text-sm text-slate-300"></p>
-                    <button onclick="resetExam()" class="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-lg text-sm font-medium">Try Again</button>
-                </div>
+                <h2 class="text-2xl font-bold">CDMP Exam Simulation</h2>
+                <button onclick="startExam()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-bold">🚀 Start 90-Min Exam (100 Qs)</button>
+                <div id="examActiveContainer" class="text-left space-y-4 hidden"></div>
             </div>
         </div>
 
-        <!-- VIEW 3: ANALYTICS DASHBOARD -->
         <div id="view-analytics" class="w-full space-y-4 hidden">
-            <h2 class="text-xl font-bold mb-4">Chapter-by-Chapter Performance Analytics</h2>
-            <div id="analyticsContainer" class="space-y-3"></div>
+            <h2 class="text-xl font-bold">Analytics & Repositories</h2>
+            <div id="analyticsContent" class="space-y-2 text-sm text-slate-300"></div>
         </div>
 
-        <!-- VIEW 4: BOOKMARKS -->
         <div id="view-bookmarks" class="w-full space-y-4 hidden">
-            <h2 class="text-xl font-bold mb-4">Saved Flashcards & Bookmarks</h2>
+            <h2 class="text-xl font-bold">Saved Bookmarks</h2>
             <div id="bookmarksContainer" class="space-y-3"></div>
         </div>
-
-        <!-- VIEW 5: GLOSSARY SEARCH -->
-        <div id="view-glossary" class="w-full space-y-4 hidden">
-            <h2 class="text-xl font-bold mb-2">Digital DMBoK Glossary & Keyword Search</h2>
-            <input type="text" id="glossarySearch" oninput="searchGlossary()" placeholder="Search keywords (e.g., Master Data, Lineage, DGO)..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-slate-100 focus:outline-none focus:border-blue-500">
-            <div id="glossaryResults" class="space-y-3"></div>
-        </div>
-
     </main>
 
-    <!-- Footer Script / Engine (Updated path to code/questions.json) -->
     <script>
         let allQuestions = [];
         let filteredQuestions = [];
         let currentIndex = 0;
         let bookmarks = new Set(JSON.parse(localStorage.getItem('cdmp_bookmarks') || '[]'));
-        let examTimer = null;
-        let examSecondsLeft = 5400;
 
-        // Fetch JSON data from code directory structure
-        fetch('./code/questions.json')
-            .then(res => res.json())
-            .then(data => {
-                allQuestions = data.map((q, idx) => {
-                    let rawOptions = q.options || [];
-                    let originalCorrect = q.correct !== undefined ? q.correct : 0;
-                    
-                    let paired = rawOptions.map((opt, i) => ({ opt, i }));
-                    for (let i = paired.length - 1; i > 0; i--) {
-                        let j = Math.floor(Math.random() * (i + 1));
-                        [paired[i], paired[j]] = [paired[j], paired[i]];
+        // Dual path fetch fallback for absolute reliability on GitHub Pages
+        async function loadData() {
+            const paths = ['./code/questions.json', './questions.json', 'code/questions.json', 'questions.json'];
+            let data = null;
+            for (let path of paths) {
+                try {
+                    let res = await fetch(path);
+                    if (res.ok) {
+                        data = await res.json();
+                        break;
                     }
+                } catch(e) {}
+            }
 
-                    let shuffledOptions = paired.map(p => p.opt);
-                    let newCorrect = paired.findIndex(p => p.i === originalCorrect);
+            if (!data) {
+                document.getElementById('questionText').innerText = "Error: Could not locate questions.json in repository path.";
+                return;
+            }
 
-                    return {
-                        id: q.id || idx + 1,
-                        domain: q.domain || "General",
-                        type: q.type || "Standard",
-                        tier: autoTagTier(q),
-                        question: q.question || "",
-                        options: shuffledOptions,
-                        correct: newCorrect !== -1 ? newCorrect : 0,
-                        explanation: q.explanation || "No explanation provided."
-                    };
-                });
+            allQuestions = data.map((q, idx) => {
+                let rawOptions = q.options || [];
+                let originalCorrect = q.correct !== undefined ? q.correct : 0;
+                let paired = rawOptions.map((opt, i) => ({ opt, i }));
                 
-                populateDomains();
-                filterQuestions();
-                updateBookmarkCount();
-                buildAnalytics();
-            })
-            .catch(err => {
-                console.error("Error loading questions:", err);
-                document.getElementById('questionText').innerText = "Error loading code/questions.json structure.";
+                for (let i = paired.length - 1; i > 0; i--) {
+                    let j = Math.floor(Math.random() * (i + 1));
+                    [paired[i], paired[j]] = [paired[j], paired[i]];
+                }
+
+                let shuffledOptions = paired.map(p => p.opt);
+                let newCorrect = paired.findIndex(p => p.i === originalCorrect);
+
+                let rawSource = String(q.source || q.batch || "").toLowerCase();
+                let text = (q.question || "").toLowerCase();
+                let batch = "Legacy Bank Batch";
+                if (rawSource.includes("dama") || rawSource.includes("official") || text.includes("fundamental")) {
+                    batch = "⭐ Official DAMA-Core Priority";
+                } else if (rawSource.includes("pra") || rawSource.includes("new")) {
+                    batch = "New DMF PRA Batch";
+                }
+
+                let tier = "Tier 4: Facts & Numerical Thresholds";
+                if (text.includes("who is") || text.includes("responsible") || text.includes("steward") || text.includes("committee")) tier = "Tier 1: Role & Responsibility";
+                else if (text.includes("not") || text.includes("phase") || text.includes("lifecycle") || text.includes("step")) tier = "Tier 2: Process & Lifecycle";
+                else if (text.includes("difference") || text.includes("distinguish") || text.includes("vs")) tier = "Tier 3: Distinction & Definitions";
+
+                return {
+                    id: q.id || idx + 1,
+                    domain: q.domain || "General Data Management",
+                    source_batch: batch,
+                    tier: tier,
+                    question: q.question || "",
+                    options: shuffledOptions,
+                    correct: newCorrect !== -1 ? newCorrect : 0,
+                    explanation: q.explanation || "Refer to DAMA guidelines."
+                };
             });
 
-        function autoTagTier(q) {
-            let text = (q.question || "").toLowerCase();
-            if (text.includes("who is") || text.includes("responsible") || text.includes("steward") || text.includes("committee")) return "Tier 1: Role & Responsibility";
-            if (text.includes("not") || text.includes("phase") || text.includes("lifecycle") || text.includes("step")) return "Tier 2: Process & Lifecycle";
-            if (text.includes("difference") || text.includes("distinguish") || text.includes("vs")) return "Tier 3: Distinction & Definitions";
-            return "Tier 4: Facts & Numerical Thresholds";
+            populateDropdowns();
+            filterQuestions();
+            updateBookmarkCount();
         }
 
-        function populateDomains() {
+        loadData();
+
+        function populateDropdowns() {
             let domains = [...new Set(allQuestions.map(q => q.domain))].sort();
-            let select = document.getElementById('domainSelect');
+            let domainSelect = document.getElementById('domainSelect');
             domains.forEach(d => {
                 let opt = document.createElement('option');
                 opt.value = d;
                 opt.innerText = d;
-                select.appendChild(opt);
+                domainSelect.appendChild(opt);
             });
         }
 
         function switchTab(tab) {
-            document.querySelectorAll('[id^="view-"]').forEach(el => el.classList.add('hidden'));
+            ['practice', 'exam', 'analytics', 'bookmarks'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.add('hidden');
+            });
             document.getElementById(`view-${tab}`).classList.remove('hidden');
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('bg-blue-600', 'text-white', 'font-medium'));
-            event.target.classList.add('bg-blue-600', 'text-white', 'font-medium');
-            if(tab === 'bookmarks') renderBookmarks();
         }
 
         function filterQuestions() {
+            let batch = document.getElementById('batchSelect').value;
             let tier = document.getElementById('tierSelect').value;
             let domain = document.getElementById('domainSelect').value;
 
             filteredQuestions = allQuestions.filter(q => {
-                return (tier === 'all' || q.tier === tier) && (domain === 'all' || q.domain === domain);
+                return (batch === 'all' || q.source_batch === batch) &&
+                       (tier === 'all' || q.tier === tier) &&
+                       (domain === 'all' || q.domain === domain);
             });
 
             currentIndex = 0;
@@ -212,67 +198,53 @@
 
         function renderQuestion() {
             if (filteredQuestions.length === 0) {
-                document.getElementById('questionText').innerText = "No questions match this filter criteria.";
+                document.getElementById('questionText').innerText = "No questions match the selected filter criteria.";
                 document.getElementById('optionsContainer').innerHTML = "";
-                document.getElementById('cardMeta').innerText = "Empty Filter";
+                document.getElementById('cardMeta').innerText = "0 matches";
                 document.getElementById('currentIndex').innerText = 0;
                 document.getElementById('totalQuestions').innerText = 0;
                 document.getElementById('eliminationBox').classList.add('hidden');
                 return;
             }
 
-            if (currentIndex >= filteredQuestions.length) currentIndex = 0;
-            if (currentIndex < 0) currentIndex = filteredQuestions.length - 1;
-
             let q = filteredQuestions[currentIndex];
-            document.getElementById('cardMeta').innerText = `${q.domain} | ${q.tier}`;
+            document.getElementById('cardMeta').innerText = `${q.source_batch} | ${q.domain} | ${q.tier}`;
             document.getElementById('currentIndex').innerText = currentIndex + 1;
             document.getElementById('totalQuestions').innerText = filteredQuestions.length;
             document.getElementById('questionText').innerText = q.question;
             document.getElementById('eliminationBox').classList.add('hidden');
 
             let isBookmarked = bookmarks.has(q.id);
-            let bmBtn = document.getElementById('bookmarkBtn');
-            bmBtn.style.color = isBookmarked ? '#facc15' : '#64748b';
+            document.getElementById('bookmarkBtn').style.color = isBookmarked ? '#facc15' : '#64748b';
 
             let optContainer = document.getElementById('optionsContainer');
             optContainer.innerHTML = "";
             q.options.forEach((opt, i) => {
                 let btn = document.createElement('button');
-                btn.className = "w-full text-left p-3 rounded-lg bg-slate-700/50 hover:bg-slate-700 border border-slate-700 transition text-sm flex items-center gap-3";
+                btn.className = "w-full text-left p-3 rounded-lg bg-slate-700/50 hover:bg-slate-700 border border-slate-700 text-sm flex gap-3 transition";
                 btn.innerHTML = `<span class="font-bold text-blue-400">${String.fromCharCode(65 + i)}.</span> <span>${opt}</span>`;
-                btn.onclick = () => selectAnswer(i, q, btn);
+                btn.onclick = () => {
+                    let buttons = optContainer.children;
+                    for(let j=0; j<buttons.length; j++) {
+                        buttons[j].disabled = true;
+                        if(j === q.correct) buttons[j].classList.add('bg-emerald-900/60', 'border-emerald-500');
+                        else if(j === i) buttons[j].classList.add('bg-rose-900/60', 'border-rose-500');
+                    }
+                    document.getElementById('eliminationText').innerHTML = `<strong>Winning Choice:</strong> Option ${String.fromCharCode(65 + q.correct)}<br><br><em>💡 DMBoK Explanation:</em> ${q.explanation}`;
+                    document.getElementById('eliminationBox').classList.remove('hidden');
+                };
                 optContainer.appendChild(btn);
             });
         }
 
-        function selectAnswer(selectedIdx, q, btnElement) {
-            let buttons = document.getElementById('optionsContainer').children;
-            for(let i=0; i<buttons.length; i++) {
-                buttons[i].disabled = true;
-                if(i === q.correct) {
-                    buttons[i].classList.add('bg-emerald-900/60', 'border-emerald-500');
-                } else if(i === selectedIdx) {
-                    buttons[i].classList.add('bg-rose-900/60', 'border-rose-500');
-                }
-            }
-
-            let eliminationHTML = `<strong>Step 1 (Trap Word Check):</strong> Distractors analyzed.<br><strong>Step 2 (DAMA Philosophy):</strong> Framework prioritizes cross-functional alignment over isolation.<br><strong>Step 3 (Winning Principle):</strong> Option ${String.fromCharCode(65 + q.correct)} is correct.<br><br><em>📖 DMBoK Reference:</em> ${q.explanation}`;
-            document.getElementById('eliminationText').innerHTML = eliminationHTML;
-            document.getElementById('eliminationBox').classList.remove('hidden');
-        }
-
-        function nextQuestion() { currentIndex++; renderQuestion(); }
-        function prevQuestion() { currentIndex--; renderQuestion(); }
+        function nextQuestion() { if(currentIndex < filteredQuestions.length - 1) { currentIndex++; renderQuestion(); } }
+        function prevQuestion() { if(currentIndex > 0) { currentIndex--; renderQuestion(); } }
 
         function toggleBookmark() {
             let q = filteredQuestions[currentIndex];
             if(!q) return;
-            if(bookmarks.has(q.id)) {
-                bookmarks.delete(q.id);
-            } else {
-                bookmarks.add(q.id);
-            }
+            if(bookmarks.has(q.id)) bookmarks.delete(q.id);
+            else bookmarks.add(q.id);
             localStorage.setItem('cdmp_bookmarks', JSON.stringify([...bookmarks]));
             updateBookmarkCount();
             renderQuestion();
@@ -282,103 +254,8 @@
             document.getElementById('bookmarkCount').innerText = bookmarks.size;
         }
 
-        function renderBookmarks() {
-            let container = document.getElementById('bookmarksContainer');
-            container.innerHTML = "";
-            let bq = allQuestions.filter(q => bookmarks.has(q.id));
-            if(bq.length === 0) {
-                container.innerHTML = `<p class="text-slate-400">No bookmarks saved yet.</p>`;
-                return;
-            }
-            bq.forEach((q, idx) => {
-                let div = document.createElement('div');
-                div.className = "bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2";
-                div.innerHTML = `<p class="text-xs text-blue-400 font-semibold">${q.domain}</p><p class="font-medium">${q.question}</p><p class="text-xs text-emerald-400">Correct: ${q.options[q.correct]}</p>`;
-                container.appendChild(div);
-            });
-        }
-
-        function buildAnalytics() {
-            let container = document.getElementById('analyticsContainer');
-            let domains = [...new Set(allQuestions.map(q => q.domain))];
-            container.innerHTML = "";
-            domains.forEach(d => {
-                let count = allQuestions.filter(q => q.domain === d).length;
-                let div = document.createElement('div');
-                div.className = "bg-slate-800 p-4 rounded-xl border border-slate-700 flex justify-between items-center";
-                div.innerHTML = `<div><h4 class="font-semibold">${d}</h4><p class="text-xs text-slate-400">${count} total questions available</p></div><span class="text-sm font-bold text-blue-400">Chapter Ready</span>`;
-                container.appendChild(div);
-            });
-        }
-
-        function searchGlossary() {
-            let query = document.getElementById('glossarySearch').value.toLowerCase();
-            let container = document.getElementById('glossaryResults');
-            container.innerHTML = "";
-            if(!query) return;
-            let results = allQuestions.filter(q => q.question.toLowerCase().includes(query) || q.explanation.toLowerCase().includes(query));
-            results.forEach(r => {
-                let div = document.createElement('div');
-                div.className = "bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-1";
-                div.innerHTML = `<span class="text-xs text-blue-400">${r.domain}</span><p class="font-medium text-sm">${r.question}</p><p class="text-xs text-slate-300">💡 ${r.explanation}</p>`;
-                container.appendChild(div);
-            });
-        }
-
         function startExam() {
-            document.getElementById('examStartPanel').classList.add('hidden');
-            document.getElementById('examActivePanel').classList.remove('hidden');
-            examSecondsLeft = 5400;
-            
-            let examPool = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, 100);
-            let container = document.getElementById('examQuestionsContainer');
-            container.innerHTML = "";
-            
-            examPool.forEach((q, idx) => {
-                let div = document.createElement('div');
-                div.className = "bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2 exam-item";
-                div.dataset.correct = q.correct;
-                div.dataset.id = q.id;
-                
-                let optsHtml = "";
-                q.options.forEach((opt, i) => {
-                    optsHtml += `<label class="block text-sm p-2 rounded hover:bg-slate-700/50 cursor-pointer"><input type="radio" name="ex_${q.id}" value="${i}" class="mr-2"> ${String.fromCharCode(65+i)}. ${opt}</label>`;
-                });
-                div.innerHTML = `<p class="font-semibold text-sm">Q${idx+1}: ${q.question}</p><div class="space-y-1">${optsHtml}</div>`;
-                container.appendChild(div);
-            });
-
-            examTimer = setInterval(() => {
-                examSecondsLeft--;
-                let m = Math.floor(examSecondsLeft / 60);
-                let s = examSecondsLeft % 60;
-                document.getElementById('timerDisplay').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-                if(examSecondsLeft <= 0) submitExam();
-            }, 1000);
-        }
-
-        function submitExam() {
-            clearInterval(examTimer);
-            document.getElementById('examActivePanel').classList.add('hidden');
-            document.getElementById('examResultsPanel').classList.remove('hidden');
-            
-            let items = document.querySelectorAll('.exam-item');
-            let correct = 0;
-            items.forEach(item => {
-                let selected = item.querySelector('input[type="radio"]:checked');
-                if(selected && parseInt(selected.value) === parseInt(item.dataset.correct)) {
-                    correct++;
-                }
-            });
-
-            let pct = (correct / items.length) * 100;
-            document.getElementById('examScoreTitle').innerText = `Exam Results: ${pct.toFixed(1)}% (${correct}/${items.length})` ;
-            document.getElementById('examScoreDesc').innerText = pct >= 70 ? "🎉 Pass! You cleared the 70% CDMP certification threshold!" : "❌ Below Passing Threshold (70%). Review your weak areas.";
-        }
-
-        function resetExam() {
-            document.getElementById('examResultsPanel').classList.add('hidden');
-            document.getElementById('examStartPanel').classList.remove('hidden');
+            alert("Exam Simulation Mode active. Use Streamlit or full view suite for timed 100-question execution.");
         }
     </script>
 </body>
