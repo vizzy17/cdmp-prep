@@ -55,19 +55,31 @@
                 </div>
             </div>
 
-            <div class="w-full bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl relative">
-                <div class="flex justify-between items-center mb-3 text-xs text-slate-400">
+            <div class="w-full bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl relative space-y-4">
+                <div class="flex justify-between items-center text-xs text-slate-400">
                     <span id="cardMeta">Batch | Domain | Tier</span>
                     <button id="bookmarkBtn" onclick="toggleBookmark()" class="text-slate-500 hover:text-yellow-400 text-lg transition">⭐</button>
                 </div>
-                <div id="questionContainer" class="space-y-4">
+
+                <div id="questionContainer" class="space-y-3">
                     <h3 id="questionText" class="text-lg font-semibold text-slate-100">Loading master question repository...</h3>
-                    <div id="optionsContainer" class="space-y-2"></div>
+                    
+                    <!-- Confidence Tracker Section -->
+                    <div class="flex flex-wrap items-center gap-2 pt-2 pb-1 text-xs text-slate-300 border-t border-slate-700/60">
+                        <span class="font-semibold text-slate-400">🎯 Confidence:</span>
+                        <button onclick="setConfidence('High')" id="conf-High" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 transition">🔥 High</button>
+                        <button onclick="setConfidence('Medium')" id="conf-Medium" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 transition">⚡ Medium</button>
+                        <button onclick="setConfidence('Guess')" id="conf-Guess" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 transition">🎲 Guessing</button>
+                    </div>
+
+                    <div id="optionsContainer" class="space-y-2 pt-2"></div>
                 </div>
-                <div id="eliminationBox" class="mt-6 hidden bg-slate-900/80 border border-slate-700 rounded-lg p-4 space-y-2 text-sm">
+
+                <div id="eliminationBox" class="mt-4 hidden bg-slate-900/80 border border-slate-700 rounded-lg p-4 space-y-2 text-sm">
                     <h4 class="font-bold text-blue-400">🛡️ DAMA Elimination Analysis</h4>
                     <p id="eliminationText" class="text-slate-300"></p>
                 </div>
+
                 <div class="mt-6 flex justify-between items-center pt-4 border-t border-slate-700">
                     <button onclick="prevQuestion()" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg text-sm transition">⬅ Previous</button>
                     <span class="text-xs text-slate-400">Card <span id="currentIndex">0</span> of <span id="totalQuestions">0</span></span>
@@ -80,14 +92,14 @@
         <div id="view-exam" class="w-full space-y-6 hidden">
             <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center space-y-4">
                 <h2 class="text-2xl font-bold">Realistic CDMP Exam Simulation Engine</h2>
-                <p class="text-sm text-slate-400 max-w-xl mx-auto">100 Questions in 90 Minutes. Strict official CDMP testing environment.</p>
+                <p class="text-sm text-slate-400 max-w-xl mx-auto">100 Questions in 90 Minutes. Strict official CDMP testing environment with visual warning states.</p>
                 <div id="examStartPanel">
                     <button onclick="startExam()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg transition">🚀 Launch 90-Minute Timed Exam</button>
                 </div>
                 <div id="examActivePanel" class="hidden space-y-6 text-left">
-                    <div class="flex justify-between items-center bg-slate-900 p-4 rounded-lg sticky top-4 border border-slate-700 z-10 shadow">
+                    <div id="examHeaderBar" class="flex justify-between items-center bg-slate-900 p-4 rounded-lg sticky top-4 border border-slate-700 z-10 shadow transition-all duration-300">
                         <span class="font-semibold text-sm">Exam In Progress</span>
-                        <span id="timerDisplay" class="font-mono text-xl text-amber-400 font-bold">90:00</span>
+                        <span id="timerDisplay" class="font-mono text-xl text-emerald-400 font-bold">90:00</span>
                         <div class="space-x-2">
                             <button onclick="abortExam()" class="bg-rose-700 hover:bg-rose-600 px-3 py-1.5 rounded text-xs font-bold transition">Abort</button>
                             <button onclick="submitExam()" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded text-sm font-bold transition">Submit Exam</button>
@@ -111,7 +123,7 @@
 
         <!-- VIEW 4: BOOKMARKS -->
         <div id="view-bookmarks" class="w-full space-y-4 hidden">
-            <h2 class="text-xl font-bold mb-4">Saved Flashcards & Bookmarks</h2>
+            <h2 class="text-xl font-bold mb-4">Saved Flashcards & Weak Spots</h2>
             <div id="bookmarksContainer" class="space-y-3"></div>
         </div>
 
@@ -129,6 +141,7 @@
         let filteredQuestions = [];
         let currentIndex = 0;
         let bookmarks = new Set(JSON.parse(localStorage.getItem('cdmp_bookmarks') || '[]'));
+        let confidenceRatings = JSON.parse(localStorage.getItem('cdmp_confidence') || '{}');
         let examTimer = null;
         let examSecondsLeft = 5400;
         let examActive = false;
@@ -271,6 +284,8 @@
             let isBookmarked = bookmarks.has(q.id);
             document.getElementById('bookmarkBtn').style.color = isBookmarked ? '#facc15' : '#64748b';
 
+            updateConfidenceUI(q.id);
+
             let optContainer = document.getElementById('optionsContainer');
             optContainer.innerHTML = "";
             q.options.forEach((opt, i) => {
@@ -288,6 +303,28 @@
                     document.getElementById('eliminationBox').classList.remove('hidden');
                 };
                 optContainer.appendChild(btn);
+            });
+        }
+
+        function setConfidence(level) {
+            let q = filteredQuestions[currentIndex];
+            if(!q) return;
+            confidenceRatings[q.id] = level;
+            localStorage.setItem('cdmp_confidence', JSON.stringify(confidenceRatings));
+            updateConfidenceUI(q.id);
+        }
+
+        function updateConfidenceUI(qId) {
+            ['High', 'Medium', 'Guess'].forEach(lvl => {
+                let btn = document.getElementById(`conf-${lvl}`);
+                if(btn) {
+                    btn.className = "px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 transition text-xs";
+                    if(confidenceRatings[qId] === lvl) {
+                        if(lvl === 'High') btn.className = "px-2.5 py-1 rounded bg-emerald-600 text-white font-bold transition text-xs";
+                        if(lvl === 'Medium') btn.className = "px-2.5 py-1 rounded bg-amber-600 text-white font-bold transition text-xs";
+                        if(lvl === 'Guess') btn.className = "px-2.5 py-1 rounded bg-rose-600 text-white font-bold transition text-xs";
+                    }
+                }
             });
         }
 
@@ -317,9 +354,10 @@
                 return;
             }
             bq.forEach((q) => {
+                let conf = confidenceRatings[q.id] || "Unrated";
                 let div = document.createElement('div');
                 div.className = "bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-1";
-                div.innerHTML = `<p class="text-xs text-blue-400 font-semibold">${q.domain}</p><p class="font-medium text-sm">${q.question}</p>`;
+                div.innerHTML = `<div class="flex justify-between"><span class="text-xs text-blue-400 font-semibold">${q.domain}</span><span class="text-xs text-amber-400 font-bold">Confidence: ${conf}</span></div><p class="font-medium text-sm">${q.question}</p>`;
                 container.appendChild(div);
             });
         }
@@ -379,7 +417,19 @@
                 examSecondsLeft--;
                 let m = Math.floor(examSecondsLeft / 60);
                 let s = examSecondsLeft % 60;
-                document.getElementById('timerDisplay').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                let timerDisplay = document.getElementById('timerDisplay');
+                let headerBar = document.getElementById('examHeaderBar');
+                
+                timerDisplay.innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                
+                // Visual warning state alerts when time runs low (< 5 minutes)
+                if (examSecondsLeft <= 300) {
+                    timerDisplay.className = "font-mono text-xl text-rose-500 font-bold animate-pulse";
+                    headerBar.classList.add('border-rose-500', 'bg-rose-950/40');
+                } else if (examSecondsLeft <= 900) {
+                    timerDisplay.className = "font-mono text-xl text-amber-400 font-bold";
+                }
+
                 if(examSecondsLeft <= 0) submitExam();
             }, 1000);
         }
@@ -389,6 +439,7 @@
             examActive = false;
             document.getElementById('examActivePanel').classList.add('hidden');
             document.getElementById('examStartPanel').classList.remove('hidden');
+            document.getElementById('examHeaderBar').classList.remove('border-rose-500', 'bg-rose-950/40');
         }
 
         function submitExam() {
@@ -396,6 +447,7 @@
             examActive = false;
             document.getElementById('examActivePanel').classList.add('hidden');
             document.getElementById('examResultsPanel').classList.remove('hidden');
+            document.getElementById('examHeaderBar').classList.remove('border-rose-500', 'bg-rose-950/40');
             
             let items = document.querySelectorAll('.exam-item');
             let correct = 0;
