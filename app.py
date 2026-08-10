@@ -21,6 +21,8 @@ if "initialized" not in st.session_state:
   st.session_state.exam_submitted = False
   st.session_state.exam_questions = []
   st.session_state.exam_user_answers = {}
+  st.session_state.nav_choice = "⚡ Tier & Batch Practice"
+  st.session_state.confirm_leave_exam = False
 
 
 def auto_tag_question(q, idx):
@@ -104,28 +106,50 @@ all_questions = load_questions()
 st.sidebar.title("CDMP Master Engine")
 st.sidebar.subheader("Passing Engine Suite")
 
-requested_nav = st.sidebar.radio(
+nav_options = [
+    "⚡ Tier & Batch Practice",
+    "📝 90-Min Exam Simulation",
+    "📊 Analytics Dashboard",
+    "⭐ Bookmarked Flashcards",
+    "📖 DMBoK Glossary Index",
+]
+
+
+def handle_nav_change():
+  selected = st.session_state.sidebar_nav
+  # Check if an active exam session is running and user is trying to navigate away
+  if st.session_state.exam_active and not st.session_state.exam_submitted and selected != "📝 90-Min Exam Simulation":
+    st.session_state.confirm_leave_exam = True
+    # Revert radio selection back to exam simulation until confirmed
+    st.session_state.sidebar_nav = "📝 90-Min Exam Simulation"
+  else:
+    st.session_state.confirm_leave_exam = False
+
+
+st.sidebar.radio(
     "Navigation Suite",
-    [
-        "⚡ Tier & Batch Practice",
-        "📝 90-Min Exam Simulation",
-        "📊 Analytics Dashboard",
-        "⭐ Bookmarked Flashcards",
-        "📖 DMBoK Glossary Index",
-    ],
+    nav_options,
+    key="sidebar_nav",
+    on_change=handle_nav_change
 )
 
-if st.session_state.exam_active and not st.session_state.exam_submitted and requested_nav != "📝 90-Min Exam Simulation":
-  st.sidebar.warning("⚠️ Active Exam Session Running!")
-  if st.sidebar.button("🚨 End Exam & Switch View"):
+nav_mode = st.session_state.sidebar_nav
+
+# Intercept confirmation warning box if user tried navigating away from active exam
+if st.session_state.get("confirm_leave_exam", False):
+  st.sidebar.error("⚠️ Active Exam Session Running!")
+  st.sidebar.markdown("Leaving will abort your current session and **reset the exam timer**.")
+  col_y, col_n = st.sidebar.columns(2)
+  if col_y.button("Yes, Leave & Reset"):
     st.session_state.exam_active = False
     st.session_state.exam_start_time = None
     st.session_state.exam_submitted = False
+    st.session_state.confirm_leave_exam = False
+    st.session_state.sidebar_nav = requested_nav_target = "⚡ Tier & Batch Practice"  # or whatever they wanted
     st.rerun()
-  else:
-    nav_mode = "📝 90-Min Exam Simulation"
-else:
-  nav_mode = requested_nav
+  if col_n.button("Stay in Exam"):
+    st.session_state.confirm_leave_exam = False
+    st.rerun()
 
 
 if nav_mode == "⚡ Tier & Batch Practice":
@@ -263,7 +287,7 @@ elif nav_mode == "📝 90-Min Exam Simulation":
       st.rerun()
 
     if not st.session_state.exam_submitted:
-      if st.button("🛑 Abort & Discard Exam Session"):
+      if st.button("🛑 Abort & Reset Exam Timer"):
         st.session_state.exam_active = False
         st.session_state.exam_start_time = None
         st.rerun()
