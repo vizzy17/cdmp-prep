@@ -119,10 +119,17 @@
                     </div>
                     <div id="examQuestionsContainer" class="space-y-6"></div>
                 </div>
-                <div id="examResultsPanel" class="hidden space-y-4 text-center">
-                    <h3 id="examScoreTitle" class="text-xl font-bold"></h3>
-                    <p id="examScoreDesc" class="text-sm text-slate-300"></p>
-                    <button onclick="resetExam()" class="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-lg text-sm font-medium">Try Again</button>
+
+                <div id="examResultsPanel" class="hidden space-y-6 text-left">
+                    <div class="text-center space-y-2 bg-slate-900 p-6 rounded-xl border border-slate-700">
+                        <h3 id="examScoreTitle" class="text-2xl font-bold"></h3>
+                        <p id="examScoreDesc" class="text-sm text-slate-300"></p>
+                        <button onclick="resetExam()" class="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-lg text-sm font-medium mt-2">🔄 Try Again</button>
+                    </div>
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-bold border-b border-slate-700 pb-2">🔍 Detailed Performance & Missed Questions Drill-Down</h4>
+                        <div id="missedQuestionsContainer" class="space-y-3"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -157,6 +164,7 @@
         let examTimer = null;
         let examSecondsLeft = 5400;
         let examActive = false;
+        let activeExamPool = [];
 
         async function loadData() {
             const paths = ['./code/questions.json', './questions.json', 'code/questions.json', 'questions.json'];
@@ -418,11 +426,11 @@
             examSecondsLeft = 5400;
             examActive = true;
             
-            let sampledPool = [...examPool].sort(() => 0.5 - Math.random()).slice(0, 100);
+            activeExamPool = [...examPool].sort(() => 0.5 - Math.random()).slice(0, 100);
             let container = document.getElementById('examQuestionsContainer');
             container.innerHTML = "";
             
-            sampledPool.forEach((q, idx) => {
+            activeExamPool.forEach((q, idx) => {
                 let div = document.createElement('div');
                 div.className = "bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2 exam-item";
                 div.dataset.correct = q.correct;
@@ -473,16 +481,47 @@
             
             let items = document.querySelectorAll('.exam-item');
             let correct = 0;
-            items.forEach(item => {
+            let missedContainer = document.getElementById('missedQuestionsContainer');
+            missedContainer.innerHTML = "";
+            let missedCount = 0;
+
+            items.forEach((item, idx) => {
+                let q = activeExamPool[idx];
                 let selected = item.querySelector('input[type="radio"]:checked');
-                if(selected && parseInt(selected.value) === parseInt(item.dataset.correct)) {
+                let userAnsIdx = selected ? parseInt(selected.value) : -1;
+
+                if (userAnsIdx === q.correct) {
                     correct++;
+                } else {
+                    missedCount++;
+                    let userAnsText = userAnsIdx !== -1 ? `${String.fromCharCode(65 + userAnsIdx)}. ${q.options[userAnsIdx]}` : "No Answer Provided";
+                    let correctAnsText = `${String.fromCharCode(65 + q.correct)}. ${q.options[q.correct]}`;
+
+                    let div = document.createElement('div');
+                    div.className = "bg-slate-800 p-4 rounded-xl border border-rose-500/50 space-y-2 text-sm";
+                    div.innerHTML = `
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-blue-400 font-semibold">${q.domain}</span>
+                            <span class="text-slate-400">${q.source_batch}</span>
+                        </div>
+                        <p class="font-semibold text-slate-100">Q${idx+1}: ${q.question}</p>
+                        <div class="space-y-1 pt-1 border-t border-slate-700 text-xs">
+                            <p class="text-rose-400">❌ Your Answer: ${userAnsText}</p>
+                            <p class="text-emerald-400">✅ Correct Answer: ${correctAnsText}</p>
+                            <p class="text-slate-300 pt-1">💡 <strong>DMBoK Explanation:</strong> ${q.explanation}</p>
+                        </div>
+                    `;
+                    missedContainer.appendChild(div);
                 }
             });
 
+            if (missedCount === 0) {
+                missedContainer.innerHTML = `<div class="bg-emerald-950/40 border border-emerald-500/50 p-4 rounded-xl text-center text-emerald-400 font-semibold text-sm">🌟 Flawless Exam! You answered every single question correctly!</div>`;
+            }
+
             let pct = (correct / items.length) * 100;
             document.getElementById('examScoreTitle').innerText = `Exam Results: ${pct.toFixed(1)}% (${correct}/${items.length})`;
-            document.getElementById('examScoreDesc').innerText = pct >= 70 ? "🎉 Pass! You cleared the 70% CDMP certification threshold!" : "❌ Below Passing Threshold (70%). Review your weak areas.";
+            document.getElementById('examScoreDesc').innerText = pct >= 70 ? "🎉 Pass! You cleared the 70% CDMP certification threshold!" : "❌ Below Passing Threshold (70%). Review your missed questions below.";
         }
 
         function resetExam() {
