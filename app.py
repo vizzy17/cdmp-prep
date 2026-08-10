@@ -181,7 +181,6 @@ if nav_mode == "⚡ Tier & Batch Practice":
     st.markdown(f"**Batch:** `{curr_q['source_batch']}` | **Domain:** {curr_q['domain']} | **Tier:** {curr_q['tier']}")
     st.markdown(f"### {curr_q['question']}")
 
-    # Confidence Tracker Widget
     current_conf = st.session_state.confidence_ratings.get(curr_q["id"], "Unrated")
     conf_choice = st.radio(
         "🎯 Rate Your Confidence for this Question:",
@@ -210,7 +209,6 @@ if nav_mode == "⚡ Tier & Batch Practice":
       else:
         st.error(f"❌ Incorrect. The correct answer was: {curr_q['options'][curr_q['correct']]}")
 
-      # Restored DAMA Elimination Analysis & Breakdown Block
       st.markdown("---")
       st.markdown("#### 🛡️ DAMA Elimination Breakdown & Logic Analysis")
       st.markdown(f"> **📖 DMBoK Reference & Explanation:** {curr_q['explanation']}")
@@ -228,13 +226,28 @@ if nav_mode == "⚡ Tier & Batch Practice":
 elif nav_mode == "📝 90-Min Exam Simulation":
   st.header("📝 Realistic CDMP Exam Simulation Engine")
   if not st.session_state.exam_active:
+    st.markdown("Configure your mock exam parameters below before launching the official 90-minute timer session.")
+    
+    exam_batch_choice = st.selectbox(
+        "🎯 Select Exam Question Source / Priority Scope",
+        ["All Batches", "⭐ Official DAMA-Core Priority", "New DMF PRA Batch", "Legacy Bank Batch"],
+        key="exam_batch_selector"
+    )
+
     if st.button("🚀 Launch 90-Minute Timed Exam (100 Questions)"):
-      st.session_state.exam_active = True
-      st.session_state.exam_questions = random.sample(all_questions, min(100, len(all_questions)))
-      st.session_state.exam_start_time = time.time()
-      st.session_state.exam_submitted = False
-      st.session_state.exam_user_answers = {}
-      st.rerun()
+      pool_source = all_questions
+      if exam_batch_choice != "All Batches":
+        pool_source = [q for q in all_questions if q["source_batch"] == exam_batch_choice]
+
+      if not pool_source:
+        st.error(f"❌ No questions available for scope: {exam_batch_choice}")
+      else:
+        st.session_state.exam_active = True
+        st.session_state.exam_questions = random.sample(pool_source, min(100, len(pool_source)))
+        st.session_state.exam_start_time = time.time()
+        st.session_state.exam_submitted = False
+        st.session_state.exam_user_answers = {}
+        st.rerun()
   else:
     elapsed = time.time() - st.session_state.exam_start_time
     remaining = max(0, 5400 - int(elapsed))
@@ -258,7 +271,7 @@ elif nav_mode == "📝 90-Min Exam Simulation":
       with st.form("exam_form"):
         exam_preds = {}
         for idx, eq in enumerate(st.session_state.exam_questions):
-          st.markdown(f"**Q{idx+1}: {eq['question']}**")
+          st.markdown(f"**Q{idx+1} (`{eq['source_batch']}`): {eq['question']}**")
           ans = st.radio("Options:", eq["options"], key=f"ex_{eq['id']}", index=None)
           exam_preds[eq["id"]] = ans
           st.markdown("---")
@@ -269,7 +282,7 @@ elif nav_mode == "📝 90-Min Exam Simulation":
     else:
       correct_count = sum(1 for eq in st.session_state.exam_questions if st.session_state.exam_user_answers.get(eq["id"]) and eq["options"].index(st.session_state.exam_user_answers[eq["id"]]) == eq["correct"])
       score_pct = (correct_count / len(st.session_state.exam_questions)) * 100
-      st.subheader(f"Exam Results: {score_pct:.1f}% ({correct_count}/100)")
+      st.subheader(f"Exam Results: {score_pct:.1f}% ({correct_count}/{len(st.session_state.exam_questions)})")
       if score_pct >= 70:
         st.success("🎉 Pass! You cleared the official 70% CDMP threshold!")
       else:
