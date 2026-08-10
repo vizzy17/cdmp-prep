@@ -113,7 +113,7 @@
                         <span class="font-semibold text-sm">Exam In Progress</span>
                         <span id="timerDisplay" class="font-mono text-xl text-emerald-400 font-bold">90:00</span>
                         <div class="space-x-2">
-                            <button onclick="abortExam()" class="bg-rose-700 hover:bg-rose-600 px-3 py-1.5 rounded text-xs font-bold transition">Abort</button>
+                            <button onclick="abortExam()" class="bg-rose-700 hover:bg-rose-600 px-3 py-1.5 rounded text-xs font-bold transition">Abort & Reset</button>
                             <button onclick="submitExam()" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded text-sm font-bold transition">Submit Exam</button>
                         </div>
                     </div>
@@ -247,11 +247,15 @@
         }
 
         function requestTabSwitch(tab) {
-            if (examActive && tab !== 'exam') {
-                if (!confirm("⚠️ Active Exam Session Running! Do you want to abort the exam and switch views?")) {
-                    return;
+            // Check if exam is actively running (timer running and active panel visible)
+            let isExamInProgress = examActive && !document.getElementById('examActivePanel').classList.contains('hidden');
+            
+            if (isExamInProgress && tab !== 'exam') {
+                let confirmLeave = confirm("⚠️ Active Exam Session Running!\n\nLeaving this screen will abort your current session and reset the exam timer. Do you want to proceed?");
+                if (!confirmLeave) {
+                    return; // Stay in exam session
                 }
-                abortExam();
+                abortExam(); // Cleanly abort, clear timer, and reset
             }
             switchTab(tab);
         }
@@ -444,6 +448,7 @@
                 container.appendChild(div);
             });
 
+            if(examTimer) clearInterval(examTimer);
             examTimer = setInterval(() => {
                 examSecondsLeft--;
                 let m = Math.floor(examSecondsLeft / 60);
@@ -465,15 +470,16 @@
         }
 
         function abortExam() {
-            clearInterval(examTimer);
+            if(examTimer) clearInterval(examTimer);
             examActive = false;
             document.getElementById('examActivePanel').classList.add('hidden');
+            document.getElementById('examResultsPanel').classList.add('hidden');
             document.getElementById('examStartPanel').classList.remove('hidden');
             document.getElementById('examHeaderBar').classList.remove('border-rose-500', 'bg-rose-950/40');
         }
 
         function submitExam() {
-            clearInterval(examTimer);
+            if(examTimer) clearInterval(examTimer);
             examActive = false;
             document.getElementById('examActivePanel').classList.add('hidden');
             document.getElementById('examResultsPanel').classList.remove('hidden');
