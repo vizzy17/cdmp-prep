@@ -280,13 +280,47 @@ elif nav_mode == "📝 90-Min Exam Simulation":
           st.session_state.exam_user_answers = exam_preds
           st.rerun()
     else:
-      correct_count = sum(1 for eq in st.session_state.exam_questions if st.session_state.exam_user_answers.get(eq["id"]) and eq["options"].index(st.session_state.exam_user_answers[eq["id"]]) == eq["correct"])
+      correct_count = 0
+      missed_questions = []
+
+      for eq in st.session_state.exam_questions:
+        user_ans = st.session_state.exam_user_answers.get(eq["id"])
+        if user_ans and eq["options"].index(user_ans) == eq["correct"]:
+          correct_count += 1
+        else:
+          missed_questions.append({
+              "question": eq["question"],
+              "domain": eq["domain"],
+              "batch": eq["source_batch"],
+              "user_answer": user_ans if user_ans else "No Answer Provided",
+              "correct_answer": eq["options"][eq["correct"]],
+              "explanation": eq["explanation"]
+          })
+
       score_pct = (correct_count / len(st.session_state.exam_questions)) * 100
       st.subheader(f"Exam Results: {score_pct:.1f}% ({correct_count}/{len(st.session_state.exam_questions)})")
+      
       if score_pct >= 70:
-        st.success("🎉 Pass! You cleared the official 70% CDMP threshold!")
+        st.success("🎉 Pass! You cleared the official 70% CDMP certification threshold!")
       else:
         st.error("❌ Below Passing Threshold (70%).")
+
+      st.markdown("---")
+      st.markdown(f"### 🔍 Detailed Performance & Missed Questions Drill-Down ({len(missed_questions)} Missed)")
+
+      if not missed_questions:
+        st.balloons()
+        st.success("🌟 Flawless Exam! You answered every single question correctly!")
+      else:
+        for idx, mq in enumerate(missed_questions, 1):
+          with st.expander(f"❌ Missed #{idx}: [{mq['domain']}] {mq['question'][:75]}..."):
+            st.markdown(f"**Batch Source:** `{mq['batch']}`")
+            st.markdown(f"**Question:** {mq['question']}")
+            st.error(f"❌ Your Answer: {mq['user_answer']}")
+            st.success(f"✅ Correct Answer: {mq['correct_answer']}")
+            st.info(f"💡 **DMBoK Explanation & Rationale:** {mq['explanation']}")
+
+      st.markdown("---")
       if st.button("🔄 Reset Exam Simulation"):
         st.session_state.exam_active = False
         st.session_state.exam_submitted = False
