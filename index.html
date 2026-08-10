@@ -64,7 +64,6 @@
                 <div id="questionContainer" class="space-y-3">
                     <h3 id="questionText" class="text-lg font-semibold text-slate-100">Loading master question repository...</h3>
                     
-                    <!-- Confidence Tracker Section -->
                     <div class="flex flex-wrap items-center gap-2 pt-2 pb-1 text-xs text-slate-300 border-t border-slate-700/60">
                         <span class="font-semibold text-slate-400">🎯 Confidence:</span>
                         <button onclick="setConfidence('High')" id="conf-High" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 transition">🔥 High</button>
@@ -75,7 +74,6 @@
                     <div id="optionsContainer" class="space-y-2 pt-2"></div>
                 </div>
 
-                <!-- Restored DAMA Elimination Analysis Box -->
                 <div id="eliminationBox" class="mt-4 hidden bg-slate-900/80 border border-slate-700 rounded-lg p-4 space-y-2 text-sm">
                     <h4 class="font-bold text-blue-400">🛡️ DAMA Elimination Analysis</h4>
                     <p id="eliminationText" class="text-slate-300"></p>
@@ -94,9 +92,22 @@
             <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center space-y-4">
                 <h2 class="text-2xl font-bold">Realistic CDMP Exam Simulation Engine</h2>
                 <p class="text-sm text-slate-400 max-w-xl mx-auto">100 Questions in 90 Minutes. Strict official CDMP testing environment with visual warning states.</p>
-                <div id="examStartPanel">
-                    <button onclick="startExam()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg transition">🚀 Launch 90-Minute Timed Exam</button>
+                
+                <div id="examStartPanel" class="space-y-4 max-w-md mx-auto text-left pt-2">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Target Exam Batch Scope:</label>
+                        <select id="examBatchSelect" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100">
+                            <option value="all">All Batches</option>
+                            <option value="⭐ Official DAMA-Core Priority">⭐ Official DAMA-Core Priority</option>
+                            <option value="New DMF PRA Batch">New DMF PRA Batch</option>
+                            <option value="Legacy Bank Batch">Legacy Bank Batch</option>
+                        </select>
+                    </div>
+                    <div class="text-center pt-2">
+                        <button onclick="startExam()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg transition w-full">🚀 Launch 90-Minute Timed Exam</button>
+                    </div>
                 </div>
+
                 <div id="examActivePanel" class="hidden space-y-6 text-left">
                     <div id="examHeaderBar" class="flex justify-between items-center bg-slate-900 p-4 rounded-lg sticky top-4 border border-slate-700 z-10 shadow transition-all duration-300">
                         <span class="font-semibold text-sm">Exam In Progress</span>
@@ -300,7 +311,6 @@
                         if(j === q.correct) buttons[j].classList.add('bg-emerald-900/60', 'border-emerald-500');
                         else if(j === i) buttons[j].classList.add('bg-rose-900/60', 'border-rose-500');
                     }
-                    // Restored DAMA Elimination Analysis rendering upon selection
                     document.getElementById('eliminationText').innerHTML = `<strong>Winning Choice:</strong> Option ${String.fromCharCode(65 + q.correct)}<br><br><em>💡 DMBoK Explanation:</em> ${q.explanation}`;
                     document.getElementById('eliminationBox').classList.remove('hidden');
                 };
@@ -392,16 +402,27 @@
         }
 
         function startExam() {
+            let selectedBatchScope = document.getElementById('examBatchSelect').value;
+            let examPool = allQuestions;
+            if (selectedBatchScope !== 'all') {
+                examPool = allQuestions.filter(q => q.source_batch === selectedBatchScope);
+            }
+
+            if (examPool.length === 0) {
+                alert(`No questions found for scope: ${selectedBatchScope}`);
+                return;
+            }
+
             document.getElementById('examStartPanel').classList.add('hidden');
             document.getElementById('examActivePanel').classList.remove('hidden');
             examSecondsLeft = 5400;
             examActive = true;
             
-            let examPool = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, 100);
+            let sampledPool = [...examPool].sort(() => 0.5 - Math.random()).slice(0, 100);
             let container = document.getElementById('examQuestionsContainer');
             container.innerHTML = "";
             
-            examPool.forEach((q, idx) => {
+            sampledPool.forEach((q, idx) => {
                 let div = document.createElement('div');
                 div.className = "bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2 exam-item";
                 div.dataset.correct = q.correct;
@@ -411,7 +432,7 @@
                 q.options.forEach((opt, i) => {
                     optsHtml += `<label class="block text-sm p-2 rounded hover:bg-slate-700/50 cursor-pointer"><input type="radio" name="ex_${q.id}" value="${i}" class="mr-2"> ${String.fromCharCode(65+i)}. ${opt}</label>`;
                 });
-                div.innerHTML = `<p class="font-semibold text-sm">Q${idx+1}: ${q.question}</p><div class="space-y-1">${optsHtml}</div>`;
+                div.innerHTML = `<p class="font-semibold text-sm">Q${idx+1} <span class="text-xs text-blue-400 font-normal">[${q.source_batch}]</span>: ${q.question}</p><div class="space-y-1">${optsHtml}</div>`;
                 container.appendChild(div);
             });
 
